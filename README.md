@@ -24,5 +24,5 @@ A separate tool will let you take a copy of your learning targets, and track you
 Use Cases
 ---------
 - You are a school that wants to implement competency education.  You interview new students as they come into your school.  You make a map of what each student needs to learn during their time in high school.  When they finish their map, they graduate from high school.
-- You are a parent.  You use Open Competencies to help your child figure out what to focus on, and to track their progress regardless of where their learning comes from.
+- You are a parent.  You use Open Competencies to help your child figure out what to focus on in their learning.
 - You are a recent college graduate.  No one is telling you what to focus on anymore.  You use Open Competencies to lay out your lifelong learning goals.
