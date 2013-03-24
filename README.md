@@ -6,7 +6,6 @@ Sections
 - Vision
 - Use cases
 - Other problems addressed by open competencies
-- Test cases?
 - Outline of structure - current thinking
 - Outline of dynamic aspects
 - Comparison to existing offerings
@@ -26,3 +25,10 @@ Use Cases
 - You are a school that wants to implement competency education.  You interview new students as they come into your school.  You make a map of what each student needs to learn during their time in high school.  When they finish their map, they graduate from high school.
 - You are a parent.  You use Open Competencies to help your child figure out what to focus on in their learning.
 - You are a recent college graduate.  No one is telling you what to focus on anymore.  You use Open Competencies to lay out your lifelong learning goals.
+
+Other problems addressed by Open Competencies
+---
+Programmers have been using vim and emacs to make their work more efficient since the 1970's, while most teachers are still using Word to write curriculum.  This makes the education world about 40 years behind the open source programming world in terms of efficiency.  This project will bring some of the workflow efficiency of the open source world into the realm of professional educators:
+- Forking:  Any school can fork any other schools set of pathways through the learning targets.  It should be possible, actually, to fork the entire set of learning targets itself.
+- Continuous Revision:  Education standards are typically created by a small group of educators working for a specified time period.  Whatever they create stands until they can get together again to revise their work.  Open Competencies allows for continuous revision of the entire set of learning targets.
+
