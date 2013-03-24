@@ -8,7 +8,7 @@ Sections
 - [Other problems addressed by open competencies](#other_problems)
 - [Outline of structure - current thinking](#structure_outline)
 - [Outline of dynamic aspects](#dynamic_outline)
-- Comparison to existing offerings
+- [Comparison to existing offerings](#comparison_existing)
 - Pre-coding decisions
 - When do we start coding?
 
@@ -63,4 +63,14 @@ There are several things we need to be able to do with the data:
     - Knowledge that is required for a profession.
     - Knowledge that is recommended for a profession.
     - Knowledge that a person is interested in, for nonprofessional reasons.
+[top](#top)
+
+<a name="comparison_existing"></a>Comparison to existing offerings
+---
+Most existing sets of educational standards are static sets, produced by teams of teachers and content-area experts:
+- [Common Core State Standards](http://www.corestandards.org/)
+Aims to be a set of standards that every state in the country adopts.  Currently covers Mathematics and English Language Arts.
+- [California State Standards](http://www.cde.ca.gov/be/st/ss/)
+California's standards consistently [rank high](http://standards.educationgadfly.net/) on the Fordham Institute's evaluation of state standards.
+- For comparison, [Alaska's standards (pdf)](http://www.eed.state.ak.us/standards/pdf/standards.pdf) consistently rank extremely poorly.
 [top](#top)
