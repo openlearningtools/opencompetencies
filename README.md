@@ -35,10 +35,9 @@ Programmers have been using vim and emacs to make their work more efficient sinc
 Outline of structure - current thinking
 ---
 The inspiration for this project comes from working within a fairly traditional model of structuring knowledge, by academic subject areas.  The thinking so far has been to lay out knowledge in a hierarchy like this:
-
--Subject Area
---Subdiscipline Area
----Competency Area
-----Essential Understanding
------Learning Target
+- Subject Area
+    - Subdiscipline Area
+        - Competency Area
+            - Essential Understaning
+                - Learning Target
 
