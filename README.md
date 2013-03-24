@@ -1,5 +1,17 @@
-Open Competencies is a tool for organizing knowledge.
-=====================================================
+Open Competencies
+===
+
+Sections
+---
+- Vision
+- Use cases
+- Other problems addressed by open competencies
+- Test cases?
+- Outline of structure - current thinking
+- Outline of dynamic aspects
+- Comparison to existing offerings
+- Pre-coding decisions
+- When do we start coding?
 
 Vision
 -------
