@@ -9,8 +9,7 @@ Sections
 - [Outline of structure - current thinking](#structure_outline)
 - [Outline of dynamic aspects](#dynamic_outline)
 - [Comparison to existing offerings](#comparison_existing)
-- Pre-coding decisions
-- When do we start coding?
+- [Pre-coding decisions](#pre_coding_decisions)
 
 <a name="vision"></a>Vision
 -------
@@ -68,9 +67,17 @@ There are several things we need to be able to do with the data:
 <a name="comparison_existing"></a>Comparison to existing offerings
 ---
 Most existing sets of educational standards are static sets, produced by teams of teachers and content-area experts:
-- [Common Core State Standards](http://www.corestandards.org/)
-Aims to be a set of standards that every state in the country adopts.  Currently covers Mathematics and English Language Arts.
-- [California State Standards](http://www.cde.ca.gov/be/st/ss/)
-California's standards consistently [rank high](http://standards.educationgadfly.net/) on the Fordham Institute's evaluation of state standards.
+- [Common Core State Standards](http://www.corestandards.org/) Aims to be a set of standards that every state in the country adopts.  Currently covers Mathematics and English Language Arts.
+- [California State Standards](http://www.cde.ca.gov/be/st/ss/) California's standards consistently [rank high](http://standards.educationgadfly.net/) on the Fordham Institute's evaluation of state standards.
 - For comparison, [Alaska's standards (pdf)](http://www.eed.state.ak.us/standards/pdf/standards.pdf) consistently rank extremely poorly.
 [top](#top)
+
+<a name="pre_coding_decisions"></a>Pre-coding decisions
+---
+A number of decisions need to be made before we write any code:
+- Agree on the overall scope of this project, as laid out in the [Vision](#vision) and [Use Cases](#use_cases) sections.
+- Write any more functional specs needed before coding.
+- Agree on a taxonomy for the hierarchy of learning targets.
+- Agree on an overall approach to identifying the kinds of relationships between different pieces of knowledge?
+- Write a glossary for the first few levels in the taxonomy
+- Agree on which framework to use
