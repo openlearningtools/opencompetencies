@@ -32,3 +32,13 @@ Programmers have been using vim and emacs to make their work more efficient sinc
 - Forking:  Any school can fork any other schools set of pathways through the learning targets.  It should be possible, actually, to fork the entire set of learning targets itself.
 - Continuous Revision:  Education standards are typically created by a small group of educators working for a specified time period.  Whatever they create stands until they can get together again to revise their work.  Open Competencies allows for continuous revision of the entire set of learning targets.
 
+Outline of structure - current thinking
+---
+The inspiration for this project comes from working within a fairly traditional model of structuring knowledge, by academic subject areas.  The thinking so far has been to lay out knowledge in a hierarchy like this:
+
+-Subject Area
+--Subdiscipline Area
+---Competency Area
+----Essential Understanding
+-----Learning Target
+
