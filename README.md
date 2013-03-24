@@ -38,6 +38,12 @@ The inspiration for this project comes from working within a fairly traditional 
 - Subject Area
     - Subdiscipline Area
         - Competency Area
-            - Essential Understaning
+            - Essential Understanding
                 - Learning Target
 
+For example:
+- Science
+    - Physical Science
+        - Motion and Forces
+            - Understand that the motion of everyday objects is governed by Newton's three laws.
+                - Understand Newton's first law.
