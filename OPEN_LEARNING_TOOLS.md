@@ -1,7 +1,7 @@
-Sections
+Open Learning Tools
 ===
 
-Open Learning Tools
+Sections
 ---
 - Broad scope of Open Learning Tools
 - Overview of three components:  Open Competencies, Open Curriculum Builder, Open Learning Tracker
@@ -9,8 +9,6 @@ Open Learning Tools
 - Initial developers
 - Potential developers/ stakeholders
 
-Open Learning Tools
-===
 
 Broad scope of Open Learning Tools
 ---
