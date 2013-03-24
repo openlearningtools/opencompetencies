@@ -12,7 +12,7 @@ Sections
 
 Broad scope of Open Learning Tools
 ---
-Open Learning Tools is a collection of tools that help support schools, organizations, and individuals to implement competency-based education. [rest of this already written?]
+Open Learning Tools is a collection of tools that help support schools, organizations, and individuals to implement competency-based education.
 
 Overview of three components:  Open Competencies, Open Curriculum Builder, Open Learning Tracker
 ---
