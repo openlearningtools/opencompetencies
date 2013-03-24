@@ -47,3 +47,15 @@ For example:
         - Motion and Forces
             - Understand that the motion of everyday objects is governed by Newton's three laws.
                 - Understand Newton's first law.
+
+We can see that this hierarchy does not go very deep.  Some subjects will need greater depths than others.  It seems to be worth naming the first few levels specifically, but at some point it seems appropriate to simply allow further nesting of "learning targets".
+
+Outline of dynamic aspects
+---
+There are several things we need to be able to do with the data:
+- Connect prerequisite knowledge.
+    - This is probably the most important feature, because this will support the rapid identification of learning paths.  Click on a low-level learning target, and all of the branches above it light up, but also many parallel branches that are required to fully understand a learning target in the context of a profession.
+- Connect knowledge that is related in a variety of ways.
+    - Knowledge that is required for a profession.
+    - Knowledge that is recommended for a profession.
+    - Knowledge that a person is interested in, for nonprofessional reasons.
