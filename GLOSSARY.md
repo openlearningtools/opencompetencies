@@ -67,13 +67,29 @@ There should probably be three to five competency areas within any subject area 
 
 <a name="essential_understanding"></a>essential understanding
 ---
-meaning
+An essential understanding is a specific idea within a given competency area.  We get to define the grain size and format of our essential understandings, to have better internal consistency in our own system than some existing standards documents have.
 
+Essential understandings are the big ideas that relate to a competency area.  They are specific, but still a little bigger-picture than individual learning targets.
+
+Example:
+- Science (subject area)
+    - Physical Science (subdiscipline area)
+        - Motion and Forces (competency area)
+            - Newton's Laws describe the motion of most objects. (essential understanding) 
 [top](#top)
 
 <a name="learning_target"></a>learning target
 ---
-meaning
+A learning target is a specific idea within an essential understanding.  These are all of the facts and concepts that a student needs to know in order to demonstrate mastery of an essential understanding.  The "grain size" of a learning target can vary.  This is the level at which we probably want to implement infinite nesting.
+
+Example:
+- Science (subject area)
+    - Physical Science (subdiscipline area)
+        - Motion and Forces (competency area)
+            - Newton's Laws describe the motion of most objects. (essential understanding)
+                - I can state Newton's First Law. (learning target)
+                    - I know that when forces are balanced, an object does not undergo any acceleration. (learning target)
+                    - I can solve problems involving an object moving at a constant speed. (learning target)
 
 [top](#top)
 
