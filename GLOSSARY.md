@@ -11,6 +11,16 @@ Terms
             - [competency area](#competency_area)
                 - [essential understanding](#essential_understanding)
                     - [learning target](#learning_target)
+- other
+    - types of standards
+        - [professional standard](#professional_standard)
+        - [common core standard](#common_core_standard)
+        - [state standard](#state_standard)
+    - [performance level](#performance_level)
+        - [apprentice](#apprentice)
+        - [technician](#technician)
+        - [master](#master)
+        - [professional](#professional)
 
 <a name="competency_education"></a>competency education
 ---
