@@ -28,7 +28,7 @@ Definitions
 
 <a name="competency_education"></a>competency education
 ---
-meaning
+In competency-based education, or competency education for short, each student is given a map of all the things they could learn in high school.  Based on each student's post-high school goals, we specify the learning targets that each student needs to meet.  When a student meets all of their learning targets at the appropriate [performance level](#performance_level), they graduate.  There is no ninth, tenth, eleventh, or twelfth grade; if a student takes two years to finish their map, they graduate in two years.  If they take six years, they graduate in six years.
 
 [top](#top)
 
