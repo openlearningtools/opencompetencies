@@ -42,7 +42,11 @@ One of the advantages of a comprehensive system such as Open Competencies is the
 
 <a name="subdiscipline_area"></a>subdiscipline area
 ---
-meaning
+These are the sub-areas of a subject.  For example, if Science is a subject area, then Physical Science is a subdiscipline area.  So we have:
+- Science (subject area)
+    - Physical Science (subdiscipline area)
+
+A subject area does not need to have any subdiscipline areas.  Subdiscipline areas may also be referred to as subject disciplines.
 
 [top](#top)
 
