@@ -9,6 +9,7 @@ Sections
 - [Outline of structure - current thinking](#structure_outline)
 - [Outline of dynamic aspects](#dynamic_outline)
 - [Comparison to existing offerings](#comparison_existing)
+- [Open Competencies is not...](#is_not)
 - [Pre-coding decisions](#pre_coding_decisions)
 
 <a name="vision"></a>Vision
@@ -75,6 +76,17 @@ Most existing sets of educational standards are static sets, produced by teams o
 - [Common Core State Standards](http://www.corestandards.org/) Aims to be a set of standards that every state in the country adopts.  Currently covers Mathematics and English Language Arts.
 - [California State Standards](http://www.cde.ca.gov/be/st/ss/) California's standards consistently [rank high](http://standards.educationgadfly.net/) on the Fordham Institute's evaluation of state standards.
 - For comparison, [Alaska's standards (pdf)](http://www.eed.state.ak.us/standards/pdf/standards.pdf) consistently rank extremely poorly.
+
+[top](#top)
+
+<a name="is_not"></a>Open Competencies is not...
+---
+It is important to understand what problems Open Competencies does not solve, because we will think about these problems as we are designing the tool.  It is important to understand what is outside the scope of Open Competencies, but also how that problem is to be addressed.
+
+Open Competencies is not:
+- A way to assess an individual's competence.  The Open Curriculum Builder can be used to build assessments based on competencies.
+- A way to track an individual's progress through their targeted competencies.  The Open Learning Tracker can be used for this purpose.
+- A curriculum, or a body of knowledge.  The Open Curriculum Builder can be used to design curriculum, or to map out a set of resources that can be used to learn a desired set of competencies.  Open Competencies is just a set of targets for your learning.
 
 [top](#top)
 
