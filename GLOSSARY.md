@@ -34,7 +34,9 @@ In competency-based education, or competency education for short, each student i
 
 <a name="subject_area"></a>subject area
 ---
-meaning
+The definition of an academic “subject area” may seem obvious, but it is important to define this term as we bring non-academic subjects into the system.  It is fairly straightforward to define the traditional academic subject areas such as Mathematics, Science, Social Studies, and English.
+
+One of the advantages of a comprehensive system such as Open Competencies is the freedom we have to define anything and everything we might like young people to learn.  We want to value important skills such as programming, and important character traits such as honesty and reliability.  Which subjects do these traits and skills fall under?  A well-structured system forces us to answer this question, and answering this kind of question frees us to bring anything we identify as important to student success into the system.
 
 [top](#top)
 
