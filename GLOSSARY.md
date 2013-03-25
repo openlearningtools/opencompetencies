@@ -52,7 +52,16 @@ A subject area does not need to have any subdiscipline areas.  Subdiscipline are
 
 <a name="competency_area"></a>competency area
 ---
-meaning
+A competency area is a major area of learning within a subject area, or a subdiscipline area.  For example, "Experimental Design" would be a competency area of Science, while "Motion and Forces" and "Structure of Matter" would be competency areas of Physical Science.  We would have:
+
+- Science (subject area)
+    - *blank*
+        - Experimental Design (competency area)
+    - Physical Science (subdiscipline area)
+        - Motion and Forces (competency area)
+        - Structure of Matter (competency area)
+
+There should probably be three to five competency areas within any subject area or subdiscipline area.
 
 [top](#top)
 
