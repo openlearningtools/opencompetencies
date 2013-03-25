@@ -30,6 +30,8 @@ Definitions
 ---
 In competency-based education, or competency education for short, each student is given a map of all the things they could learn in high school.  Based on each student's post-high school goals, we specify the learning targets that each student needs to meet.  When a student meets all of their learning targets at the appropriate [performance level](#performance_level), they graduate.  There is no ninth, tenth, eleventh, or twelfth grade; if a student takes two years to finish their map, they graduate in two years.  If they take six years, they graduate in six years.
 
+Traditional education models treat time in school as a constant, and learning as a variable.  So at the end of twelfth grade everyone has been at school for roughly the same number of years, but people have a huge range of skills and knowledge.  Within a class, Algebra 1 for example, everyone spends roughly the same amount of time in class but comes away with very different levels of knowledge, understanding, and skills.  Competency education flips this; it treats what is to be learned as a constant for each person, and lets them take whatever time they need (or don't need) to meet their own learning targets.
+
 [top](#top)
 
 <a name="subject_area"></a>subject area
