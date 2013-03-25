@@ -4,13 +4,13 @@ It is important to have a glossary, so that we all share a common understanding 
 
 Terms
 ---
-[competency education](#competency_education)
-
-[subject area](#subject)
-[subdiscipline area](#subdiscipline_area)
-[competency area](#competency_area)
-[essential understanding](#essential_understanding)
-[learning target](#learning_target)
+- [competency education](#competency_education)
+- hierarchy/ taxonomy
+    - [subject area](#subject)
+        - [subdiscipline area](#subdiscipline_area)
+            - [competency area](#competency_area)
+                - [essential understanding](#essential_understanding)
+                    - [learning target](#learning_target)
 
 <a name="competency_education"></a>competency education
 ---
