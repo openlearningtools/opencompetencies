@@ -98,6 +98,7 @@ A number of decisions need to be made before we write any code:
 - Agree on a taxonomy for the hierarchy of learning targets.
 - Agree on an overall approach to identifying the kinds of relationships between different pieces of knowledge?
 - Write a glossary for the first few levels in the taxonomy
+- Move much of this file to a wiki. Readme is mostly technical, and links to the wiki.
 - Agree on which framework to use
 
 [top](#top)
