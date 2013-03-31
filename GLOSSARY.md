@@ -115,7 +115,7 @@ meaning
 
 <a name="performance_level"></a>performance level
 ---
-A performance level is a measure of the level of quality of a piece of work that a student has done.  Open Competencies is really just a set of learning targets, so performance levels should feature more prominently in the Open Curriculum Builder and the Open Learning Tracker, but it is good to be aware of them while working on this project.
+A performance level is a measure of the level of quality of a piece of work that a student has done.  Open Competencies is really just a set of learning targets, so performance levels should feature more prominently in the Open Curriculum Builder and the Open Learning Tracker, but it is good to be aware of them while working on this project.  We want to make sure that the learning targets that are laid out allow students to work at the full range of levels described here.
 
 A performance level is the level of skill or knowledge that a piece of work demonstrates.  Performance levels are [Apprentice](#apprentice), [Technician](#technician), [Master](#master), and [Professional](#professional).  These are not scores or grades; the lowest level still demonstrates basic competence.  A student may work at a high level in many subjects, but may never achieve professional level work during high school.
 
@@ -123,19 +123,21 @@ A performance level is the level of skill or knowledge that a piece of work demo
 
 <a name="apprentice"></a>apprentice
 ---
-All work at the Apprentice level is correct.  Work shows an appropriate understanding of background knowledge in the subject area.  Work includes descriptions, observations, and summaries of information.  Work shows that the student has accepted supervision and guidance from teachers, peers, and others.
+All work at the Apprentice [level](#performance_level) is correct.  Work shows an appropriate understanding of background knowledge in the subject area.  Work includes descriptions, observations, and summaries of information.  Work shows that the student has accepted supervision and guidance from teachers, peers, and others.
 
 [top](#top)
 
 <a name="technician"></a>technician
 ---
-Work at the technician level is strong enough for others to build on.  The work is correct, and meaningful enough that it can contribute to a larger, long-term project.  The work shows that the student has thought critically about their own understanding, and the work of others.  The student has demonstrated not just background knowledge, but actual expertise in a particular subject.  The work contributes to a higher-stakes project, something that is meaningful to a larger community.  Clear criteria is used by the student to evaluate their work.  The clear criteria steers the student through a series of revisions, to meet a targeted level of quality.  The student has reflected thoughtfully on their work.
+Work at the technician [level](#performance_level) is strong enough for others to build on.  The work is correct, and meaningful enough that it can contribute to a larger, long-term project.  The work shows that the student has thought critically about their own understanding, and the work of others.  The student has demonstrated not just background knowledge, but actual expertise in a particular subject.  The work contributes to a higher-stakes project, something that is meaningful to a larger community.  Clear criteria is used by the student to evaluate their work.  The clear criteria steers the student through a series of revisions, to meet a targeted level of quality.  The student has reflected thoughtfully on their work.
 
 [top](#top)
 
 <a name="master"></a>master
 ---
-meaning
+Students at the master [level](#performance_level) have built something that is useful for the community.  They have completed complex work independently, and have supervised or guided people working at the [apprentice](#apprentice) level.  They have developed informed opinions about significant issues related to the topic.  They have accessed resources beyond just their teachers, and incorporated these resources into their work.  They have contributed reliably to a high-stakes collaborative project.  They have demonstrated appropriate use of a variety of tools related to the subject.
+
+Students should aim to reach this level in the areas where they have the most interest, and the areas which relate to their career goals.  It is important to recognize that students in most schools never reach this level, because most school projects are never used by anyone.  One of the goals of defining these levels is to help students go beyond the level of what happens in most schools.
 
 [top](#top)
 
