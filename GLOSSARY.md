@@ -115,19 +115,21 @@ meaning
 
 <a name="performance_level"></a>performance level
 ---
-meaning
+A performance level is a measure of the level of quality of a piece of work that a student has done.  Open Competencies is really just a set of learning targets, so performance levels should feature more prominently in the Open Curriculum Builder and the Open Learning Tracker, but it is good to be aware of them while working on this project.
+
+A performance level is the level of skill or knowledge that a piece of work demonstrates.  Performance levels are [Apprentice](#apprentice), [Technician](#technician), [Master](#master), and [Professional](#professional).  These are not scores or grades; the lowest level still demonstrates basic competence.  A student may work at a high level in many subjects, but may never achieve professional level work during high school.
 
 [top](#top)
 
 <a name="apprentice"></a>apprentice
 ---
-meaning
+All work at the Apprentice level is correct.  Work shows an appropriate understanding of background knowledge in the subject area.  Work includes descriptions, observations, and summaries of information.  Work shows that the student has accepted supervision and guidance from teachers, peers, and others.
 
 [top](#top)
 
 <a name="technician"></a>technician
 ---
-meaning
+Work at the technician level is strong enough for others to build on.  The work is correct, and meaningful enough that it can contribute to a larger, long-term project.  The work shows that the student has thought critically about their own understanding, and the work of others.  The student has demonstrated not just background knowledge, but actual expertise in a particular subject.  The work contributes to a higher-stakes project, something that is meaningful to a larger community.  Clear criteria is used by the student to evaluate their work.  The clear criteria steers the student through a series of revisions, to meet a targeted level of quality.  The student has reflected thoughtfully on their work.
 
 [top](#top)
 
