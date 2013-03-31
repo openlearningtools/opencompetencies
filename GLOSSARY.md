@@ -143,6 +143,6 @@ Students should aim to reach this level in the areas where they have the most in
 
 <a name="professional"></a>professional
 ---
-meaning
+Work at this level has been critically evaluated by outside professionals.  Professionals in the field respect work at this level, and would be happy to have the student on their team.  Work at this level has been selected to be displayed at professional gatherings, and in professional workplaces.  Students at this level have solved a new problem in the field, or for particularly complex problems, have outlined a clear plan for solving a new problem.  Students have demonstrated a clear history of working independently, with self-motivation and an intrinsic sense of quality in their work, over a significant period of time.  Staff have made sure to avoid having professionals simply compliment students' work because they are still in school; their respect is authentic and based on objective criteria, with room for subjective reactions as well.
 
 [top](#top)
