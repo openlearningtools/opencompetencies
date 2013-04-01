@@ -97,19 +97,21 @@ Example:
 
 <a name="professional_standard"></a>professional standard
 ---
-meaning
+A standard that is defined by a professional body such as the [National Council of Teachers of Mathematics (NCTM)](http://www.nctm.org/), or the [National Council of Teachers of English (NCTE)](http://www.ncte.org/).
 
 [top](#top)
 
 <a name="common_core_standard"></a>common core standard
 ---
-meaning
+A standard that comes from the [Common Core State Standards Initiative](http://www.corestandards.org/).  This is an effort to bring state standards into better alignment across the US.
 
 [top](#top)
 
 <a name="state_standard"></a>state standard
 ---
-meaning
+A learning target identified by an individual state.  These standards change on a timeframe determined by each state.  The quality of state standards varies widely.
+
+Open Competencies is built from the best existing standards in each topic area.  To support teachers and individuals who must report on a given state's standards, the competencies should be mapped to each state's standards.  When a state's standards are changed, only the mapping should change.  If a state's changes point out a deficiency in Open Competencies, we should update our system.  Otherwise, we keep our system as it is and just change the mapping, so teachers in that state can still use Open Competencies and report on their state standards.
 
 [top](#top)
 
