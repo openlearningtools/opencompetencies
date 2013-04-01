@@ -11,6 +11,7 @@ Terms
             - [competency area](#competency_area)
                 - [essential understanding](#essential_understanding)
                     - [learning target](#learning_target)
+                        - [objective](#objective)
 - other
     - types of standards
         - [professional standard](#professional_standard)
@@ -92,6 +93,12 @@ Example:
                 - I can state Newton's First Law. (learning target)
                     - I know that when forces are balanced, an object does not undergo any acceleration. (learning target)
                     - I can solve problems involving an object moving at a constant speed. (learning target)
+
+[top](#top)
+
+<a name="objective"></a>objective
+---
+An objective is what students do to work towards gaining mastery of a learning target, and what students do to demonstrate mastery of a learning target.
 
 [top](#top)
 
