@@ -41,16 +41,18 @@ Programmers have been using vim and emacs to make their work more efficient sinc
 <a name="structure_outline"></a>Outline of structure - current thinking
 ---
 The inspiration for this project comes from working within a fairly traditional model of structuring knowledge, by academic subject areas.  The thinking so far has been to lay out knowledge in a hierarchy like this:
-- Subject Area
-    - Subdiscipline Area
-        - Competency Area
-            - Essential Understanding
-                - Learning Target
+- [Subject Area](https://github.com/openlearningtools/opencompetencies/blob/master/GLOSSARY.md#subject)
+    - [Subdiscipline Area](https://github.com/openlearningtools/opencompetencies/blob/master/GLOSSARY.md#subdiscipline_area)
+        - [Competency Area](https://github.com/openlearningtools/opencompetencies/blob/master/GLOSSARY.md#competency_area)
+            - This may be an appropriate place to describe what each of the four [performance levels](https://github.com/openlearningtools/opencompetencies/blob/master/GLOSSARY.md#performance_level) look like in this particular comptency area.
+            - [Essential Understanding](https://github.com/openlearningtools/opencompetencies/blob/master/GLOSSARY.md#essential_understanding)
+                - [Learning Target](https://github.com/openlearningtools/opencompetencies/blob/master/GLOSSARY.md#learning_target)
 
 For example:
 - Science
     - Physical Science
         - Motion and Forces
+            - A description of what it looks like to work at the [apprentice](https://github.com/openlearningtools/opencompetencies/blob/master/GLOSSARY.md#apprentice), [technician](https://github.com/openlearningtools/opencompetencies/blob/master/GLOSSARY.md#technician), [master](https://github.com/openlearningtools/opencompetencies/blob/master/GLOSSARY.md#master), and [professional](https://github.com/openlearningtools/opencompetencies/blob/master/GLOSSARY.md#professional) levels in this particular competency area.
             - Understand that the motion of everyday objects is governed by Newton's three laws.
                 - Understand Newton's first law.
 
