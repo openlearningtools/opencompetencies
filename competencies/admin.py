@@ -8,5 +8,14 @@ class SubdisciplineAreaInline(admin.TabularInline):
 class SubjectAreaAdmin(admin.ModelAdmin):
     inlines = [SubdisciplineAreaInline]
 
+class EssentialUnderstandingInline(admin.TabularInline):
+    model = EssentialUnderstanding
+    extra = 1
+
+class CompetencyAreaAdmin(admin.ModelAdmin):
+    inlines = [EssentialUnderstandingInline]
+
+
 
 admin.site.register(SubjectArea, SubjectAreaAdmin)
+admin.site.register(CompetencyArea, CompetencyAreaAdmin)
