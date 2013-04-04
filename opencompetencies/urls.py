@@ -10,9 +10,9 @@ urlpatterns = patterns('',
     # url(r'^opencompetencies/', include('opencompetencies.foo.urls')),
 
     # My urls
-    # for now, index just points to a dump of entire system
     url(r'^$', 'competencies.views.index'),
     url(r'^schools/$', 'competencies.views.schools'),
+    url(r'^schools/(?P<school_id>\d+)/$', 'competencies.views.school'),
     url(r'^entire_system/$', 'competencies.views.entire_system'),
                        
     # Uncomment the admin/doc line below to enable admin documentation:

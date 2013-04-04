@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+  </head>
+
+  <body>
+
+    <h1>Open Competencies</h1>
+	 <p><a href='/'>Home</a> | <a href='/schools'>Schools</a> | <a href='/admin'>Admin Site</a>
+
+	 <h2>View subject areas and subdiscipline areas for {{ school.name }}:</h2>
+	 {% if subject_areas %}
+	   <ul>
+	   {% for subject_area in subject_areas %}
+	     <li>{{ subject_area.subject_area }}</li>
+	   {% endfor %}
+		</ul>
+    {% else %}
+		<p>This school does not have any subject areas yet.</p>
+    {% endif %}
+
+
+  </body>
+</html>
+
