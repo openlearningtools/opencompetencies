@@ -19,6 +19,14 @@ class SubdisciplineAreaInline(admin.TabularInline):
 class SubjectAreaAdmin(admin.ModelAdmin):
     inlines = [SubdisciplineAreaInline]
 
+# --- Subdiscipline Area admin, with competency areas inline
+class CompetencyAreaInline(admin.TabularInline):
+    model = CompetencyArea
+    extra = 1
+
+class SubdisciplineAreaAdmin(admin.ModelAdmin):
+    inlines = [CompetencyAreaInline]
+
 # --- Competency Area admin, with essential understandings inline
 class EssentialUnderstandingInline(admin.TabularInline):
     model = EssentialUnderstanding
@@ -38,5 +46,6 @@ class EssentialUnderstandingAdmin(admin.ModelAdmin):
 
 admin.site.register(School, SchoolAdmin)
 admin.site.register(SubjectArea, SubjectAreaAdmin)
+admin.site.register(SubdisciplineArea, SubdisciplineAreaAdmin)
 admin.site.register(CompetencyArea, CompetencyAreaAdmin)
 admin.site.register(EssentialUnderstanding, EssentialUnderstandingAdmin)
