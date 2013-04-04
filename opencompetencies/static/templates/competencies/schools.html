@@ -7,11 +7,12 @@
   <body>
 
     <h1>Open Competencies</h1>
-	 <h2>View competencies for any school:</h2>
+	 <p><a href='/'>Home</a> | <a href='/admin'>Admin Site</a>
 
+	 <h2>View competencies for any school:</h2>
 	 {% if schools %}
 	   {% for school in schools %}
-        <h3>{{ school.name }}</h3>
+        <h3><a href=''>{{ school.name }}</a></h3>
 		{% endfor %}
     {% else %}
 		<h3>No schools have been created yet.</h3>
