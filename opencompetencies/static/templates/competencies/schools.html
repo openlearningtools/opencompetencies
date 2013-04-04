@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+  </head>
+
+  <body>
+
+    <h1>Open Competencies</h1>
+	 <h2>View competencies for any school:</h2>
+
+	 {% if schools %}
+	   {% for school in schools %}
+        <h3>{{ school.name }}</h3>
+		{% endfor %}
+    {% else %}
+		<h3>No schools have been created yet.</h3>
+    {% endif %}
+
+  </body>
+</html>
+
