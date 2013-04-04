@@ -10,15 +10,25 @@
 	 <p><a href='/'>Home</a> | <a href='/schools'>Schools</a> | <a href='/admin'>Admin Site</a>
 
 	 <h2>View subject areas and subdiscipline areas for {{ school.name }}:</h2>
-	 {% if subject_areas %}
-	   <ul>
-	   {% for subject_area in subject_areas %}
-	     <li>{{ subject_area.subject_area }}</li>
-	   {% endfor %}
-		</ul>
+
+	 {# Loop through subject areas; within each subject area, loop through subdispline areas. #}
+
+    {% if subject_area_subdiscipline_areas %}
+		<ul>
+		{% for subject_area, subdiscipline_areas in subject_area_subdiscipline_areas.items %}
+		  <li><h3>{{ subject_area }}</h3></li>
+		    {% if subdiscipline_areas %}
+		      <ul>
+			   {% for subdiscipline_area in subdiscipline_areas %}
+		        <li>{{ subdiscipline_area }}</li>
+			   {% endfor %}
+			   </ul>
+			 {% endif %}
+		{% endfor %}
+	   </ul>
     {% else %}
 		<p>This school does not have any subject areas yet.</p>
-    {% endif %}
+	 {% endif %}
 
 
   </body>
