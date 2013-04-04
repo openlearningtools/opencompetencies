@@ -1,6 +1,17 @@
-from competencies.models import SubjectArea, SubdisciplineArea, CompetencyArea, EssentialUnderstanding, LearningTarget
 from django.contrib import admin
 
+from competencies.models import School, SubjectArea, SubdisciplineArea, CompetencyArea, EssentialUnderstanding, LearningTarget
+
+
+# --- School admin, with inline subjects ---
+class SubjectAreaInline(admin.TabularInline):
+    model = SubjectArea
+    extra = 1
+
+class SchoolAdmin(admin.ModelAdmin):
+    inlines = [SubjectAreaInline]
+
+# --- Subject Area admin, with subdisciplines inline
 class SubdisciplineAreaInline(admin.TabularInline):
     model = SubdisciplineArea
     extra = 1
@@ -8,7 +19,7 @@ class SubdisciplineAreaInline(admin.TabularInline):
 class SubjectAreaAdmin(admin.ModelAdmin):
     inlines = [SubdisciplineAreaInline]
 
-
+# --- Competency Area admin, with essential understandings inline
 class EssentialUnderstandingInline(admin.TabularInline):
     model = EssentialUnderstanding
     extra = 1
@@ -16,7 +27,7 @@ class EssentialUnderstandingInline(admin.TabularInline):
 class CompetencyAreaAdmin(admin.ModelAdmin):
     inlines = [EssentialUnderstandingInline]
 
-
+# --- Essential Understanding admin, with learning targets inline
 class LearningTargetInline(admin.TabularInline):
     model = LearningTarget
     extra = 1
@@ -24,6 +35,8 @@ class LearningTargetInline(admin.TabularInline):
 class EssentialUnderstandingAdmin(admin.ModelAdmin):
     inlines = [LearningTargetInline]
 
+
+admin.site.register(School, SchoolAdmin)
 admin.site.register(SubjectArea, SubjectAreaAdmin)
 admin.site.register(CompetencyArea, CompetencyAreaAdmin)
 admin.site.register(EssentialUnderstanding, EssentialUnderstandingAdmin)

@@ -8,7 +8,7 @@ class School(models.Model):
 
 class SubjectArea(models.Model):
     subject_area = models.CharField(max_length=500)
-    school = models.ForeignKey(School, null=True)
+    school = models.ForeignKey(School)
 
     def __unicode__(self):
         return self.subject_area
