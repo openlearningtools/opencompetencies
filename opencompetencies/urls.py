@@ -5,15 +5,8 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'opencompetencies.views.home', name='home'),
-    # url(r'^opencompetencies/', include('opencompetencies.foo.urls')),
-
     # My urls
-    url(r'^$', 'competencies.views.index', name='index'),
-    url(r'^schools/$', 'competencies.views.schools'),
-    url(r'^schools/(?P<school_id>\d+)/$', 'competencies.views.school'),
-    url(r'^entire_system/$', 'competencies.views.entire_system'),
+    url(r'^', include('competencies.urls')),
                        
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
