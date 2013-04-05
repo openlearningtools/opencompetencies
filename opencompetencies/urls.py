@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     # url(r'^opencompetencies/', include('opencompetencies.foo.urls')),
 
     # My urls
-    url(r'^$', 'competencies.views.index'),
+    url(r'^$', 'competencies.views.index', name='index'),
     url(r'^schools/$', 'competencies.views.schools'),
     url(r'^schools/(?P<school_id>\d+)/$', 'competencies.views.school'),
     url(r'^entire_system/$', 'competencies.views.entire_system'),
