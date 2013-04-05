@@ -6,7 +6,7 @@ from competencies.models import *
 class CompetencyViewTests(TestCase):
     def test_index_view(self):
         """Index page is a static page for now, so just check status."""
-        response = self.client.get(reverse('competencies:index'))
+        response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
 
 class SimpleTest(TestCase):
