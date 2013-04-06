@@ -13,9 +13,8 @@ def schools(request):
 
 def school(request, school_id):
     school = School.objects.get(id=school_id)
-    subject_areas = school.subjectarea_set.all()
-    subject_area_subdiscipline_areas = get_subjectarea_subdisciplinearea_dict(school_id)
-    return render_to_response('competencies/school.html',{'school': school, 'subject_areas': subject_areas, 'subject_area_subdiscipline_areas': subject_area_subdiscipline_areas})
+    sa_sdas = get_subjectarea_subdisciplinearea_dict(school_id)
+    return render_to_response('competencies/school.html',{'school': school, 'subject_area_subdiscipline_areas': sa_sdas})
 
 def subject_area(request, subject_area_id):
     """Shows a subject area's subdiscipline areas, and competency areas."""
@@ -28,12 +27,11 @@ def entire_system(request):
 
 # --- Helper functions ---
 def get_subjectarea_subdisciplinearea_dict(school_id):
-    """Builds a dictionary of all subject_areas as keys, 
+    """Builds a dictionary with all subject_areas as keys, 
     with subdiscipline_areas as values."""
     school = School.objects.get(id=school_id)
     subject_areas = school.subjectarea_set.all()
-    # Build a dictionary for use in template:
-    subject_area_subdiscipline_areas = {}
-    for subject_area in subject_areas:
-        subject_area_subdiscipline_areas[subject_area] = subject_area.subdisciplinearea_set.all()
-    return subject_area_subdiscipline_areas
+    sa_sdas = {}
+    for sa in subject_areas:
+        sa_sdas[sa] = sa.subdisciplinearea_set.all()
+    return sa_sdas
