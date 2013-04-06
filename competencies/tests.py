@@ -9,10 +9,14 @@ class CompetencyViewTests(TestCase):
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+    def test_schools_view(self):
+        """Schools page lists all schools, links to detail view of that school."""
+        response = self.client.get(reverse('schools'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_school_view(self):
+        """School page lists subject areas and subdiscipline areas for that school."""
+        response = self.client.get(reverse('schools/1'))
+        self.assertEqual(response.status_code, 200)
+
 
