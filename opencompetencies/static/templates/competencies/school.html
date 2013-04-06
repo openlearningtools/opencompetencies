@@ -7,7 +7,7 @@
   <body>
 
     <h1>Open Competencies</h1>
-	 <p><a href='/'>Home</a> | <a href='/schools'>Schools</a> | <a href='/admin'>Admin Site</a>
+	 <p><a href="{% url 'competencies:index' %}">Home</a> | <a href="{% url 'competencies:schools' %}">Schools</a> | <a href='/admin'>Admin Site</a>
 
 	 <h2>View subject areas and subdiscipline areas for {{ school.name }}:</h2>
 
