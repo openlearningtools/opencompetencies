@@ -23,7 +23,7 @@ class SubdisciplineArea(models.Model):
 class CompetencyArea(models.Model):
     competency_area = models.CharField(max_length=500)
     subject_area = models.ForeignKey(SubjectArea)
-    subdiscipline_area = models.ForeignKey(SubdisciplineArea)
+    subdiscipline_area = models.ForeignKey(SubdisciplineArea, blank=True, null=True)
 
     def __unicode__(self):
         return self.competency_area

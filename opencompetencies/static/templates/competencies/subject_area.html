@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+  </head>
+
+  <body>
+
+    <h1>Open Competencies</h1>
+	 <p><a href="{% url 'competencies:index' %}">Home</a> | <a href="{% url 'competencies:schools' %}">Schools</a> | <a href='/admin'>Admin Site</a>
+
+	 <h2>School: {{ school.name }}</h2>
+
+	 {# Loop through competencies for the subject area overall, and the subdiscipline areas. #}
+
+	 {% if sa_competencies %}
+
+	 {% else %}
+	   <p>{{ school.name }} has not defined any competencies yet.</p>
+	 {% endif %}
+	
+
+
+  </body>
+</html>
+

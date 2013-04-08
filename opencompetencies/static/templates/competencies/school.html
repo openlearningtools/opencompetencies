@@ -16,7 +16,7 @@
     {% if subject_area_subdiscipline_areas %}
 		<ul>
 		{% for subject_area, subdiscipline_areas in subject_area_subdiscipline_areas.items %}
-		  <li><h3>{{ subject_area }}</h3></li>
+		  <li><h3><a href='subject_area/{{ subject_area.id }}'>{{ subject_area }}</a></h3></li>
 		    {% if subdiscipline_areas %}
 		      <ul>
 			   {% for subdiscipline_area in subdiscipline_areas %}

@@ -7,5 +7,6 @@ urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
     url(r'^schools/$', views.schools, name='schools'),
     url(r'^schools/(?P<school_id>\d+)/$', views.school, name='school'),
+    url(r'^schools/(?P<school_id>\d+)/subject_area/(?P<subject_area_id>\d+)/$', views.subject_area, name='subject_area'),
     url(r'^entire_system/$', views.entire_system, name='entire_system'),
 )
