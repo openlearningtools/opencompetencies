@@ -9,7 +9,7 @@
     <h1>Open Competencies</h1>
 	 <p><a href="{% url 'competencies:index' %}">Home</a> | <a href="{% url 'competencies:schools' %}">Schools</a> | <a href='/admin'>Admin Site</a>
 
-	 <h2>View competencies for any school:</h2>
+	 <h2>Click on any school to begin exploring its competency system:</h2>
 	 {% if schools %}
 	   {% for school in schools %}
         <h3><a href='/schools/{{ school.id }}/'>{{ school.name }}</a></h3>
