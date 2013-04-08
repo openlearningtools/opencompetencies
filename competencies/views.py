@@ -24,6 +24,17 @@ def subject_area(request, school_id, subject_area_id):
     sa_competencies, sda_competencies = get_sa_competencies(subject_area)
     return render_to_response('competencies/subject_area.html',{'school': school, 'subject_area':subject_area, 'sa_competencies': sa_competencies, 'sda_competencies': sda_competencies})
 
+def competency_area(request, school_id, subject_area_id, competency_area_id):
+    """Shows all of the essential understandings and learning targets for a given comptency area."""
+    school = School.objects.get(id=school_id)
+    subject_area = SubjectArea.objects.get(id=subject_area_id)
+    competency_area = CompetencyArea.objects.get(id=competency_area_id)
+    # Get a dict of essential understandings, and associated learning targets.
+    eus_lts = get_eus_lts(competency_area)
+    return render_to_response('competencies/competency_area.html',
+                              {'school': school, 'subject_area': subject_area, 'competency_area': competency_area,
+                               'eus_lts': eus_lts})
+
 def entire_system(request):
     subject_areas = SubjectArea.objects.all()
     return render_to_response('competencies/entire_system.html', {'subject_areas': subject_areas})
@@ -54,3 +65,11 @@ def get_sa_competencies(subject_area):
             sa_competencies.append(competency)
 
     return (sa_competencies, sda_competencies)
+
+def get_eus_lts(competency_area):
+    """Returns a dict of essential understandings, with associated learning targets."""
+    eus = competency_area.essentialunderstanding_set.all()
+    eus_lts = {}
+    for eu in eus:
+        eus_lts[eu] = eu.learningtarget_set.all()
+    return eus_lts

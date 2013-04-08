@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+  </head>
+
+  <body>
+
+    <h1>Open Competencies</h1>
+	 <p><a href="{% url 'competencies:index' %}">Home</a> | <a href="{% url 'competencies:schools' %}">Schools</a> | <a href='/admin'>Admin Site</a>
+
+	 <h2>{{ school.name }}</h2>
+
+	 <p>This page lists the essential understandings and learning targets for the competency area {{ competency_area }}.</p>
+
+
+	 <h2>{{ subject_area }}: {{ competency_area }}</h2>
+
+	 {# Loop through essential understandings, and associated learning targets #}
+	 <ul>
+	 {% for eu, lts in eus_lts.items %}
+        <li><h3>{{ eu }}</h3></li>
+		  <ul>
+		  {% for lt in lts %}
+		      <li>{{ lt }}</li>
+		  {% endfor %}
+		  </ul>
+	 {% endfor %}
+	 </ul>
+		  
+
+  </body>
+</html>
+
