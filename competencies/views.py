@@ -18,9 +18,11 @@ def school(request, school_id):
 
 def subject_area(request, school_id, subject_area_id):
     """Shows a subject area's subdiscipline areas, and competency areas."""
-    sa_competencies = get_sa_competencies_dict(SubjectArea.objects.get(id=subject_area_id))
     school = School.objects.get(id=school_id)
-    return render_to_response('competencies/subject_area.html',{'school': school, 'sa_competencies': sa_competencies})
+    subject_area = SubjectArea.objects.get(id=subject_area_id)
+    # Get a list of general subject competencies, and a dict of competencies by sda
+    sa_competencies, sda_competencies = get_sa_competencies(subject_area)
+    return render_to_response('competencies/subject_area.html',{'school': school, 'subject_area':subject_area, 'sa_competencies': sa_competencies, 'sda_competencies': sda_competencies})
 
 def entire_system(request):
     subject_areas = SubjectArea.objects.all()
@@ -38,11 +40,28 @@ def get_subjectarea_subdisciplinearea_dict(school_id):
         sa_sdas[sa] = sa.subdisciplinearea_set.all()
     return sa_sdas
 
-def get_sa_competencies_dict(subject_area):
+def get_sa_competencies(subject_area):
     """Builds a dictionary of all competency areas for a given
     subject area, including its subdiscipline areas."""
-    sa_competencies = {}
-    # Competencies have fk to sa and sda; if sda, don't include in sa list
-    competencies = []
-    
-    return sa_competencies
+
+    """Returns a tuple:
+    first item: list of comps in general subject area
+    second item: dictionary of comps by sda"""
+
+    # Initialize dictionary value lists
+    sa_competencies = []
+    sda_competencies = {}
+    sdas = subject_area.subdisciplinearea_set.all()
+    for sda in sdas:
+        sda_competencies[sda] = []
+
+    # Loop through competencies, placing by sda first;
+    #  If no sda, place in general subject area.
+    competencies = subject_area.competencyarea_set.all()
+    for competency in competencies:
+        if competency.subdiscipline_area:
+            sda_competencies[competency.subdiscipline_area].append(competency)
+        else:
+            sa_competencies.append(competency)
+
+    return (sa_competencies, sda_competencies)

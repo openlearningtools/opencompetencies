@@ -13,12 +13,22 @@
 
 	 {# Loop through competencies for the subject area overall, and the subdiscipline areas. #}
 
-	 {% if sa_competencies %}
+	 <h2>{{ subject_area }}</h2>
+	 <ul>
+	 {% for comp in sa_competencies %}
+	     <li>{{ comp }}</li>
+    {% endfor %}
+	 </ul>
 
-	 {% else %}
-	   <p>{{ school.name }} has not defined any competencies yet.</p>
-	 {% endif %}
-	
+	 {% for sda, competencies in sda_competencies.items %}
+	     <h3>{{ sda }}</h3>
+		  <ul>
+		  {% for comp in competencies %}
+		      <li>{{ comp }}</li>
+		  {% endfor %}
+		  </ul>
+	 {% endfor %}
+
 
 
   </body>
