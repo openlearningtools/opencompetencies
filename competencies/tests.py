@@ -40,3 +40,10 @@ class CompetencyViewTests(TestCase):
         django_school = create_school(name="The Django School")
         science = create_subject_area(subject_area="Science", school=django_school)
         response = self.client.get(reverse('competencies:subject_area', args=(django_school.id, science.id,)))
+
+    def test_competency_area_view(self):
+        """Competency area page lists all essential understandings and learning targets
+        associated with a given competency area."""
+        # Need to make functions create_competency_area, create_essential_understanding,
+        #  create_learning_target
+        pass
