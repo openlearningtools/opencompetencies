@@ -35,9 +35,7 @@ def get_subjectarea_subdisciplinearea_dict(school_id):
     with subdiscipline_areas as values."""
     school = School.objects.get(id=school_id)
     subject_areas = school.subjectarea_set.all()
-    sa_sdas = {}
-    for sa in subject_areas:
-        sa_sdas[sa] = sa.subdisciplinearea_set.all()
+    sa_sdas = {sa: sa.subdisciplinearea_set.all() for sa in subject_areas}
     return sa_sdas
 
 def get_sa_competencies(subject_area):
