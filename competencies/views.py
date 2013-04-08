@@ -41,24 +41,15 @@ def get_subjectarea_subdisciplinearea_dict(school_id):
     return sa_sdas
 
 def get_sa_competencies(subject_area):
-    """Builds a dictionary of all competency areas for a given
-    subject area, including its subdiscipline areas."""
-
     """Returns a tuple:
     first item: list of comps in general subject area
     second item: dictionary of comps by sda"""
 
-    # Initialize dictionary value lists
-    sa_competencies = []
-    sda_competencies = {}
-    sdas = subject_area.subdisciplinearea_set.all()
-    for sda in sdas:
-        sda_competencies[sda] = []
-
     # Loop through competencies, placing by sda first;
     #  If no sda, place in general subject area.
-    competencies = subject_area.competencyarea_set.all()
-    for competency in competencies:
+    sa_competencies = []
+    sda_competencies = {sda: [] for sda in subject_area.subdisciplinearea_set.all()}
+    for competency in subject_area.competencyarea_set.all():
         if competency.subdiscipline_area:
             sda_competencies[competency.subdiscipline_area].append(competency)
         else:
