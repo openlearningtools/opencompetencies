@@ -16,6 +16,17 @@ def school(request, school_id):
     sa_sdas = get_subjectarea_subdisciplinearea_dict(school_id)
     return render_to_response('competencies/school.html',{'school': school, 'subject_area_subdiscipline_areas': sa_sdas})
 
+def fork(request, school_id):
+    empty_school = School.objects.get(id=school_id)
+    # Only get schools that have at least one subject area:
+    forkable_schools = [school for school in School.objects.all() if school.subjectarea_set.all()]
+    return render_to_response('competencies/fork.html',{'empty_school': empty_school, 'forkable_schools': forkable_schools})
+
+def confirm_fork(request, forking_school_id, forked_school_id):
+    forking_school = School.objects.get(id=forking_school_id)
+    forked_school = School.objects.get(id=forked_school_id)
+    return render_to_response('competencies/confirm_fork.html',{'forking_school': forking_school, 'forked_school': forked_school})
+
 def subject_area(request, school_id, subject_area_id):
     """Shows a subject area's subdiscipline areas, and competency areas."""
     school = School.objects.get(id=school_id)
