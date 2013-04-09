@@ -12,12 +12,12 @@
 	 <h2>{{ empty_school.name }} - Fork an existing school's competency system</h2>
 	 <p>{{ empty_school }} currently has an empty competency system.  Rather than starting from scratch, you can choose to "fork" an existing school's competency system.  This means you will start out with an exact copy of that school's current system, from which you can begin to make your own modifications.</p>
 
-	 <h3>To fork an existing school, simply click on that school.  You will see a confirmation that the forking was successful, and then you will be able to view your school's new system.</h3>
+	 <h3>To fork an existing school, click on the link next to that school.</h3>
 	 <h3>Forkable schools:</h3>
 
 	 <ul>
 	 {% for forkable_school in forkable_schools %}
-	     <li><a href="/schools/{{ empty_school.id }}/fork/{{ forkable_school.id }}">{{ forkable_school }}</a></li>
+	     <li>{{ forkable_school }} - <a href="/schools/{{ empty_school.id }}/fork/{{ forkable_school.id }}">fork this school</a></li>
 	 {% endfor %}
 	 </ul>
 

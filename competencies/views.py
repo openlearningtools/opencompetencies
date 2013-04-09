@@ -91,7 +91,10 @@ def fork_school(forking_school, forked_school):
     """Forks a given school's competency system.  Copies all aspects of
     forked_school's competency system over to forking_school's system.
     Resets all keys to new school's system, so that forking_school gets
-    an independent, isolated copy of the forked_school's system."""
+    an independent, isolated copy of the forked_school's system.
+
+    Test: Create a school, fork it, compare all hierarchical elements.
+    """
 
     # Copy all subject areas to new school:
     sas = forked_school.subjectarea_set.all()
