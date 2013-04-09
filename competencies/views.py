@@ -23,8 +23,10 @@ def fork(request, school_id):
     return render_to_response('competencies/fork.html',{'empty_school': empty_school, 'forkable_schools': forkable_schools})
 
 def confirm_fork(request, forking_school_id, forked_school_id):
+    """Forks the requested school, and confirms success."""
     forking_school = School.objects.get(id=forking_school_id)
     forked_school = School.objects.get(id=forked_school_id)
+    fork_school(forking_school, forked_school)
     return render_to_response('competencies/confirm_fork.html',{'forking_school': forking_school, 'forked_school': forked_school})
 
 def subject_area(request, school_id, subject_area_id):
@@ -84,3 +86,16 @@ def get_eus_lts(competency_area):
     for eu in eus:
         eus_lts[eu] = eu.learningtarget_set.all()
     return eus_lts
+
+def fork_school(forking_school, forked_school):
+    """Forks a given school's competency system.  Copies all aspects of
+    forked_school's competency system over to forking_school's system.
+    Resets all keys to new school's system, so that forking_school gets
+    an independent, isolated copy of the forked_school's system."""
+
+    # Copy all subject areas to new school:
+    sas = forked_school.subjectarea_set.all()
+    for sa in sas:
+        sa.pk, sa.id = None, None
+        sa.school = forking_school
+        sa.save()
