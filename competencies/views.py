@@ -123,6 +123,23 @@ def fork_school(forking_school, forked_school):
                 new_comp.subject_area = new_sa
                 new_comp.save()
 
+                # Copy all essential understandings associated with this competency area
+                eus = comp.essentialunderstanding_set.all()
+                for eu in eus:
+                    new_eu = copy(eu)
+                    new_eu.pk, new_eu.id = None, None
+                    new_eu.competency_area = new_comp
+                    new_eu.save()
+                
+                    # Copy all learning targets associated with
+                    #  this essential understanding:
+                    lts = eu.learningtarget_set.all()
+                    for lt in lts:
+                        new_lt = copy(lt)
+                        new_lt.pk, new_lt.id = None, None
+                        new_lt.essential_understanding = new_eu
+                        new_lt.save()
+
         # Copy all sdas to new school:
         sdas = sa.subdisciplinearea_set.all()
         for sda in sdas:
@@ -139,4 +156,20 @@ def fork_school(forking_school, forked_school):
                     new_comp.subject_area = new_sa
                     new_comp.subdiscipline_area = new_sda
                     new_comp.save()
+
+                    # Copy all essential understandings associated with this competency area
+                    eus = comp.essentialunderstanding_set.all()
+                    for eu in eus:
+                        new_eu = copy(eu)
+                        new_eu.pk, new_eu.id = None, None
+                        new_eu.competency_area = new_comp
+                        new_eu.save()
                     
+                        # Copy all learning targets associated with
+                        #  this essential understanding:
+                        lts = eu.learningtarget_set.all()
+                        for lt in lts:
+                            new_lt = copy(lt)
+                            new_lt.pk, new_lt.id = None, None
+                            new_lt.essential_understanding = new_eu
+                            new_lt.save()
