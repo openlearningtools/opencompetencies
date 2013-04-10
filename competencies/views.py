@@ -1,6 +1,8 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
+from copy import copy
+
 from competencies.models import School, SubjectArea, SubdisciplineArea, CompetencyArea, EssentialUnderstanding, LearningTarget
 
 
@@ -96,9 +98,28 @@ def fork_school(forking_school, forked_school):
     Test: Create a school, fork it, compare all hierarchical elements.
     """
 
+    # Overall approach:
+    #  Create new copy of each element;
+    #  Set pk, id to None;
+    #  Redefine appropriate parameters;
+    #  Save new element;
+    #  Use existing elements to access next level of hierarchy.
+
     # Copy all subject areas to new school:
     sas = forked_school.subjectarea_set.all()
     for sa in sas:
-        sa.pk, sa.id = None, None
-        sa.school = forking_school
-        sa.save()
+        new_sa = copy(sa)
+        new_sa.pk, new_sa.id = None, None
+        new_sa.school = forking_school
+        new_sa.save()
+
+        # Copy all sdas to new school:
+        sdas = sa.subdisciplinearea_set.all()
+        for sda in sdas:
+            new_sda = copy(sda)
+            new_sda.pk, new_sda.id = None, None
+            new_sda.subject_area = new_sa
+            new_sda.save()
+
+
+            
