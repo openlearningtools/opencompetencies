@@ -131,4 +131,12 @@ def fork_school(forking_school, forked_school):
             new_sda.subject_area = new_sa
             new_sda.save()
             
-            
+            # Copy all competency areas connected to current sda here:
+            for comp in comps:
+                if comp.subdiscipline_area and comp.subdiscipline_area.subdiscipline_area == sda.subdiscipline_area:
+                    new_comp = copy(comp)
+                    new_comp.pk, new_comp.id = None, None
+                    new_comp.subject_area = new_sa
+                    new_comp.subdiscipline_area = new_sda
+                    new_comp.save()
+                    
