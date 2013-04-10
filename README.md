@@ -35,6 +35,16 @@ Set up a local development environment:
 - run syncdb, and fake migrations
 - visit http://localhost:8000, and verify the site works
 
+Set up your own test version on heroku:
+- If you have not done so already, create a heroku account and install the heroku toolbelt.
+- In your local project directory, run "heroku create"
+- You will need to set up the database on heroku:
+    - heroku run bash
+	 - python manage.py syncdb
+	 - python manage.py migrate competencies
+- heroku open
+- You should have a working development version on heroku.
+
 <a name="pre_coding_decisions"></a>Pre-coding decisions
 ---
 A number of decisions need to be made before we write any code:
