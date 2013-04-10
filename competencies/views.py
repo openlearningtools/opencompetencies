@@ -11,7 +11,7 @@ def index(request):
 
 def schools(request):
     schools = School.objects.all()
-    return render_to_response('competencies/schools.html',{'schools': schools})
+    return render_to_response('competencies/schools.html',{'schools': schools}, context_instance=RequestContext(request))
 
 def school(request, school_id):
     school = School.objects.get(id=school_id)
@@ -30,6 +30,24 @@ def confirm_fork(request, forking_school_id, forked_school_id):
     forked_school = School.objects.get(id=forked_school_id)
     fork_school(forking_school, forked_school)
     return render_to_response('competencies/confirm_fork.html',{'forking_school': forking_school, 'forked_school': forked_school})
+
+def new_school(request):
+    """Creates a new school, then offers link to fork an existing
+    school's competency system.
+    """
+    # Will need validation.
+    new_school_name = request.POST['new_school_name']
+    new_school_created = False
+    new_school = None
+    if new_school_name:
+        # Create new school
+        new_school = School(name=new_school_name)
+        new_school.save()
+        new_school_created = True
+    return render_to_response('competencies/new_school.html',
+                              {'new_school_name': new_school_name, 'new_school_created': new_school_created,
+                               'new_school': new_school }, context_instance=RequestContext(request))
+        
 
 def subject_area(request, school_id, subject_area_id):
     """Shows a subject area's subdiscipline areas, and competency areas."""
@@ -95,15 +113,10 @@ def fork_school(forking_school, forked_school):
     Resets all keys to new school's system, so that forking_school gets
     an independent, isolated copy of the forked_school's system.
 
+    Clearly, this is a long function that could be refactored.
+
     Test: Create a school, fork it, compare all hierarchical elements.
     """
-
-    # Overall approach:
-    #  Create new copy of each element;
-    #  Set pk, id to None;
-    #  Redefine appropriate parameters;
-    #  Save new element;
-    #  Use existing elements to access next level of hierarchy.
 
     # Copy all subject areas to new school:
     sas = forked_school.subjectarea_set.all()

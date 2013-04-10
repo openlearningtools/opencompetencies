@@ -17,6 +17,8 @@ urlpatterns = patterns('',
     # confirm_fork: Confirms that a fork was successful.
     url(r'^schools/(?P<forking_school_id>\d+)/fork/(?P<forked_school_id>\d+)/$',
         views.confirm_fork, name='confirm_fork'),
+    # new_school: Create a new school.
+    url(r'^new_school/$', views.new_school, name='new_school'),
 
     # subject_area: Lists the competency areas for a given subject area, and all its subdiscipline areas.
     url(r'^schools/(?P<school_id>\d+)/subject_area/(?P<subject_area_id>\d+)/$', 

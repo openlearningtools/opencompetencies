@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+  </head>
+
+  <body>
+
+    <h1>Open Competencies</h1>
+	 <p><a href="{% url 'competencies:index' %}">Home</a> | <a href="{% url 'competencies:schools' %}">Schools</a> | <a href='/admin'>Admin Site</a>
+
+	 {% if new_school_created %}
+		  <h2>{{ new_school_name }}</h2>
+		  <p>{{ new_school_name }} has been created!  You can begin working with your <a href="/schools/{{ new_school.id }}">new school</a> immediately.</p>
+	 {% else %}
+		  <h2>Sorry.</h2>
+		  <p>Your new school could not be created.  You may have left the name blank; if so, please <a href="/schools">try again</a>.
+	 {% endif %}
+
+  </body>
+</html>
+
