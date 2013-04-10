@@ -133,12 +133,7 @@ def fork_school(forking_school, forked_school):
                 
                     # Copy all learning targets associated with
                     #  this essential understanding:
-                    lts = eu.learningtarget_set.all()
-                    for lt in lts:
-                        new_lt = copy(lt)
-                        new_lt.pk, new_lt.id = None, None
-                        new_lt.essential_understanding = new_eu
-                        new_lt.save()
+                    copy_eu_lts(eu, new_eu)
 
         # Copy all sdas to new school:
         sdas = sa.subdisciplinearea_set.all()
@@ -167,9 +162,15 @@ def fork_school(forking_school, forked_school):
                     
                         # Copy all learning targets associated with
                         #  this essential understanding:
-                        lts = eu.learningtarget_set.all()
-                        for lt in lts:
-                            new_lt = copy(lt)
-                            new_lt.pk, new_lt.id = None, None
-                            new_lt.essential_understanding = new_eu
-                            new_lt.save()
+                        copy_eu_lts(eu, new_eu)
+
+def copy_eu_lts(eu, new_eu):
+    """Copies all learning targets associated with existing essential understanding
+    to a new essential understanding.
+    """
+    lts = eu.learningtarget_set.all()
+    for lt in lts:
+        new_lt = copy(lt)
+        new_lt.pk, new_lt.id = None, None
+        new_lt.essential_understanding = new_eu
+        new_lt.save()
