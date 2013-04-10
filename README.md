@@ -14,7 +14,7 @@ How do you use it?  Let's say you want to be a professional programmer.  You cli
 
 A separate tool will let you take a copy of your learning targets, and track your progress in learning them.  That needs to be a separate tool, because it requires a different kind of security model.
 
-More information is included in the [VISION.md](link) document.
+More information is included in the [VISION.md](https://github.com/openlearningtools/opencompetencies/blob/master/docs/VISION.md) document.
 
 [top](#top)
 
