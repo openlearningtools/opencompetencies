@@ -18,6 +18,23 @@ More information is included in the [VISION.md](https://github.com/openlearningt
 
 [top](#top)
 
+<a name="dev_setup"></a>Setting up your own development version on heroku
+---
+You can see a live version of this project at [http://opencompetencies.herokuapp.com](http://opencompetencies.herokuapp.com), as long as it does not get clobbered because it's on a free tier.
+
+Instructions at this point are based on an Ubuntu development environment, or something similar.
+
+Set up a local development environment:
+- Make a directory to hold the project.
+- Create a virtual environment called venv, using requirements.txt
+- Activate your virtual environment
+- Clone this repository:
+    git clone https://github.com/openlearningtools/opencompetencies
+- Make a file called ".env", and add the DATABASE_URL variable.
+- If you would like to turn on debugging, add a DEBUG environment variable.
+- run syncdb, and fake migrations
+- visit http://localhost:8000, and verify the site works
+
 <a name="pre_coding_decisions"></a>Pre-coding decisions
 ---
 A number of decisions need to be made before we write any code:
