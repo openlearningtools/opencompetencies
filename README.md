@@ -42,7 +42,9 @@ Create a database for this project.  The settings, and some of the documentation
 
     (venv)/srv/opencompetencies $ export DATABASE_URL=postgres://databse_user:password@localhost/database_name
     (venv)/srv/opencompetencies $ export DJANGO_DEBUG=True
+
 Run syncdb, create a superuser, and migrate competencies:
+
     (venv)/srv/opencompetencies $ python manage.py syncdb
     (venv)/srv/opencompetencies $ python manage.py migrate competencies
 
