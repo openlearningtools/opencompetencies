@@ -23,7 +23,7 @@ More information is included in the [VISION.md](https://github.com/openlearningt
 ---
 You can see a live version of this project at [http://opencompetencies.herokuapp.com](http://opencompetencies.herokuapp.com), as long as it does not get clobbered because it's on a free tier.
 
-Instructions at this point are based on an Ubuntu development environment, or something similar.
+Instructions at this point are based on an Ubuntu development environment, or something similar. You may need some system-wide tools installed, which we can help clarify if you need.
 
 ### Set up a local development environment:
 Go to a directory where you want to work with this project, and clone the repository, and cd into the new directory:
@@ -48,7 +48,7 @@ Run syncdb, create a superuser, and migrate competencies:
     (venv)/srv/opencompetencies $ python manage.py syncdb
     (venv)/srv/opencompetencies $ python manage.py migrate competencies
 
-Visit [http://localhost:8000](http://localhost:8000), and verify your local deployment works.
+Visit [http://localhost:8000](http://localhost:8000), and verify that your local deployment works.
 
 ### Deploy your test version to heroku:
 - If you have not done so already, create a heroku account and install the heroku toolbelt.
