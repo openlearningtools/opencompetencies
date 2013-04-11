@@ -50,26 +50,6 @@ Run syncdb, create a superuser, and migrate competencies:
 
 Visit [http://localhost:8000](http://localhost:8000), and verify your local deployment works.
 
-### Set up a local development environment:
-- Make a directory to hold the project, and change into that directory.
-- Clone this repository:
-    - git clone https://github.com/openlearningtools/opencompetencies
-- Change into the opencompetencies directory.
-- Create a virtual environment called venv using requirements.txt, and activate the environment:
-    - virtualenv --distribute venv
-    - source venv/bin/activate
-    - sudo pip install -r requirements.txt
-- Create a database for this project.  This documentation assumes you are using postgres.
-- Set the DATABASE_URL environment variable:
-    - DATABASE_URL=postgres://database_user:password@localhost/database_name
-- If you would like to turn on debugging, add a DEBUG environment variable.
-    - DJANGO_DEBUG=True
-- run syncdb, and migrations
-    - python manage.py syncdb
-	 	  - create a superuser, following prompts
-    - python manage.py migrate competencies
-- visit [http://localhost:8000](http://localhost:8000), and verify the site works.
-
 ### Deploy your test version to heroku:
 - If you have not done so already, create a heroku account and install the heroku toolbelt.
 - In your local project directory, run "heroku create"
