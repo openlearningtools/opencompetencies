@@ -69,7 +69,7 @@ A number of decisions need to be made before we write any code:
 - Write any more functional specs needed before coding.
 - Agree on a taxonomy for the hierarchy of learning targets.
 - Agree on an overall approach to identifying the kinds of relationships between different pieces of knowledge?
-- [(done)](https://github.com/openlearningtools/opencompetencies/blob/master/GLOSSARY.md) Write a glossary for the first few levels in the taxonomy
+- [(done)](https://github.com/openlearningtools/opencompetencies/blob/master/docs/GLOSSARY.md) Write a glossary for the first few levels in the taxonomy
 - Move much of this file to a wiki. Readme is mostly technical, and links to the wiki.
 - Agree on which framework to use
 
