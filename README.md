@@ -27,9 +27,9 @@ Instructions at this point are based on an Ubuntu development environment, or so
 
 ### Set up a local development environment:
 - Go to a directory where you want to work with this project, and clone the repository, and cd into the new directory:
-    $ cd /srv
-    /srv $ git clone https://github.com/openlearningtools/opencompetencies
-    /srv $ cd opencompetencies
+    - $ cd /srv
+    - /srv $ git clone https://github.com/openlearningtools/opencompetencies
+    - /srv $ cd opencompetencies
 - Create a virtual environment called venv, and install requirements:
     /srv/opencompetencies $ virtualenv --distribute venv
     /srv/opencompetencies $ source venv/bin/activate
