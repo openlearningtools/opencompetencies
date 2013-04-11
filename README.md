@@ -23,7 +23,7 @@ More information is included in the [VISION.md](https://github.com/openlearningt
 ---
 You can see a live version of this project at [http://opencompetencies.herokuapp.com](http://opencompetencies.herokuapp.com), as long as it does not get clobbered because it's on a free tier.
 
-Instructions at this point are based on an Ubuntu development environment, or something similar. You may need some system-wide tools installed, which we can help clarify if you need.
+Instructions at this point are based on an Ubuntu development environment, or something similar. You may need some system-wide tools installed, which we can help clarify if you need. If you have any questions about setting up a local development environment for this project, please visit issue 1, [Installation Questions](https://github.com/openlearningtools/opencompetencies/issues/1).
 
 ### Set up a local development environment:
 Go to a directory where you want to work with this project, and clone the repository, and cd into the new directory:
