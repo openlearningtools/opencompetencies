@@ -26,13 +26,15 @@ You can see a live version of this project at [http://opencompetencies.herokuapp
 Instructions at this point are based on an Ubuntu development environment, or something similar.
 
 Set up a local development environment:
-- Make a directory to hold the project.
-- Create a virtual environment called venv using requirements.txt, and activate the environment:
-    - virtualenv --no-site-packages venv
-    - sudo pip install -r requirements.txt
-    - source venv/bin/activate
+- Make a directory to hold the project, and change into that directory.
 - Clone this repository:
     - git clone https://github.com/openlearningtools/opencompetencies
+- Change into the opencompetencies directory.
+- Create a virtual environment called venv using requirements.txt, and activate the environment:
+    - virtualenv --distribute venv
+    - sudo pip install -r requirements.txt
+    - source venv/bin/activate
+- Create a database for this project.  This documentation assumes you are using postgres.
 - Set the DATABASE_URL environment variable:
     - DATABASE_URL=postgres://database_user:password@localhost/database_name
 - If you would like to turn on debugging, add a DEBUG environment variable.
