@@ -29,8 +29,8 @@ Set up a local development environment:
 - Make a directory to hold the project.
 - Create a virtual environment called venv using requirements.txt, and activate the environment:
     - virtualenv --no-site-packages venv
-	 - sudo pip install -r requirements.txt
-	 - source venv/bin/activate
+    - sudo pip install -r requirements.txt
+    - source venv/bin/activate
 - Clone this repository:
     - git clone https://github.com/openlearningtools/opencompetencies
 - Set the DATABASE_URL environment variable:
@@ -48,8 +48,8 @@ Set up your own test version on heroku:
 - In your local project directory, run "heroku create"
 - You will need to set up the database on heroku:
     - heroku run bash
-	 - python manage.py syncdb
-	 - python manage.py migrate competencies
+    - python manage.py syncdb
+    - python manage.py migrate competencies
 - heroku open
 - You should have a working development version on heroku.
 
