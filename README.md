@@ -4,6 +4,7 @@
 Sections
 ---
 - [Vision](#vision)
+- [Setting up your own development version on heroku](#dev_setup)
 - [Pre-coding decisions](#pre_coding_decisions)
 
 <a name="vision"></a>Vision
@@ -26,13 +27,20 @@ Instructions at this point are based on an Ubuntu development environment, or so
 
 Set up a local development environment:
 - Make a directory to hold the project.
-- Create a virtual environment called venv, using requirements.txt
-- Activate your virtual environment
+- Create a virtual environment called venv using requirements.txt, and activate the environment:
+    - virtualenv --no-site-packages venv
+	 - sudo pip install -r requirements.txt
+	 - source venv/bin/activate
 - Clone this repository:
-    git clone https://github.com/openlearningtools/opencompetencies
-- Make a file called ".env", and add the DATABASE_URL variable.
+    - git clone https://github.com/openlearningtools/opencompetencies
+- Set the DATABASE_URL environment variable:
+    - DATABASE_URL=postgres://database_user:password@localhost/database_name
 - If you would like to turn on debugging, add a DEBUG environment variable.
+    - DEBUG=True
 - run syncdb, and fake migrations
+    - python manage.py syncdb
+	 	  - create a superuser, following prompts
+    - python manage.py migrate --fake competencies
 - visit http://localhost:8000, and verify the site works
 
 Set up your own test version on heroku:
@@ -44,6 +52,8 @@ Set up your own test version on heroku:
 	 - python manage.py migrate competencies
 - heroku open
 - You should have a working development version on heroku.
+
+[top](#top)
 
 <a name="pre_coding_decisions"></a>Pre-coding decisions
 ---
