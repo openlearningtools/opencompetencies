@@ -26,6 +26,23 @@ You can see a live version of this project at [http://opencompetencies.herokuapp
 Instructions at this point are based on an Ubuntu development environment, or something similar.
 
 ### Set up a local development environment:
+- Go to a directory where you want to work with this project, and clone the repository, and cd into the new directory:
+    $ cd /srv
+    /srv $ git clone https://github.com/openlearningtools/opencompetencies
+    /srv $ cd opencompetencies
+- Create a virtual environment called venv, and install requirements:
+    /srv/opencompetencies $ virtualenv --distribute venv
+    /srv/opencompetencies $ source venv/bin/activate
+    (venv)/srv/opencompetencies $ sudo pip install -r requirements.txt
+- Create a database for this project.  The settings, and some of the documentation assume you are using postgres. Set the DATABASE_URL environment variable.  If you want to turn on debugging, set the DJANGO_DEBUG environment variable.  If you are going to hack on this project, you can make these settings part of your venv/bin/activate script, and they will be set each time you activate the venv.
+    (venv)/srv/opencompetencies $ export DATABASE_URL=postgres://databse_user:password@localhost/database_name
+    (venv)/srv/opencompetencies $ export DJANGO_DEBUG=True
+- Run syncdb, create a superuser, and migrate competencies:
+    (venv)/srv/opencompetencies $ python manage.py syncdb
+    (venv)/srv/opencompetencies $ python manage.py migrate competencies
+- Visit [http://localhost:8000](http://localhost:8000), and verify your local deployment works.
+
+### Set up a local development environment:
 - Make a directory to hold the project, and change into that directory.
 - Clone this repository:
     - git clone https://github.com/openlearningtools/opencompetencies
