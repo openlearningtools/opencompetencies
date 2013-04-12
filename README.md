@@ -78,14 +78,30 @@ Add the following lines to the end of /venv/bin/activate:
 Now these environment variables will be loaded each time you activate your virtual environment.  Both the .env file and the venv/ directory are included in .gitignore, so neither will be committed in your local repository.
 
 ### Deploy your test version to heroku:
-- If you have not done so already, create a heroku account and install the heroku toolbelt.
-- In your local project directory, run "heroku create"
-- You will need to set up the database on heroku:
-    - heroku run bash
-    - python manage.py syncdb
-    - python manage.py migrate competencies
-- heroku open
-- You should have a working development version on heroku.
+If you have not done so already, create a heroku account and install the heroku toolbelt. The [following command](https://toolbelt.heroku.com/) will install the heroku toolbelt on ubuntu:
+
+    $ wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+
+Make sure you are logged in to heroku through the command line.  Then in your local project directory, activate the virtual environment and run "heroku create":
+
+    $ heroku login
+    $ cd /srv/opencompetencies
+	 /srv/opencompetencies $ source venv/bin/activate
+    (venv)/srv/opencompetencies $ heroku create
+
+This will push your project files to heroku, and create a url for your project. You will need to sync the development database on heroku:
+
+    (venv)/srv/opencompetencies $ heroku run bash
+	 $ python manage.py syncdb
+	 $ python manage.py migrate competencies
+	 $ exit
+    (venv)/srv/opencompetencies $ heroku open
+
+This should take you to your own live version of the opencompetencies project. When you make changes to your local project and you want to push those changes live, just push your changes to heroku:
+
+    (venv)/srv/opencompetencies $ git push heroku master
+
+If you are new to using heroku with django projects, take a look at the [heroku django](https://devcenter.heroku.com/articles/django) page.
 
 [top](#top)
 
