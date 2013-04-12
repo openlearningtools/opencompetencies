@@ -36,7 +36,7 @@ Create a virtual environment called venv, and install requirements:
 
     /srv/opencompetencies $ virtualenv --distribute venv
     /srv/opencompetencies $ source venv/bin/activate
-    (venv)/srv/opencompetencies $ sudo pip install -r requirements.txt
+    (venv)/srv/opencompetencies $ pip install -r requirements.txt
 
 Create a database for this project.  The settings, and some of the documentation assume you are using postgres.
 
@@ -59,6 +59,23 @@ Run syncdb, create a superuser, migrate competencies, and start the development 
     (venv)/srv/opencompetencies $ python manage.py runserver
 
 Visit [http://localhost:8000](http://localhost:8000), and verify that your local deployment works.
+
+To avoid having to set the environment variables each time you open this project, you can have the virtual environment's activate script do it for you.  Create a file called .env, in /srv/opencompetencies:
+
+    (venv)/srv/opencompetencies $ touch .env
+
+Add the following lines to .env:
+
+    DATABASE_URL=postgres://db_username:password@localhost/opencompetencies_db
+    DJANGO_DEBUG=True
+    DJANGO_SECRET_KEY=your_secret_key
+
+Add the following lines to the end of /venv/bin/activate:
+
+    # Use my env variables:
+    export $(cat /srv/opencompetencies/.env)
+
+Now these environment variables will be loaded each time you activate your virtual environment.  Both the .env file and the venv/ directory are included in .gitignore, so neither will be committed in your local repository.
 
 ### Deploy your test version to heroku:
 - If you have not done so already, create a heroku account and install the heroku toolbelt.
