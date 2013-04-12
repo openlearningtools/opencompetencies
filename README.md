@@ -106,6 +106,7 @@ If you can run commands locally, but have trouble with "heroku run bash", you ca
 
     (venv)/srv/opencompetencies $ heroku run python manage.py syncdb
     (venv)/srv/opencompetencies $ heroku run python manage.py migrate competencies
+	 (venv)/srv/opencompetencies $ heroku open
 
 This should take you to your own live version of the opencompetencies project. When you make changes to your local project and you want to push those changes live, just push your changes to heroku:
 
