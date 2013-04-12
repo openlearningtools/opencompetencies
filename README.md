@@ -38,15 +38,25 @@ Create a virtual environment called venv, and install requirements:
     /srv/opencompetencies $ source venv/bin/activate
     (venv)/srv/opencompetencies $ sudo pip install -r requirements.txt
 
-Create a database for this project.  The settings, and some of the documentation assume you are using postgres. Set the DATABASE_URL environment variable.  If you want to turn on debugging, set the DJANGO_DEBUG environment variable.  If you are going to hack on this project, you can make these settings part of your venv/bin/activate script, and they will be set each time you activate the venv.
+Create a database for this project.  The settings, and some of the documentation assume you are using postgres.
 
-    (venv)/srv/opencompetencies $ export DATABASE_URL=postgres://databse_user:password@localhost/database_name
+    $ su postgres
+    $ psql template1
+    template1=# CREATE DATABASE opencompetencies_db OWNER db_username ENCODING 'utf8';
+	 template1=# \q
+	 $ su comp_username
+
+Set the DATABASE_URL environment variable.  If you want to turn on debugging, set the DJANGO_DEBUG environment variable.  If you are going to hack on this project, you can make these settings part of your venv/bin/activate script, and they will be set each time you activate the venv. You will also need to set a SECRET_KEY environment variable.
+
+    (venv)/srv/opencompetencies $ export DATABASE_URL=postgres://db_username:password@localhost/opencompetencies_db
     (venv)/srv/opencompetencies $ export DJANGO_DEBUG=True
+    (venv)/srv/opencompetencies $ export DJANGO_SECRET_KEY=your_secret_key
 
-Run syncdb, create a superuser, and migrate competencies:
+Run syncdb, create a superuser, migrate competencies, and start the development server:
 
     (venv)/srv/opencompetencies $ python manage.py syncdb
     (venv)/srv/opencompetencies $ python manage.py migrate competencies
+    (venv)/srv/opencompetencies $ python manage.py runserver
 
 Visit [http://localhost:8000](http://localhost:8000), and verify that your local deployment works.
 
