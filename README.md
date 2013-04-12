@@ -46,7 +46,7 @@ Create a database for this project.  The settings, and some of the documentation
 	 template1=# \q
 	 $ su comp_username
 
-Set the DATABASE_URL environment variable.  If you want to turn on debugging, set the DJANGO_DEBUG environment variable.  If you are going to hack on this project, you can make these settings part of your venv/bin/activate script, and they will be set each time you activate the venv. You will also need to set a SECRET_KEY environment variable.
+Set the DATABASE_URL environment variable.  If you want to turn on debugging, set the DJANGO_DEBUG environment variable.  If you are going to hack on this project, you can make these settings part of your venv/bin/activate script, and they will be set each time you activate the venv. You will also need to set a DJANGO_SECRET_KEY environment variable.
 
     (venv)/srv/opencompetencies $ export DATABASE_URL=postgres://db_username:password@localhost/opencompetencies_db
     (venv)/srv/opencompetencies $ export DJANGO_DEBUG=True
@@ -82,20 +82,30 @@ If you have not done so already, create a heroku account and install the heroku 
 
     $ wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
 
-Make sure you are logged in to heroku through the command line.  Then in your local project directory, activate the virtual environment and run "heroku create":
+Make sure you are logged in to heroku through the command line.  Then in your local project directory, activate the virtual environment and run "heroku create". After heroku creates your project, push your files to heroku:
 
     $ heroku login
     $ cd /srv/opencompetencies
-	 /srv/opencompetencies $ source venv/bin/activate
+    /srv/opencompetencies $ source venv/bin/activate
     (venv)/srv/opencompetencies $ heroku create
+    (venv)/srv/opencompetencies $ git push heroku master
 
-This will push your project files to heroku, and create a url for your project. You will need to sync the development database on heroku:
+Now we need to set our DJANGO_SECRET_KEY environment variable:
+
+    $ heroku config:set DJANGO_SECRET_KEY="your_secret_key"
+
+After this, you will need to sync the development database on heroku.
 
     (venv)/srv/opencompetencies $ heroku run bash
-	 $ python manage.py syncdb
-	 $ python manage.py migrate competencies
-	 $ exit
+    $ python manage.py syncdb
+    $ python manage.py migrate competencies
+    $ exit
     (venv)/srv/opencompetencies $ heroku open
+
+If you can run commands locally, but have trouble with "heroku run bash", you can run those commands individually through the command line:
+
+    (venv)/srv/opencompetencies $ heroku run python manage.py syncdb
+    (venv)/srv/opencompetencies $ heroku run python manage.py migrate competencies
 
 This should take you to your own live version of the opencompetencies project. When you make changes to your local project and you want to push those changes live, just push your changes to heroku:
 
