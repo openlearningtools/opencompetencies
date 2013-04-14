@@ -16,23 +16,21 @@
 		{% csrf_token %}
 
 		{# subject areas #}
+		<ul>
 		{% for sa, sdas in sa_sdas.items %}
-		    <p>Subject Area:<input type="text" name="subject_area_{{ sa.id }}" value="{{ sa.subject_area }}" /></p>
-
+		    <li><h3>Subject Area: <input type="text" name="subject_area_{{ sa.id }}" value="{{ sa.subject_area }}" /></h3></li>
+			 {# subdiscipline areas #}
+			 <ul>
+			 {% for sda in sdas %}
+			     <li><h4>Subdiscipline Area: <input type="text" name="subdiscipline_area_{{ sda.id }}" value="{{ sda.subdiscipline_area }}" /></h4></li>
+			 {% endfor %}
+			 </ul>
 		{% endfor %}
+		</ul>
 
 		<input type="submit" value="Save Changes" />
 	 </form>
 
-
-<!--
-	 <form action="/new_school/" method="post">
-		  {% csrf_token %}
-		      <p>Name of new school:
-		      <input type="text" name="new_school_name" size="25" /></p>
-				<input type="submit" value="Submit" />
-	 </form>
--->
 
   </body>
 </html>
