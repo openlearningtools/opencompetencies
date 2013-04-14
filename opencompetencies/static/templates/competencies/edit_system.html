@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+  </head>
+
+  <body>
+
+    <h1>Open Competencies</h1>
+	 <p><a href="{% url 'competencies:index' %}">Home</a> | <a href="{% url 'competencies:schools' %}">Schools</a> | <a href='/admin'>Admin Site</a>
+
+	 <h2>Edit {{ school }}'s system</h2>
+	 <p>This page allows you to edit your school's entire competency system at once.  This page will be replaced by individual pages for editing each level of the system's hierarchy.</p>
+
+	 <form action="/schools/{{ school.id }}/edit_system/" method="post">
+		{% csrf_token %}
+
+		{# subject areas #}
+		{% for sa, sdas in sa_sdas.items %}
+		    <p>Subject Area:<input type="text" name="subject_area_{{ sa.id }}" value="{{ sa.subject_area }}" /></p>
+
+		{% endfor %}
+
+		<input type="submit" value="Save Changes" />
+	 </form>
+
+
+<!--
+	 <form action="/new_school/" method="post">
+		  {% csrf_token %}
+		      <p>Name of new school:
+		      <input type="text" name="new_school_name" size="25" /></p>
+				<input type="submit" value="Submit" />
+	 </form>
+-->
+
+  </body>
+</html>
+

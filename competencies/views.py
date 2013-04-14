@@ -18,6 +18,20 @@ def school(request, school_id):
     sa_sdas = get_subjectarea_subdisciplinearea_dict(school_id)
     return render_to_response('competencies/school.html',{'school': school, 'subject_area_subdiscipline_areas': sa_sdas})
 
+def edit_system(request, school_id):
+    """Allows editing of a school's entire competency system.
+    Will be ridiculously long when established; really just for initial
+    stages of growth, and for schools writing a system from scratch.
+    """
+    school = School.objects.get(id=school_id)
+    # Get entire system:
+    sa_sdas = get_subjectarea_subdisciplinearea_dict(school_id)
+    # most work is in creating the form in the template;
+    #  if post/get data, process it here?
+    return render_to_response('competencies/edit_system.html',
+                              {'school': school, 'sa_sdas': sa_sdas},
+                              context_instance=RequestContext(request))
+
 def fork(request, school_id):
     empty_school = School.objects.get(id=school_id)
     # Only get schools that have at least one subject area:

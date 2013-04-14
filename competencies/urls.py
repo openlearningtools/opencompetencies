@@ -14,6 +14,8 @@ urlpatterns = patterns('',
     url(r'^schools/(?P<school_id>\d+)/$', views.school, name='school'),
     # fork: Page offering an empty school the opportunity to fork an established school.
     url(r'^schools/(?P<school_id>\d+)/fork/$', views.fork, name='fork'),
+    # edit_system: Allows editing of an entire school's competency system.
+    url(r'^schools/(?P<school_id>\d+)/edit_system/$', views.edit_system, name='edit_system'),
     # confirm_fork: Confirms that a fork was successful.
     url(r'^schools/(?P<forking_school_id>\d+)/fork/(?P<forked_school_id>\d+)/$',
         views.confirm_fork, name='confirm_fork'),

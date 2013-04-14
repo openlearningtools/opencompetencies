@@ -63,3 +63,9 @@ class CompetencyViewTests(TestCase):
         """New school processes form to create a new school.
         """
         pass
+
+    def test_edit_system(self):
+        """Edit system allows user to edit a school's entire competency system
+        on one page.
+        """
+        pass
