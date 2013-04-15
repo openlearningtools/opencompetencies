@@ -24,12 +24,36 @@ def edit_system(request, school_id):
     stages of growth, and for schools writing a system from scratch.
     """
     school = School.objects.get(id=school_id)
+
+    # Get post data, if any:
+    status_msg = ''
+    post_data = ''
+    if request.POST:
+        post_data = request.POST
+        for key, value in request.POST.items():
+            if '-' in key:
+                # This is an item to process
+                data_type, id = key.split('-')
+                if data_type == 'subject_area':
+                    subject_area = SubjectArea.objects.get(id=int(id))
+                    subject_area.subject_area = value
+                    subject_area.save()
+                elif data_type == 'new_subdiscipline_area':
+                    # Receiving name of new sda, and id of parent subject area
+                    new_sda = SubdisciplineArea(subdiscipline_area = value)
+                    new_sda.subject_area = SubjectArea.objects.get(id=int(id))
+                    new_sda.save()
+        status_msg = 'Saved changes.'
+
+
+
     # Get entire system:
     sa_sdas = get_subjectarea_subdisciplinearea_dict(school_id)
     # most work is in creating the form in the template;
     #  if post/get data, process it here?
     return render_to_response('competencies/edit_system.html',
-                              {'school': school, 'sa_sdas': sa_sdas},
+                              {'school': school, 'status_msg': status_msg, 'post_data': post_data,
+                               'sa_sdas': sa_sdas},
                               context_instance=RequestContext(request))
 
 def fork(request, school_id):

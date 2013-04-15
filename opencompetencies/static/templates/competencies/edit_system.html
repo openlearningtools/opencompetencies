@@ -11,6 +11,9 @@
 
 	 <h2>Edit {{ school }}'s system</h2>
 	 <p>This page allows you to edit your school's entire competency system at once.  This page will be replaced by individual pages for editing each level of the system's hierarchy.</p>
+	 
+	 {{ status_msg }}
+	 {{ post_data }}
 
 	 <form action="/schools/{{ school.id }}/edit_system/" method="post">
 		{% csrf_token %}
@@ -18,12 +21,14 @@
 		{# subject areas #}
 		<ul>
 		{% for sa, sdas in sa_sdas.items %}
-		    <li><h3>Subject Area: <input type="text" name="subject_area_{{ sa.id }}" value="{{ sa.subject_area }}" /></h3></li>
+		    <li><h3>Subject Area: <input type="text" name="subject_area-{{ sa.id }}" value="{{ sa.subject_area }}" /></h3></li>
 			 {# subdiscipline areas #}
 			 <ul>
 			 {% for sda in sdas %}
-			     <li><h4>Subdiscipline Area: <input type="text" name="subdiscipline_area_{{ sda.id }}" value="{{ sda.subdiscipline_area }}" /></h4></li>
+			     <li><h4>Subdiscipline Area: <input type="text" name="subdiscipline_area-{{ sda.id }}" value="{{ sda.subdiscipline_area }}" /></h4></li>
 			 {% endfor %}
+			 {# Add a blank box for a new sda, appended with id of parent subject area #}
+		    <li><h4>New Subdiscipline Area: <input type="text" name="new_subdiscipline_area-{{ sa.id }}" value="" /></h4></li>
 			 </ul>
 		{% endfor %}
 		</ul>

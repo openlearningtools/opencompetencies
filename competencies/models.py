@@ -41,3 +41,8 @@ class LearningTarget(models.Model):
 
     def __unicode__(self):
         return self.learning_target
+
+
+class SubjectAreaForm(ModelForm):
+    class Meta:
+        model = SubjectArea
