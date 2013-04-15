@@ -9,12 +9,23 @@
     <h1>Open Competencies</h1>
 	 <p><a href="{% url 'competencies:index' %}">Home</a> | <a href="{% url 'competencies:schools' %}">Schools</a> | <a href='/admin'>Admin Site</a>
 
-	 <h2><a href="/schools/{{ school.id }}">{{ school.name }}</a></h2>
+	 <h2><a href="/schools/{{ subject_area.school.id }}">{{ subject_area.school.name }}</a></h2>
 
-	 <p>This page lists all of the {{ subject_area }} subdiscipline areas.  Click on any competency area to see the essential understandings and learning targets for that competency area.</p>
+	 <p>This page lists all of the {{ subject_area }} subdiscipline areas.  Click on any subdiscipline area to see the competency areas for that subdiscipline area. You can click on the subject area itself to see competency areas for the general subject.</p>
 
-	 {# Loop through competencies for the subject area overall, and the subdiscipline areas. #}
+	 <h2>{{ subject_area }}</h2>
 
+	 {% if subject_area.subdisciplinearea_set.all %}
+	     <ul>
+		  {% for sda in subject_area.subdisciplinearea_set.all %}
+		      <li><h3><a href='/subdiscpline_areas/{{ sda.id }}/'>{{ sda }}</a></h3></li>
+		  {% endfor %}
+		  </ul>
+	 {% else %}
+		  <p>There are no subdiscipline areas defined for this subject area.</p>
+	 {% endif %}
+
+<!--
 	 <h2>{{ subject_area }}</h2>
 	 <ul>
 	 {% for comp in sa_competencies %}
@@ -30,7 +41,7 @@
 		  {% endfor %}
 		  </ul>
 	 {% endfor %}
-
+-->
 
 
   </body>

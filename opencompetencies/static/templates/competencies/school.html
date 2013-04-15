@@ -18,8 +18,9 @@
 	 {% if school.subjectarea_set.all %}
 	     <ul>
 	     {% for sa in school.subjectarea_set.all %}
-		      <li><h3><a href='subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
+		      <li><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
 	     {% endfor %}
+        </ul>
 	 {% else %}
 		  <p>This school does not have any subject areas yet. You may want to <a href="/schools/{{ school.id }}/fork">fork</a> another school's competency system instead of starting from scratch.</p>
     {% endif %}

@@ -23,12 +23,12 @@ def subject_area(request, subject_area_id):
     subject_area = SubjectArea.objects.get(id=subject_area_id)
 
 
-    school = School.objects.get(id=school_id)
+    #school = School.objects.get(id=school_id)
     # Get a list of general subject competencies, and a dict of competencies by sda
     sa_competencies, sda_competencies = get_sa_competencies(subject_area)
 
 
-    return render_to_response('competencies/subject_area.html',{'school': school, 'subject_area':subject_area, 'sa_competencies': sa_competencies, 'sda_competencies': sda_competencies})
+    return render_to_response('competencies/subject_area.html',{'subject_area':subject_area, 'sa_competencies': sa_competencies, 'sda_competencies': sda_competencies})
 
 
 
