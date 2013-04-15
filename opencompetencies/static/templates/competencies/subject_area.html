@@ -18,31 +18,12 @@
 	 {% if subject_area.subdisciplinearea_set.all %}
 	     <ul>
 		  {% for sda in subject_area.subdisciplinearea_set.all %}
-		      <li><h3><a href='/subdiscpline_areas/{{ sda.id }}/'>{{ sda }}</a></h3></li>
+		      <li><h3><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h3></li>
 		  {% endfor %}
 		  </ul>
 	 {% else %}
 		  <p>There are no subdiscipline areas defined for this subject area.</p>
 	 {% endif %}
-
-<!--
-	 <h2>{{ subject_area }}</h2>
-	 <ul>
-	 {% for comp in sa_competencies %}
-	     <li><a href='competency_area/{{ comp.id }}'>{{ comp }}</a></li>
-    {% endfor %}
-	 </ul>
-
-	 {% for sda, competencies in sda_competencies.items %}
-	     <h3>{{ sda }}</h3>
-		  <ul>
-		  {% for comp in competencies %}
-	         <li><a href='competency_area/{{ comp.id }}'>{{ comp }}</a></li>
-		  {% endfor %}
-		  </ul>
-	 {% endfor %}
--->
-
 
   </body>
 </html>

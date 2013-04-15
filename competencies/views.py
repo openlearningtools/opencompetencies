@@ -10,28 +10,40 @@ from competencies.models import School, SubjectArea, SubdisciplineArea, Competen
 def index(request):
     return render_to_response('competencies/index.html')
 
+# --- Simple views, for exploring system without changing it: ---
 def schools(request):
     schools = School.objects.all()
-    return render_to_response('competencies/schools.html',{'schools': schools}, context_instance=RequestContext(request))
+    return render_to_response('competencies/schools.html', {'schools': schools}, context_instance=RequestContext(request))
 
 def school(request, school_id):
     school = School.objects.get(id=school_id)
-    return render_to_response('competencies/school.html',{'school': school})
+    return render_to_response('competencies/school.html', {'school': school})
 
 def subject_area(request, subject_area_id):
     """Shows a subject area's subdiscipline areas, and competency areas."""
     subject_area = SubjectArea.objects.get(id=subject_area_id)
+    return render_to_response('competencies/subject_area.html', {'subject_area': subject_area})
 
+def subdiscipline_area(request, subdiscipline_area_id):
+    """Shows all of the competency areas for a given subdiscipline area."""
+    subdiscipline_area = SubdisciplineArea.objects.get(id=subdiscipline_area_id)
+    subject_area = subdiscipline_area.subject_area
+    school = subject_area.school
+    competency_areas = subdiscipline_area.competencyarea_set.all()
+    return render_to_response('competencies/subdiscipline_area.html',
+                              {'subdiscipline_area': subdiscipline_area, 'subject_area': subject_area,
+                               'school': school, 'competency_areas': competency_areas})
 
-    #school = School.objects.get(id=school_id)
-    # Get a list of general subject competencies, and a dict of competencies by sda
-    sa_competencies, sda_competencies = get_sa_competencies(subject_area)
-
-
-    return render_to_response('competencies/subject_area.html',{'subject_area':subject_area, 'sa_competencies': sa_competencies, 'sda_competencies': sda_competencies})
-
-
-
+def competency_area(request, competency_area_id):
+    """Shows all of the essential understandings for a given competency area."""
+    competency_area = CompetencyArea.objects.get(id=competency_area_id)
+    subject_area = competency_area.subject_area
+    school = subject_area.school
+    essential_understandings = competency_area.essentialunderstanding_set.all()
+    #eus_lts = get_eus_lts(competency_area)
+    return render_to_response('competencies/competency_area.html',
+                              {'school': school, 'subject_area': subject_area, 'competency_area': competency_area,
+                               'essential_understandings': essential_understandings})
 
 
 
@@ -103,17 +115,6 @@ def new_school(request):
                               {'new_school_name': new_school_name, 'new_school_created': new_school_created,
                                'new_school': new_school }, context_instance=RequestContext(request))
         
-
-def competency_area(request, school_id, subject_area_id, competency_area_id):
-    """Shows all of the essential understandings and learning targets for a given comptency area."""
-    school = School.objects.get(id=school_id)
-    subject_area = SubjectArea.objects.get(id=subject_area_id)
-    competency_area = CompetencyArea.objects.get(id=competency_area_id)
-    # Get a dict of essential understandings, and associated learning targets.
-    eus_lts = get_eus_lts(competency_area)
-    return render_to_response('competencies/competency_area.html',
-                              {'school': school, 'subject_area': subject_area, 'competency_area': competency_area,
-                               'eus_lts': eus_lts})
 
 def entire_system(request):
     subject_areas = SubjectArea.objects.all()

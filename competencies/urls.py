@@ -14,8 +14,14 @@ urlpatterns = patterns('',
     # school: Detail view for a school, showing subject areas.
     url(r'^schools/(?P<school_id>\d+)/$', views.school, name='school'),
 
-    # subject_areas: List of all subdiscipline areas for a school.
+    # subject_areas/id: List of all subdiscipline areas for a school.
     url(r'^subject_areas/(?P<subject_area_id>\d+)/$', views.subject_area, name='subject_area'),
+
+    # subdiscipline_areas/id: List all the competency areas for a subdiscipline area.
+    url(r'^subdiscipline_areas/(?P<subdiscipline_area_id>\d+)/$', views.subdiscipline_area, name='subdiscipline_area'),
+
+    # competency_areas/id: List all essential understandings for a competency area.
+    url(r'^competency_areas/(?P<competency_area_id>\d+)/$', views.competency_area, name='competency_area'),
 
 
 

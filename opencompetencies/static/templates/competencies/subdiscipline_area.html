@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+  </head>
+
+  <body>
+
+    <h1>Open Competencies</h1>
+	 <p><a href="{% url 'competencies:index' %}">Home</a> | <a href="{% url 'competencies:schools' %}">Schools</a> | <a href='/admin'>Admin Site</a>
+
+	 <h2><a href="/schools/{{ school.id }}">{{ school.name }}</a></h2>
+
+	 <p>This page lists all of the {{ subdiscipline_area }} competency areas.  Click on a competency area to see the essential understandings for that competency area.</p>
+
+	 <h2><a href='/subject_areas/{{ subject_area.id }}/'>{{ subject_area }}</a>: {{ subdiscipline_area }}</h2>
+
+	 {% if competency_areas %}
+	     <ul>
+		  {% for ca in competency_areas %}
+		      <li><a href='/competency_areas/{{ ca.id }}/'><h3>{{ ca }}</h3></a></li>
+		  {% endfor %}
+		  </ul>
+	 {% else %}
+		  <p>This subdiscipline area has no competency areas defined yet.
+	 {% endif %}
+
+  </body>
+</html>
+
