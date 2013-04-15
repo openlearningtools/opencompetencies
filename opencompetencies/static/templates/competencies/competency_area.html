@@ -13,27 +13,19 @@
 
 	 <p>This page lists the essential understandings for the competency area {{ competency_area }}.</p>
 
-	 <h2><a href='/subject_areas/{{ subject_area.id }}/'>{{ subject_area }}</a>: {{ subdiscipline_area }}</h2>
+	 <h2><a href='/subject_areas/{{ subject_area.id }}/'>{{ subject_area }}</a>: <a href='/subdiscipline_areas/{{ competency_area.subdiscipline_area.id }}/'>{{ competency_area.subdiscipline_area }}</a></h2>
 	 <h3>{{ competency_area }}</h3>
 
-
-
-<!--
-	 <h2><a href="/schools/{{ school.id }}/subject_area/{{ subject_area.id }}">{{ subject_area }}</a>: {{ competency_area }}</h2>
-
-	 {# Loop through essential understandings, and associated learning targets #}
-	 <ul>
-	 {% for eu, lts in eus_lts.items %}
-        <li><h3>{{ eu }}</h3></li>
-		  <ul>
-		  {% for lt in lts %}
-		      <li>{{ lt }}</li>
+	 {% if essential_understandings %}
+	     <ul>
+	     {% for eu in essential_understandings %}
+		      <li><h4><a href='/essential_understandings/{{ eu.id }}/'>{{ eu }}</a></h4></li>
 		  {% endfor %}
 		  </ul>
-	 {% endfor %}
-	 </ul>
--->		  
-
+	 {% else %}
+		  <p>There are no essential understandings for this competency area yet.
+	 {% endif %}
+			   
   </body>
 </html>
 

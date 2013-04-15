@@ -40,10 +40,10 @@ def competency_area(request, competency_area_id):
     subject_area = competency_area.subject_area
     school = subject_area.school
     essential_understandings = competency_area.essentialunderstanding_set.all()
-    #eus_lts = get_eus_lts(competency_area)
     return render_to_response('competencies/competency_area.html',
                               {'school': school, 'subject_area': subject_area, 'competency_area': competency_area,
                                'essential_understandings': essential_understandings})
+
 
 
 
