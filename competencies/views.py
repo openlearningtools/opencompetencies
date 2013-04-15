@@ -1,9 +1,10 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.forms.models import modelformset_factory, inlineformset_factory
 
 from copy import copy
 
-from competencies.models import School, SubjectArea, SubdisciplineArea, CompetencyArea, EssentialUnderstanding, LearningTarget
+from competencies.models import School, SubjectArea, SubdisciplineArea, CompetencyArea, EssentialUnderstanding, LearningTarget, SubjectAreaForm
 
 
 def index(request):
@@ -24,36 +25,36 @@ def edit_system(request, school_id):
     stages of growth, and for schools writing a system from scratch.
     """
     school = School.objects.get(id=school_id)
-
-    # Get post data, if any:
-    status_msg = ''
-    post_data = ''
-    if request.POST:
-        post_data = request.POST
-        for key, value in request.POST.items():
-            if '-' in key:
-                # This is an item to process
-                data_type, id = key.split('-')
-                if data_type == 'subject_area':
-                    subject_area = SubjectArea.objects.get(id=int(id))
-                    subject_area.subject_area = value
-                    subject_area.save()
-                elif data_type == 'new_subdiscipline_area':
-                    # Receiving name of new sda, and id of parent subject area
-                    new_sda = SubdisciplineArea(subdiscipline_area = value)
-                    new_sda.subject_area = SubjectArea.objects.get(id=int(id))
-                    new_sda.save()
-        status_msg = 'Saved changes.'
-
-
-
     # Get entire system:
     sa_sdas = get_subjectarea_subdisciplinearea_dict(school_id)
     # most work is in creating the form in the template;
     #  if post/get data, process it here?
+    post_data = ''
+
+    SubjectAreaFormSet = modelformset_factory(SubjectArea)
+    SDAFormSet = modelformset_factory(SubdisciplineArea)
+    if request.method == 'POST':
+        sa_form = SubjectArea_Form(request.POST)
+        if sa_form.is_valid():
+            # save sa_form here
+            pass
+    else: 
+        sa_form = SubjectAreaForm()
+        sa_formset = SubjectAreaFormSet()
+
+        # inlines:
+        SAFormSet = inlineformset_factory(School, SubjectArea)
+        sa_formset = SAFormSet(instance=school)
+
+        sda_formsets = {}
+        for sa in school.subjectarea_set.all():
+            SDAFormSet = inlineformset_factory(SubjectArea, SubdisciplineArea)
+            sda_formsets[sa] = SDAFormSet(instance=sa, prefix=sa.subject_area)
+
     return render_to_response('competencies/edit_system.html',
-                              {'school': school, 'status_msg': status_msg, 'post_data': post_data,
-                               'sa_sdas': sa_sdas},
+                              {'school': school, 'post_data': post_data,
+                               'sa_sdas': sa_sdas, 'sa_form': sa_form, 'sa_formset': sa_formset,
+                               'sda_formsets': sda_formsets},
                               context_instance=RequestContext(request))
 
 def fork(request, school_id):

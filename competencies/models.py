@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ModelForm
 
 class School(models.Model):
     name = models.CharField(max_length=500)
@@ -46,3 +47,4 @@ class LearningTarget(models.Model):
 class SubjectAreaForm(ModelForm):
     class Meta:
         model = SubjectArea
+

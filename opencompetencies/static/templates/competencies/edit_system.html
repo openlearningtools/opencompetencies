@@ -12,9 +12,7 @@
 	 <h2>Edit {{ school }}'s system</h2>
 	 <p>This page allows you to edit your school's entire competency system at once.  This page will be replaced by individual pages for editing each level of the system's hierarchy.</p>
 	 
-	 {{ status_msg }}
-	 {{ post_data }}
-
+	 <!--
 	 <form action="/schools/{{ school.id }}/edit_system/" method="post">
 		{% csrf_token %}
 
@@ -36,6 +34,27 @@
 		<input type="submit" value="Save Changes" />
 	 </form>
 
+	 <form action="/schools/{{ school.id }}/edit_system/" method="post">
+		  {% csrf_token %}
+		  {{ sa_form.as_p }}
+		  <input type="submit" value="Save Changes" />
+	 </form>
+
+	 {% for sa in school.subjectarea_set.all %}
+	     <p>{{ sa }}
+	 {% endfor %}
+	 -->
+
+	 <form method="post" action="">
+		  {{ sa_formset.as_p }}
+	 </form>
+
+
+	 {% for sa, sda_formset in sda_formsets.items %}
+	     <form method="post" action="">
+			   <h3>{{ sa }}:</h3> {{ sda_formset.as_p }}
+		  </form>
+	 {% endfor %}
 
   </body>
 </html>
