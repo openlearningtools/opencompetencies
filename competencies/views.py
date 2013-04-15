@@ -44,7 +44,16 @@ def competency_area(request, competency_area_id):
                               {'school': school, 'subject_area': subject_area, 'competency_area': competency_area,
                                'essential_understandings': essential_understandings})
 
-
+def essential_understanding(request, essential_understanding_id):
+    """Shows all learning targets for a given essential understanding."""
+    essential_understanding = EssentialUnderstanding.objects.get(id=essential_understanding_id)
+    competency_area = essential_understanding.competency_area
+    subject_area = competency_area.subject_area
+    school = subject_area.school
+    learning_targets = essential_understanding.learningtarget_set.all()
+    return render_to_response('competencies/essential_understanding.html',
+                              {'school': school, 'subject_area': subject_area, 'competency_area': competency_area,
+                               'essential_understanding': essential_understanding, 'learning_targets': learning_targets})
 
 
 def edit_system(request, school_id):

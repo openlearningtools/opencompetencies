@@ -23,6 +23,8 @@ urlpatterns = patterns('',
     # competency_areas/id: List all essential understandings for a competency area.
     url(r'^competency_areas/(?P<competency_area_id>\d+)/$', views.competency_area, name='competency_area'),
 
+    # essential_understandings/id: List all learning targets for an essential understanding.
+    url(r'^essential_understandings/(?P<essential_understanding_id>\d+)/$', views.essential_understanding, name='essential_understanding'),
 
 
 
