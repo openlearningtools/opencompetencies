@@ -125,11 +125,6 @@ def new_school(request):
                                'new_school': new_school }, context_instance=RequestContext(request))
         
 
-def entire_system(request):
-    subject_areas = SubjectArea.objects.all()
-    return render_to_response('competencies/entire_system.html', {'subject_areas': subject_areas})
-
-
 # --- Helper functions ---
 def get_subjectarea_subdisciplinearea_dict(school_id):
     """Builds a dictionary with all subject_areas as keys, 
