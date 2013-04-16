@@ -63,13 +63,17 @@ def edit_school(request, school_id):
     school = School.objects.get(id=school_id)
     SubjectAreaFormSet = modelformset_factory(SubjectArea, exclude=('school'))
     if request.method == 'POST':
-        sa_formset = AuthorFormSet(request.POST)
+        sa_formset = SubjectAreaFormSet(request.POST)
         if sa_formset.is_valid():
-            #save, do something
-            pass
+            instances = sa_formset.save(commit=False)
+            for instance in instances:
+                instance.school = school
+                instance.save()
+            #sa_formset.save()
     else:
         sa_formset = SubjectAreaFormSet(queryset=SubjectArea.objects.all().filter(school_id=school_id))
-    return render_to_response('competencies/edit_school.html', {'school': school, 'sa_formset': sa_formset})
+    return render_to_response('competencies/edit_school.html', {'school': school, 'sa_formset': sa_formset},
+                              context_instance = RequestContext(request))
 
 
 
