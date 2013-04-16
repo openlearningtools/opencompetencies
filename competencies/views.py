@@ -91,7 +91,7 @@ def edit_subject_area(request, subject_area_id):
         if sda_formset.is_valid():
             instances = sda_formset.save(commit=False)
             for instance in instances:
-                instance.school = school
+                instance.subject_area = subject_area
                 instance.save()
     # Create formset for unbound and bound forms
     #  This allows continuing to add more items after saving.
