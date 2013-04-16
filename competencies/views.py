@@ -4,7 +4,7 @@ from django.forms.models import modelformset_factory, inlineformset_factory
 
 from copy import copy
 
-from competencies.models import School, SubjectArea, SubdisciplineArea, CompetencyArea, EssentialUnderstanding, LearningTarget, SubjectAreaForm
+from competencies.models import School, SubjectArea, SubdisciplineArea, CompetencyArea, EssentialUnderstanding, LearningTarget
 
 
 def index(request):
