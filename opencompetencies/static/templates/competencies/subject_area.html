@@ -11,7 +11,7 @@
 
 	 <h2><a href="/schools/{{ subject_area.school.id }}">{{ subject_area.school.name }}</a></h2>
 
-	 <p>This page lists all of the {{ subject_area }} subdiscipline areas.  Click on any subdiscipline area to see the competency areas for that subdiscipline area. You can click on the subject area itself to see competency areas for the general subject.</p>
+	 <p>This page lists all of the subdiscipline areas for {{ subject_area }}.  The competency areas for the general subject, and for each subdiscipline area are shown as well.</p>
 
 	 <h2>{{ subject_area }}</h2>
 
@@ -19,6 +19,11 @@
 	     <ul>
 		  {% for sda in subject_area.subdisciplinearea_set.all %}
 		      <li><h3><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h3></li>
+				<ul>
+				{% for ca in sda.competencyarea_set.all %}
+				    <li><h4><a href='/competency_areas/{{ ca.id }}/'>{{ ca }}</a><h4></li>
+				{% endfor %}
+				</ul>
 		  {% endfor %}
 		  </ul>
 	 {% else %}

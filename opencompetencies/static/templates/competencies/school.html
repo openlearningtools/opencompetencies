@@ -10,8 +10,7 @@
 	 <p><a href="{% url 'competencies:index' %}">Home</a> | <a href="{% url 'competencies:schools' %}">Schools</a> | <a href='/admin'>Admin Site</a>
 
 	 <h2>{{ school.name }}</h2>
-	 <p>This page shows the subject areas for {{ school }}. Click on any subject area to see the subdiscipline areas for that subject area.</p>
-	 <p><a href="/schools/{{ school.id }}/edit_system/">Edit {{ school }}'s competency system</a></p>
+	 <p>This page shows the subject areas and subdiscipline areas for {{ school }}.</p>
 
 	 {# Loop through subject areas. #}
 
@@ -19,6 +18,12 @@
 	     <ul>
 	     {% for sa in school.subjectarea_set.all %}
 		      <li><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
+				{# Also show sdas. Should test if these exist. #}
+				<ul>
+				{% for sda in sa.subdisciplinearea_set.all %}
+				    <li><h4><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></li>
+				{% endfor %}
+			   </ul>
 	     {% endfor %}
         </ul>
 	 {% else %}

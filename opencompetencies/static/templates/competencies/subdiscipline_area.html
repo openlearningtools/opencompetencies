@@ -11,7 +11,7 @@
 
 	 <h2><a href="/schools/{{ school.id }}">{{ school.name }}</a></h2>
 
-	 <p>This page lists all of the {{ subdiscipline_area }} competency areas.  Click on a competency area to see the essential understandings for that competency area.</p>
+	 <p>This page lists all of the competency areas for {{ subdiscipline_area }}. The essential understandings for each competency area are also listed.</p>
 
 	 <h2><a href='/subject_areas/{{ subject_area.id }}/'>{{ subject_area }}</a>: {{ subdiscipline_area }}</h2>
 
@@ -19,6 +19,11 @@
 	     <ul>
 		  {% for ca in competency_areas %}
 		      <li><a href='/competency_areas/{{ ca.id }}/'><h3>{{ ca }}</h3></a></li>
+				<ul>
+			   {% for eu in ca.essentialunderstanding_set.all %}
+				    <li><a href='/essential_understandings/{{ eu.id }}/'><h4>{{ eu }}</h4></a></li>
+				{% endfor %}
+				</ul>
 		  {% endfor %}
 		  </ul>
 	 {% else %}

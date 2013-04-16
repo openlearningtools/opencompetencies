@@ -11,10 +11,10 @@
 
 	 <h2><a href="/schools/{{ school.id }}">{{ school.name }}</a></h2>
 
-	 <p>This page lists the learning targets for the essential understanding {{ essential_understanding }}.</p>
+	 <p>This page lists the learning targets for a single essential understanding.</p>
 
-	 <h2><a href='/subject_areas/{{ subject_area.id }}/'>{{ subject_area }}</a>: <a href='/subdiscipline_areas/{{ competency_area.subdiscipline_area.id }}/'>{{ competency_area.subdiscipline_area }}</a></h2>
-	 <h3>{{ competency_area }}: {{ essential_understanding }}</h3>
+	 <h2><a href='/subject_areas/{{ subject_area.id }}/'>{{ subject_area }}</a>: <a href='/subdiscipline_areas/{{ competency_area.subdiscipline_area.id }}/'>{{ competency_area.subdiscipline_area }}</a> - <a href='/competency_areas/{{ competency_area.id }}/'>{{ competency_area }}</a></h2>
+	 <h3>{{ essential_understanding }}</h3>
 
 	 {% if learning_targets %}
 	     <ul>
