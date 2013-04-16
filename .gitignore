@@ -4,6 +4,7 @@ venv/
 notes.txt
 # emacs backups:
 \#*#
+.\#*
 
 =======
 *.py[cod]

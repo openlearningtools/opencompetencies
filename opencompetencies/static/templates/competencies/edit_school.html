@@ -18,6 +18,19 @@
 		  <input type='submit' value='Save Changes' />
 	 </form>
 
+	 <br>---
+	 <br>
+
+
+	 {{ sda_formsets }}
+	 {% for sa, sda_formset in sda_formsets.items %}
+	 <form method='post' action=''>
+		  {% csrf_token %}
+		  {{ sa }}: {{ sda_formset.as_p }}
+		  <input type='submit' value='Save Changes' />
+	 </form>
+	 {% endfor %}
+
 
   </body>
 </html>
