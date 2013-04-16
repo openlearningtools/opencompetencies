@@ -78,6 +78,29 @@ def edit_school(request, school_id):
     return render_to_response('competencies/edit_school.html', {'school': school, 'sa_formset': sa_formset},
                               context_instance = RequestContext(request))
 
+def edit_subject_area(request, subject_area_id):
+    """Allows user to edit a subject_area's subdiscipline areas.
+    """
+    subject_area = SubjectArea.objects.get(id=subject_area_id)
+    school = subject_area.school
+    # fields arg not working, but exclude works???
+    SubdisciplineAreaFormSet = modelformset_factory(SubdisciplineArea, exclude=('subject_area'))
+
+    if request.method == 'POST':
+        sda_formset = SubdisciplineAreaFormSet(request.POST)
+        if sda_formset.is_valid():
+            instances = sda_formset.save(commit=False)
+            for instance in instances:
+                instance.school = school
+                instance.save()
+    # Create formset for unbound and bound forms
+    #  This allows continuing to add more items after saving.
+    sda_formset = SubdisciplineAreaFormSet(queryset=SubdisciplineArea.objects.all().filter(subject_area_id=subject_area_id))
+
+    return render_to_response('competencies/edit_subject_area.html',
+                              {'school': school, 'subject_area': subject_area, 'sda_formset': sda_formset},
+                              context_instance = RequestContext(request))
+
 
 
 def edit_system(request, school_id):

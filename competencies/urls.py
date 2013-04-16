@@ -32,6 +32,8 @@ urlpatterns = patterns('',
     # edit_school: Allows editing of a school's subject areas.
     url(r'^edit_school/(?P<school_id>\d+)/$', views.edit_school, name='edit_school'),
 
+    # edit_subject_area: Allows editing of a subject area's subdiscipline areas.
+    url(r'^edit_subject_area/(?P<subject_area_id>\d+)/$', views.edit_subject_area, name='edit_subject_area'),
 
 
     # fork: Page offering an empty school the opportunity to fork an established school.
