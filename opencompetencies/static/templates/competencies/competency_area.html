@@ -11,24 +11,25 @@
 
 	 <h2><a href="/schools/{{ school.id }}">{{ school.name }}</a></h2>
 
-	 <p>This page lists the essential understandings and learning targets for the competency area {{ competency_area }}.</p>
+	 <p>This page lists the essential understandings for the competency area {{ competency_area }}. The learning targets for each essential understanding are also listed.</p>
 
+	 <h2><a href='/subject_areas/{{ subject_area.id }}/'>{{ subject_area }}</a>: <a href='/subdiscipline_areas/{{ competency_area.subdiscipline_area.id }}/'>{{ competency_area.subdiscipline_area }}</a> - {{ competency_area }}</h2>
 
-	 <h2><a href="/schools/{{ school.id }}/subject_area/{{ subject_area.id }}">{{ subject_area }}</a>: {{ competency_area }}</h2>
-
-	 {# Loop through essential understandings, and associated learning targets #}
-	 <ul>
-	 {% for eu, lts in eus_lts.items %}
-        <li><h3>{{ eu }}</h3></li>
-		  <ul>
-		  {% for lt in lts %}
-		      <li>{{ lt }}</li>
+	 {% if essential_understandings %}
+	     <ul>
+	     {% for eu in essential_understandings %}
+		      <li><h3><a href='/essential_understandings/{{ eu.id }}/'>{{ eu }}</a></h3></li>
+				<ul>
+				{% for lt in eu.learningtarget_set.all %}
+				    <li><h4>{{ lt }}</h4></li>
+				{% endfor %}
+				</ul>
 		  {% endfor %}
 		  </ul>
-	 {% endfor %}
-	 </ul>
-		  
-
+	 {% else %}
+		  <p>There are no essential understandings for this competency area yet.
+	 {% endif %}
+			   
   </body>
 </html>
 

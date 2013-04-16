@@ -9,29 +9,27 @@
     <h1>Open Competencies</h1>
 	 <p><a href="{% url 'competencies:index' %}">Home</a> | <a href="{% url 'competencies:schools' %}">Schools</a> | <a href='/admin'>Admin Site</a>
 
-	 <h2><a href="/schools/{{ school.id }}">{{ school.name }}</a></h2>
+	 <h2><a href="/schools/{{ subject_area.school.id }}">{{ subject_area.school.name }}</a></h2>
 
-	 <p>This page lists all of the {{ subject_area }} competency areas.  Click on any competency area to see the essential understandings and learning targets for that competency area.</p>
-
-	 {# Loop through competencies for the subject area overall, and the subdiscipline areas. #}
+	 <p>This page lists all of the subdiscipline areas for {{ subject_area }}.  The competency areas for the general subject, and for each subdiscipline area are shown as well.</p>
+	 <p><a href='/edit_subject_area/{{ subject_area.id }}/'>Edit subdiscipline areas</a></p>
 
 	 <h2>{{ subject_area }}</h2>
-	 <ul>
-	 {% for comp in sa_competencies %}
-	     <li><a href='competency_area/{{ comp.id }}'>{{ comp }}</a></li>
-    {% endfor %}
-	 </ul>
 
-	 {% for sda, competencies in sda_competencies.items %}
-	     <h3>{{ sda }}</h3>
-		  <ul>
-		  {% for comp in competencies %}
-	         <li><a href='competency_area/{{ comp.id }}'>{{ comp }}</a></li>
+	 {% if subject_area.subdisciplinearea_set.all %}
+	     <ul>
+		  {% for sda in subject_area.subdisciplinearea_set.all %}
+		      <li><h3><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h3></li>
+				<ul>
+				{% for ca in sda.competencyarea_set.all %}
+				    <li><h4><a href='/competency_areas/{{ ca.id }}/'>{{ ca }}</a><h4></li>
+				{% endfor %}
+				</ul>
 		  {% endfor %}
 		  </ul>
-	 {% endfor %}
-
-
+	 {% else %}
+		  <p>There are no subdiscipline areas defined for this subject area.</p>
+	 {% endif %}
 
   </body>
 </html>

@@ -39,7 +39,7 @@ class CompetencyViewTests(TestCase):
         and competencies for that subject's subdiscipline areas."""
         django_school = create_school(name="The Django School")
         science = create_subject_area(subject_area="Science", school=django_school)
-        response = self.client.get(reverse('competencies:subject_area', args=(django_school.id, science.id,)))
+        response = self.client.get(reverse('competencies:subject_area', args=(science.id,)))
 
     def test_competency_area_view(self):
         """Competency area page lists all essential understandings and learning targets
@@ -61,5 +61,11 @@ class CompetencyViewTests(TestCase):
 
     def test_new_school(self):
         """New school processes form to create a new school.
+        """
+        pass
+
+    def test_edit_system(self):
+        """Edit system allows user to edit a school's entire competency system
+        on one page.
         """
         pass
