@@ -56,6 +56,23 @@ def essential_understanding(request, essential_understanding_id):
                                'essential_understanding': essential_understanding, 'learning_targets': learning_targets})
 
 
+# --- Edit views, for editing parts of the system ---
+def edit_school(request, school_id):
+    """Allows user to edit a school's subject areas.
+    """
+    school = School.objects.get(id=school_id)
+    SubjectAreaFormSet = modelformset_factory(SubjectArea, exclude=('school'))
+    if request.method == 'POST':
+        sa_formset = AuthorFormSet(request.POST)
+        if sa_formset.is_valid():
+            #save, do something
+            pass
+    else:
+        sa_formset = SubjectAreaFormSet(queryset=SubjectArea.objects.all().filter(school_id=school_id))
+    return render_to_response('competencies/edit_school.html', {'school': school, 'sa_formset': sa_formset})
+
+
+
 def edit_system(request, school_id):
     """Allows editing of a school's entire competency system.
     Will be ridiculously long when established; really just for initial

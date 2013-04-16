@@ -5,9 +5,10 @@ from competencies import views
 urlpatterns = patterns('',
     # My urls
 
-    # Open Competencies home page
+    # --- Open Competencies home page ---
     url(r'^$', views.index, name='index'),
 
+    # --- Simple views of competency system; no opportunity to modify system ---
     # schools: List of all schools participating in Open Competencies
     url(r'^schools/$', views.schools, name='schools'),
 
@@ -25,6 +26,11 @@ urlpatterns = patterns('',
 
     # essential_understandings/id: List all learning targets for an essential understanding.
     url(r'^essential_understandings/(?P<essential_understanding_id>\d+)/$', views.essential_understanding, name='essential_understanding'),
+
+
+    # --- Edit System pages ---
+    # edit_school: Allows editing of a school's subject areas.
+    url(r'^edit_school/(?P<school_id>\d+)/$', views.edit_school, name='edit_school'),
 
 
 

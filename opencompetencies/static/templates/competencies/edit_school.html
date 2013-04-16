@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+  </head>
+
+  <body>
+
+    <h1>Open Competencies</h1>
+	 <p><a href="{% url 'competencies:index' %}">Home</a> | <a href="{% url 'competencies:schools' %}">Schools</a> | <a href='/admin'>Admin Site</a>
+
+	 <h2><a href='/schools/{{ school.id }}/'>{{ school.name }}</a></h2>
+	 <p>This page allows you to edit the subject areas for {{ school }}.</p>
+
+	 {{ sa_formset.as_p }}
+
+
+  </body>
+</html>
+
