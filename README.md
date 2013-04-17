@@ -119,12 +119,12 @@ If you are new to using heroku with django projects, take a look at the [heroku 
 <a name="pre_coding_decisions"></a>Pre-coding decisions
 ---
 A number of decisions need to be made before we write any code:
-- Agree on the overall scope of this project, as laid out in the [Vision](#vision) and [Use Cases](#use_cases) sections.
+- Agree on the overall scope of this project, as laid out in the [Vision](https://github.com/openlearningtools/opencompetencies/blob/master/docs/VISION.md) and [Use Cases](https://github.com/openlearningtools/opencompetencies/blob/master/docs/VISION.md#use_cases) sections.
 - Write any more functional specs needed before coding.
 - Agree on a taxonomy for the hierarchy of learning targets.
 - Agree on an overall approach to identifying the kinds of relationships between different pieces of knowledge?
 - [(done)](https://github.com/openlearningtools/opencompetencies/blob/master/docs/GLOSSARY.md) Write a glossary for the first few levels in the taxonomy
-- Move much of this file to a wiki. Readme is mostly technical, and links to the wiki.
+- Move much of this file to a wiki? May be better than current /docs folder setup.
 - Agree on which framework to use
 
 [top](#top)
