@@ -1,1 +1,1 @@
-web: gunicorn opencompetencies.wsgi
+web: python manage.py collectstatic --noinput; gunicorn opencompetencies.wsgi
