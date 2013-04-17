@@ -1,6 +1,9 @@
 import os
+import os.path
 
 # Django settings for opencompetencies project.
+
+PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 DEBUG = os.environ.get('DJANGO_DEBUG', False)
 TEMPLATE_DEBUG = DEBUG
@@ -54,7 +57,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = '/opencompetencies-dev/staticfiles/'
+STATIC_ROOT = os.path.join(PROJECT_PATH, 'staticfiles')
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -66,16 +69,7 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 
-    # Local dev locations
-    '/srv/projects/oc_dev/opencompetencies/opencompetencies/static/',
-    '/srv/projects/oc_dev/opencompetencies/competencies/static/',
-
-    # Local prod locations
-    '/srv/projects/oc_prod/opencompetencies/static/',
-    '/srv/projects/oc_prod/competencies/static/',
-
-    # heroku deploy locations
-    '/opencompetencies-dev/static/'
+    os.path.join(PROJECT_PATH, 'static'),
 )
 
 # List of finder classes that know how to find static files in
