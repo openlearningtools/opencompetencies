@@ -54,7 +54,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = '/opencompetencies-dev/staticfiles/'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -65,8 +65,17 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+
+    # Local dev locations
     '/srv/projects/oc_dev/opencompetencies/opencompetencies/static/',
-    '/srv/projects/oc_dev/opencompetencies/competencies/static',
+    '/srv/projects/oc_dev/opencompetencies/competencies/static/',
+
+    # Local prod locations
+    '/srv/projects/oc_prod/opencompetencies/static/',
+    '/srv/projects/oc_prod/competencies/static/',
+
+    # heroku deploy locations
+    '/opencompetencies-dev/static/'
 )
 
 # List of finder classes that know how to find static files in
