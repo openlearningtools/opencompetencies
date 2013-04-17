@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
+{% extends 'base.html' %}
 
-  </head>
+{% block title_extension %} - {% new_school_name %}{% endblock %}
 
-  <body>
-
-    <h1>Open Competencies</h1>
-	 <p><a href="{% url 'competencies:index' %}">Home</a> | <a href="{% url 'competencies:schools' %}">Schools</a> | <a href='/admin'>Admin Site</a>
+{% block content %}
 
 	 {% if new_school_created %}
 		  <h2>{{ new_school_name }}</h2>
@@ -17,6 +12,4 @@
 		  <p>Your new school could not be created.  You may have left the name blank; if so, please <a href="/schools">try again</a>.
 	 {% endif %}
 
-  </body>
-</html>
-
+{% endblock %}
