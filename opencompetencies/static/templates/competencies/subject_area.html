@@ -1,15 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
+{% extends 'base.html' %}
 
-  </head>
+{% block title_extension %} - {{ school }}{% endblock %}
 
-  <body>
+{% block content %}
 
-    <h1>Open Competencies</h1>
-	 <p><a href="{% url 'competencies:index' %}">Home</a> | <a href="{% url 'competencies:schools' %}">Schools</a> | <a href='/admin'>Admin Site</a>
-
-	 <h2><a href="/schools/{{ subject_area.school.id }}">{{ subject_area.school.name }}</a></h2>
+	 <h2><a href="/schools/{{ school.id }}">{{ school.name }}</a></h2>
 
 	 <p>This page lists all of the subdiscipline areas for {{ subject_area }}.  The competency areas for the general subject, and for each subdiscipline area are shown as well.</p>
 	 <p><a href='/edit_subject_area/{{ subject_area.id }}/'>Edit subdiscipline areas</a></p>
@@ -31,6 +26,4 @@
 		  <p>There are no subdiscipline areas defined for this subject area.</p>
 	 {% endif %}
 
-  </body>
-</html>
-
+{% endblock %}

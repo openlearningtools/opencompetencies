@@ -22,7 +22,9 @@ def school(request, school_id):
 def subject_area(request, subject_area_id):
     """Shows a subject area's subdiscipline areas, and competency areas."""
     subject_area = SubjectArea.objects.get(id=subject_area_id)
-    return render_to_response('competencies/subject_area.html', {'subject_area': subject_area})
+    school = subject_area.school
+    return render_to_response('competencies/subject_area.html',
+                              {'subject_area': subject_area, 'school': school})
 
 def subdiscipline_area(request, subdiscipline_area_id):
     """Shows all of the competency areas for a given subdiscipline area."""

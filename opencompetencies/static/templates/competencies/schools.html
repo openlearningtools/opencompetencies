@@ -1,31 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
+{% extends 'base.html' %}
 
-  </head>
+{% block title_extension %} - Schools{% endblock %}
 
-  <body>
+{% block content %}
 
-    <h1>Open Competencies</h1>
-	 <p><a href="{% url 'competencies:index' %}">Home</a> | <a href="{% url 'competencies:schools' %}">Schools</a> | <a href='/admin'>Admin Site</a>
-
-	 <h2>Click on any school to begin exploring its competency system:</h2>
+	 <h2>Click on any school to begin exploring its competency system.</h2>
 	 {% if schools %}
+	   <ul>
 	   {% for school in schools %}
-        <h3><a href='/schools/{{ school.id }}/'>{{ school.name }}</a></h3>
+        <li><h3><a href='/schools/{{ school.id }}/'>{{ school.name }}</a></h3></li>
 		{% endfor %}
+		</ul>
     {% else %}
 		<h3>No schools have been created yet.</h3>
     {% endif %}
 
-	 <h3>Create a new school, with the option of forking an existing school's competency system:</h3>
+	 <h3>You may also create a new school, with the option of forking an existing school's competency system.</h3>
 	 <form action="/new_school/" method="post">
 		  {% csrf_token %}
 		      <p>Name of new school:
-		      <input type="text" name="new_school_name" size="25" /></p>
+		      <input type="text" name="new_school_name" size="50" /></p>
 				<input type="submit" value="Submit" />
 	 </form>
 
-  </body>
-</html>
-
+{% endblock %}

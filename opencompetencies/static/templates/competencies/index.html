@@ -1,20 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
+{% extends 'base.html' %}
 
-  </head>
+{% block content %}
 
-  <body>
+      <h1>Welcome to Open Competencies</h1>
+		<h2>(pre-alpha demo version)</h2>
+		<p>To kick the tires, which are very tiny and wobbly at this early stage, click on the link below to view existing schools.</p>
+		<p>Poke around the existing schools briefly, then go back and create your own school.  If you create your own school, you will be able to fork an existing school's system.  This is a demo of the first main feature of the Open Competencies project.</p>
 
-    <h1>Open Competencies</h1>
-	 <p><a href="{% url 'competencies:index' %}">Home</a> | <a href="{% url 'competencies:schools' %}">Schools</a> | <a href='/admin'>Admin Site</a>
+		<h3><a href="schools">View competencies by school</a></h3>
+		{# Need to implement: <h3><a href="entire_system">View entire competency system</a></h3> #}
 
-	 <h2>Welcome to Open Competencies, wireframe version.</h2>
-	 <p>To kick the tires, which are very tiny and wobbly at this early stage, click on the link below to view existing schools.  Poke around the existing schools briefly, then go back and create your own school.  If you create your own school, you will be able to fork an existing school's system.  This is a demo of the first main feature of the opencompetencies project.</p>
-
-	 <h3><a href="schools">View competencies by school</a></h3>
-    {# Need to implement: <h3><a href="entire_system">View entire competency system</a></h3> #}
-
-  </body>
-</html>
-
+{% endblock %}
