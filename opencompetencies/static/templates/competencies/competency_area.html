@@ -8,7 +8,11 @@
 
 	 <p>This page lists the essential understandings for the competency area {{ competency_area }}. The learning targets for each essential understanding are also listed.</p>
 
-	 <h2><a href='/subject_areas/{{ subject_area.id }}/'>{{ subject_area }}</a>: <a href='/subdiscipline_areas/{{ competency_area.subdiscipline_area.id }}/'>{{ competency_area.subdiscipline_area }}</a> - {{ competency_area }}</h2>
+	 <h2><a href='/subject_areas/{{ subject_area.id }}/'>{{ subject_area }}</a>: 
+		  {% if competency_area.subdiscipline_area %}
+		      <a href='/subdiscipline_areas/{{ competency_area.subdiscipline_area.id }}/'>{{ competency_area.subdiscipline_area }}</a> - 
+		  {% endif %}
+		  {{ competency_area }}</h2>
 
 	 {% if essential_understandings %}
 	     <ul>

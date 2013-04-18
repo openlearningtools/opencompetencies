@@ -13,6 +13,12 @@
 
 	 {% if subject_area.subdisciplinearea_set.all %}
 	     <ul>
+			   {# Show general competencies not associated with any sda: #}
+				<ul>
+				{% for ca in sa_competency_areas %}
+				    <li><h4><a href='/competency_areas/{{ ca.id }}/'>{{ ca }}</a></h4></li>
+				{% endfor %}
+			   </ul>
 		  {% for sda in subject_area.subdisciplinearea_set.all %}
 		      <li><h3><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h3></li>
 				<ul>

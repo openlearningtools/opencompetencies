@@ -7,6 +7,7 @@
 	 <h2><a href="/schools/{{ school.id }}">{{ school.name }}</a></h2>
 
 	 <p>This page lists all of the competency areas for {{ subdiscipline_area }}. The essential understandings for each competency area are also listed.</p>
+	 <p><a href='{% url 'competencies:edit_sa_sda_competencies' subject_area.id %}'>Edit competency areas</a></p>
 
 	 <h2><a href='/subject_areas/{{ subject_area.id }}/'>{{ subject_area }}</a>: {{ subdiscipline_area }}</h2>
 

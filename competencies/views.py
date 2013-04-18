@@ -23,8 +23,11 @@ def subject_area(request, subject_area_id):
     """Shows a subject area's subdiscipline areas, and competency areas."""
     subject_area = SubjectArea.objects.get(id=subject_area_id)
     school = subject_area.school
+    # Competencies for the general subject area (no associated sda):
+    sa_competency_areas = subject_area.competencyarea_set.all().filter(subdiscipline_area=None)
     return render_to_response('competencies/subject_area.html',
-                              {'subject_area': subject_area, 'school': school})
+                              {'subject_area': subject_area, 'school': school,
+                               'sa_competency_areas': sa_competency_areas})
 
 def subdiscipline_area(request, subdiscipline_area_id):
     """Shows all of the competency areas for a given subdiscipline area."""
@@ -101,6 +104,34 @@ def edit_subject_area(request, subject_area_id):
 
     return render_to_response('competencies/edit_subject_area.html',
                               {'school': school, 'subject_area': subject_area, 'sda_formset': sda_formset},
+                              context_instance = RequestContext(request))
+
+def edit_sa_sda_competencies(request, subject_area_id):
+    """Allows user to edit the competencies for a subject area,
+    and all its subdiscipline areas.
+    """
+    subject_area = SubjectArea.objects.get(id=subject_area_id)
+    school = subject_area.school
+    sdas = subject_area.subdisciplinearea_set.all()
+    sa_comps = subject_area.competencyarea_set.all()
+
+    # Build the sa_comp_area formset by using queryset to exclude all
+    #  competency areas with a defined sda. Need general ca_formset to do this.
+    CompetencyAreaFormSet = modelformset_factory(CompetencyArea, exclude=('subject_area', 'subdiscipline_area'))
+
+    if request.method == 'POST':
+        sa_ca_formset = CompetencyAreaFormSet(request.POST)
+        if sa_ca_formset.is_valid():
+            instances = sda_formset.save(commit=False)
+            for instance in instances:
+                instance.subject_area = subject_area
+                instance.save()
+    # Create formset for unbound and bound forms, to allow editing after saving.
+    sa_ca_formset = CompetencyAreaFormSet(queryset=CompetencyArea.objects.all().filter(subject_area=subject_area).filter(subdiscipline_area=None))
+
+    return render_to_response('competencies/edit_sa_sda_competencies.html',
+                              {'school': school, 'subject_area': subject_area,
+                               'sa_ca_formset': sa_ca_formset},
                               context_instance = RequestContext(request))
 
 
