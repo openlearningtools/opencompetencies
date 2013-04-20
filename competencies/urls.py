@@ -41,6 +41,9 @@ urlpatterns = patterns('',
     # edit_sda_competency_areas: Allows editing of competencies for a subdiscipline area.
     url(r'^edit_sda_competency_areas/(?P<subdiscipline_area_id>\d+)/$', views.edit_sda_competency_areas, name='edit_sda_competency_areas'),
 
+    # edit_competency_area: Allows editing of a competency area's essential understandings.
+    url(r'^edit_competency_area/(?P<competency_area_id>\d+)/$', views.edit_competency_area, name='edit_competency_area'),
+
 
     # --- Forking pages ---
     # fork: Page offering an empty school the opportunity to fork an established school.

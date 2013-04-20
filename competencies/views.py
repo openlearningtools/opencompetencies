@@ -160,6 +160,31 @@ def edit_sda_competency_areas(request, subdiscipline_area_id):
                                'subdiscipline_area': subdiscipline_area, 'sda_ca_formset': sda_ca_formset},
                               context_instance = RequestContext(request))
 
+def edit_competency_area(request, competency_area_id):
+    """Allows user to edit the essential understandings for a given competency area."""
+    ca = CompetencyArea.objects.get(id=competency_area_id)
+    sa = ca.subject_area
+    sda = ca.subdiscipline_area
+    school = sa.school
+
+    EssentialUnderstandingFormSet = modelformset_factory(EssentialUnderstanding, exclude=('competency_area'))
+
+    if request.method == 'POST':
+        eu_formset = EssentialUnderstandingFormSet(request.POST)
+        if eu_formset.is_valid():
+            instances = eu_formset.save(commit=False)
+            for instance in instances:
+                instance.competency_area = ca
+                instance.save()
+
+    eu_formset = EssentialUnderstandingFormSet(queryset=ca.essentialunderstanding_set.all())
+
+    return render_to_response('competencies/edit_competency_area.html',
+                              {'school': school, 'subject_area': sa,
+                               'subdiscipline_area': sda, 'competency_area': ca,
+                               'eu_formset': eu_formset},
+                              context_instance = RequestContext(request))
+
 
 # --- Forking pages: pages related to forking an existing school ---
 def fork(request, school_id):
