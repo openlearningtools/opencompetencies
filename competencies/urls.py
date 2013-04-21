@@ -44,6 +44,10 @@ urlpatterns = patterns('',
     # edit_competency_area: Allows editing of a competency area's essential understandings.
     url(r'^edit_competency_area/(?P<competency_area_id>\d+)/$', views.edit_competency_area, name='edit_competency_area'),
 
+    # edit_essential_understanding: Allows editing of the learning targets
+    #  associated with an essential understanding.
+    url(r'^edit_essential_understanding/(?P<essential_understanding_id>\d+)/$', views.edit_essential_understanding, name='edit_essential_understanding'),
+
 
     # --- Forking pages ---
     # fork: Page offering an empty school the opportunity to fork an established school.

@@ -185,6 +185,33 @@ def edit_competency_area(request, competency_area_id):
                                'eu_formset': eu_formset},
                               context_instance = RequestContext(request))
 
+def edit_essential_understanding(request, essential_understanding_id):
+    """Allows user to edit the learning targets associated with an essential understanding."""
+    eu = EssentialUnderstanding.objects.get(id=essential_understanding_id)
+    ca = eu.competency_area
+    sa = ca.subject_area
+    sda = ca.subdiscipline_area
+    school = sa.school
+
+    LearningTargetFormSet = modelformset_factory(LearningTarget, exclude=('essential_understanding'))
+
+    if request.method == 'POST':
+        lt_formset = LearningTargetFormSet(request.POST)
+        if lt_formset.is_valid():
+            instances = lt_formset.save(commit=False)
+            for instance in instances:
+                instance.essential_understanding = eu
+                instance.save()
+
+    lt_formset = LearningTargetFormSet(queryset=eu.learningtarget_set.all())
+
+    return render_to_response('competencies/edit_essential_understanding.html',
+                              {'school': school, 'subject_area': sa,
+                               'subdiscipline_area': sda, 'competency_area': ca,
+                               'essential_understanding': eu, 'lt_formset': lt_formset},
+                              context_instance = RequestContext(request))
+                              
+
 
 # --- Forking pages: pages related to forking an existing school ---
 def fork(request, school_id):
