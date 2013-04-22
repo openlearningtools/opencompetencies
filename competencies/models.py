@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ModelForm, Textarea
 
 class School(models.Model):
     name = models.CharField(max_length=500)
@@ -41,3 +42,15 @@ class LearningTarget(models.Model):
 
     def __unicode__(self):
         return self.learning_target
+
+
+# --- ModelForms ---
+class EssentialUnderstandingForm(ModelForm):
+    pass
+
+class LearningTargetForm(ModelForm):
+    class Meta:
+        model = LearningTarget
+        fields = ('learning_target', )
+        # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
+        widgets = {'learning_target': Textarea(attrs={'rows': 3, 'class': 'span8'}) }

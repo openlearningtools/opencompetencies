@@ -4,7 +4,7 @@ from django.forms.models import modelformset_factory, inlineformset_factory
 
 from copy import copy
 
-from competencies.models import School, SubjectArea, SubdisciplineArea, CompetencyArea, EssentialUnderstanding, LearningTarget
+from competencies.models import *
 
 
 def index(request):
@@ -193,7 +193,7 @@ def edit_essential_understanding(request, essential_understanding_id):
     sda = ca.subdiscipline_area
     school = sa.school
 
-    LearningTargetFormSet = modelformset_factory(LearningTarget, exclude=('essential_understanding'))
+    LearningTargetFormSet = modelformset_factory(LearningTarget, form=LearningTargetForm)
 
     if request.method == 'POST':
         lt_formset = LearningTargetFormSet(request.POST)
