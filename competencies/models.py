@@ -46,7 +46,11 @@ class LearningTarget(models.Model):
 
 # --- ModelForms ---
 class EssentialUnderstandingForm(ModelForm):
-    pass
+    class Meta:
+        model = EssentialUnderstanding
+        fields = ('essential_understanding',)
+        # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
+        widgets = {'essential_understanding': Textarea(attrs={'rows': 3, 'class': 'span8'}) }
 
 class LearningTargetForm(ModelForm):
     class Meta:

@@ -167,7 +167,7 @@ def edit_competency_area(request, competency_area_id):
     sda = ca.subdiscipline_area
     school = sa.school
 
-    EssentialUnderstandingFormSet = modelformset_factory(EssentialUnderstanding, exclude=('competency_area'))
+    EssentialUnderstandingFormSet = modelformset_factory(EssentialUnderstanding, form=EssentialUnderstandingForm)
 
     if request.method == 'POST':
         eu_formset = EssentialUnderstandingFormSet(request.POST)
