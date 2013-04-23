@@ -30,6 +30,18 @@
 									     {% if new_ca == ca %}
 									         {% for eu in eus %}
 									             <li><a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+
+													 {# --- learning targets --- #}
+													 <ul>
+													 {% for new_eu, lts in eu_lts.items %}
+													     {% if new_eu == eu %}
+													         {% for lt in lts %}
+													             <li>{{ lt }}</li>
+															   {% endfor %}
+														  {% endif %}
+													 {% endfor %}
+													 </ul>
+
 												{% endfor %}
 										  {% endif %}
 									 {% endfor %}
@@ -59,6 +71,18 @@
 									     {% if new_ca == ca %}
 									         {% for eu in eus %}
 									             <li><a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+
+													 {# --- learning targets --- #}
+													 <ul>
+													 {% for new_eu, lts in eu_lts.items %}
+													     {% if new_eu == eu %}
+													         {% for lt in lts %}
+													             <li>{{ lt }}</li>
+															   {% endfor %}
+														  {% endif %}
+													 {% endfor %}
+													 </ul>
+
 												{% endfor %}
 										  {% endif %}
 									 {% endfor %}
@@ -78,14 +102,5 @@
 	 {% else %}
 		  <p>This school does not have any subject areas yet. You may want to <a href="/schools/{{ school.id }}/fork">fork</a> another school's competency system instead of starting from scratch.</p>
     {% endif %}
-
-	 <p>sas: {{ subject_areas }}
-	 <p>sa_sdas: {{ sa_sdas }}
-	 <p>sa_cas: {{ sa_cas }}
-	 <p>sda_cas: {{ sda_cas }}
-	 <p>ca_eus: {{ ca_eus }}
-	 <p>eu_lts: {{ eu_lts }}
-
-
 
 {% endblock %}
