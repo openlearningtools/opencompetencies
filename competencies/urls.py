@@ -27,6 +27,9 @@ urlpatterns = patterns('',
     # essential_understandings/id: List all learning targets for an essential understanding.
     url(r'^essential_understandings/(?P<essential_understanding_id>\d+)/$', views.essential_understanding, name='essential_understanding'),
 
+    # entire_system/id: List the entire system for a given school.
+    url(r'^entire_system/(?P<school_id>\d+)/$', views.entire_system, name='entire_system'),
+
 
     # --- Edit System pages ---
     # edit_school: Allows editing of a school's subject areas.

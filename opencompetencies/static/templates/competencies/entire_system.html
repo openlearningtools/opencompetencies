@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title_extension %} - {{ school }}{% endblock %}
+
+{% block content %}
+
+	 <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a></h2>
+	 <p>This page shows the entire competency system for <a href='{% url 'competencies:school' school.id %}'</a>{{ school }}</a>.</p>
+
+
+	 {% if subject_areas %}
+	     <ul>
+		  {# ---  subject areas --- #}
+	     {% for sa, sdas in sa_sdas.items %}
+		      <li><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
+				<ul>
+				{# ---  subdiscipline areas --- #}
+				{% for sda in sdas %}
+				    <li><h4><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></li>
+					 <ul>
+					 {# --- competency areas --- #}
+					 {% for new_sda, cas in sda_cas.items %}
+					     {% if new_sda == sda %}
+					         {% for ca in cas %}
+					             <li><h5>{{ ca }}</h5></li>
+								{% endfor %}
+						  {% endif %}
+					 {% endfor %}
+					 </ul>
+				{% endfor %}
+			   </ul>
+	     {% endfor %}
+        </ul>
+	 {% else %}
+		  <p>This school does not have any subject areas yet. You may want to <a href="/schools/{{ school.id }}/fork">fork</a> another school's competency system instead of starting from scratch.</p>
+    {% endif %}
+
+	 <p>sas: {{ subject_areas }}
+	 <p>sa_sdas: {{ sa_sdas }}
+	 <p>sa_cas: {{ sa_cas }}
+	 <p>sda_cas: {{ sda_cas }}
+	 <p>ca_eus: {{ ca_eus }}
+	 <p>eu_lts: {{ eu_lts }}
+
+
+
+{% endblock %}
