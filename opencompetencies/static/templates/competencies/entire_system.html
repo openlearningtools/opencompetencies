@@ -9,28 +9,46 @@
 
 
 	 {% if subject_areas %}
-	     <ul>
+
 		  {# ---  subject areas --- #}
+	     <ul>
 	     {% for sa, sdas in sa_sdas.items %}
 		      <li><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
-				<ul>
+
 				{# ---  subdiscipline areas --- #}
+				<ul>
 				{% for sda in sdas %}
 				    <li><h4><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></li>
-					 <ul>
+
 					 {# --- competency areas --- #}
+					 <ul>
 					 {% for new_sda, cas in sda_cas.items %}
 					     {% if new_sda == sda %}
 					         {% for ca in cas %}
-					             <li><h5>{{ ca }}</h5></li>
+					             <li><h5><a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+
+									 {# --- essential understandings --- #}
+									 <ul>
+									 {% for new_ca, eus in ca_eus.items %}
+									     {% if new_ca == ca %}
+									         {% for eu in eus %}
+									             <li><a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+												{% endfor %}
+										  {% endif %}
+									 {% endfor %}
+									 </ul>
+
 								{% endfor %}
 						  {% endif %}
 					 {% endfor %}
 					 </ul>
+
 				{% endfor %}
 			   </ul>
+
 	     {% endfor %}
         </ul>
+
 	 {% else %}
 		  <p>This school does not have any subject areas yet. You may want to <a href="/schools/{{ school.id }}/fork">fork</a> another school's competency system instead of starting from scratch.</p>
     {% endif %}
