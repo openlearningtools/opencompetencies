@@ -15,6 +15,32 @@
 	     {% for sa, sdas in sa_sdas.items %}
 		      <li><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
 
+				{# competency areas for the general subject area #}
+				{# requires an empty nesting level (blank sda) #}
+				<ul>
+				    <ul>
+					 {% for new_sa, cas in sa_cas.items %}
+					     {% if new_sa == sa %}
+					         {% for ca in cas %}
+					             <li><h5><a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+
+									 {# --- essential understandings --- #}
+									 <ul>
+									 {% for new_ca, eus in ca_eus.items %}
+									     {% if new_ca == ca %}
+									         {% for eu in eus %}
+									             <li><a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+												{% endfor %}
+										  {% endif %}
+									 {% endfor %}
+									 </ul>
+
+								{% endfor %}
+						  {% endif %}
+					 {% endfor %}
+					 </ul>
+				</ul>
+
 				{# ---  subdiscipline areas --- #}
 				<ul>
 				{% for sda in sdas %}
