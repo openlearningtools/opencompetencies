@@ -1,6 +1,8 @@
 from django.db import models
 from django.forms import ModelForm, Textarea
 
+# --- Competency System Hierarchy ---
+
 class School(models.Model):
     name = models.CharField(max_length=500)
 
@@ -42,6 +44,15 @@ class LearningTarget(models.Model):
 
     def __unicode__(self):
         return self.learning_target
+
+
+# --- Pathways ---
+class Pathway(models.Model):
+    name = models.CharField(max_length=500)
+    school = models.ForeignKey(School)
+
+    def __unicode__(self):
+        return self.name
 
 
 # --- ModelForms ---
