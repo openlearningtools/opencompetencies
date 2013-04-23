@@ -7,7 +7,9 @@
 	 <h2><a href="/schools/{{ school.id }}">{{ school.name }}</a></h2>
 
 	 <p>This page lists the essential understandings for the competency area {{ competency_area }}. The learning targets for each essential understanding are also listed.</p>
-	 <p><a href='{% url 'competencies:edit_competency_area' competency_area.id %}'>Edit essential understandings</a></p>
+	 <p><a href='{% url 'competencies:edit_competency_area' competency_area.id %}'>Edit essential understandings</a>
+	    | <a href='{% url 'competencies:entire_system' school.id %}'>View entire system</a>
+	 </p>
 
 	 <h2><a href='/subject_areas/{{ subject_area.id }}/'>{{ subject_area }}</a>: 
 		  {% if competency_area.subdiscipline_area %}
