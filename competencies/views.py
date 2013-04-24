@@ -262,8 +262,38 @@ def pathway(request, pathway_id):
     pathway = Pathway.objects.get(id=pathway_id)
     school = pathway.school
 
+    # data to render a school's entire system:
+    # all subject areas for a school
+    sas = school.subjectarea_set.all()
+    # all subdiscipline areas for each subject area
+    sa_sdas = {sa: sa.subdisciplinearea_set.all() for sa in sas}
+    # all general competency areas for a subject
+    sa_cas = {sa: sa.competencyarea_set.all().filter(subdiscipline_area=None) for sa in sas}
+    # all competency areas for each subdiscipline area
+    sda_cas = {}
+    for sa in sas:
+        for sda in sa_sdas[sa]:
+            sda_cas[sda] = sda.competencyarea_set.all()
+    # all essential understandings for each competency area
+    #  loop through all sa_cas, sda_cas
+    ca_eus = {}
+    for cas in sda_cas.values():
+        for ca in cas:
+            ca_eus[ca] = ca.essentialunderstanding_set.all()
+    for cas in sa_cas.values():
+        for ca in cas:
+            ca_eus[ca] = ca.essentialunderstanding_set.all()
+    # all learning targets for each essential understanding
+    eu_lts = {}
+    for eus in ca_eus.values():
+        for eu in eus:
+            eu_lts[eu] = eu.learningtarget_set.all()
+
     return render_to_response('competencies/pathway.html',
-                              {'school': school, 'pathway': pathway},
+                              {'school': school, 'pathway': pathway, 'subject_areas': sas,
+                               'sa_sdas': sa_sdas, 'sa_cas': sa_cas,
+                               'sda_cas': sda_cas, 'ca_eus': ca_eus,
+                               'eu_lts': eu_lts},
                               context_instance = RequestContext(request))
 
 # --- Forking pages: pages related to forking an existing school ---
