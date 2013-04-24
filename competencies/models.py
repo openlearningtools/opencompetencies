@@ -47,9 +47,11 @@ class LearningTarget(models.Model):
 
 
 # --- Pathways ---
+from django.db.models import Q
 class Pathway(models.Model):
     name = models.CharField(max_length=500)
     school = models.ForeignKey(School)
+    subject_areas = models.ManyToManyField(SubjectArea)
 
     def __unicode__(self):
         return self.name

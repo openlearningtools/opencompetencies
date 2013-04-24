@@ -52,6 +52,11 @@ urlpatterns = patterns('',
     url(r'^edit_essential_understanding/(?P<essential_understanding_id>\d+)/$', views.edit_essential_understanding, name='edit_essential_understanding'),
 
 
+    # --- Pathways pages ---
+    # pathways: Shows all the pathways for a given school.
+    url(r'^pathways/(?P<school_id>\d+)/$', views.pathways, name='pathways'),
+
+
     # --- Forking pages ---
     # fork: Page offering an empty school the opportunity to fork an established school.
     url(r'^schools/(?P<school_id>\d+)/fork/$', views.fork, name='fork'),

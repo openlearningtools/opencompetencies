@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title_extension %} - Schools{% endblock %}
+
+{% block content %}
+
+    <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a>: Pathways</h2>
+
+	 <h4>A Pathway is a set of related learning targets. One example is a pathway that represents a given career. For example, a pathway might represent all of the learning targets that should be mastered in order to become a carpenter.</h4>
+
+	 <ul>
+	 {% for pathway in pathways %}
+	     <li><h5>{{ pathway }}</h5></li>
+	 {% endfor %}
+	 </ul>
+
+{% endblock %}

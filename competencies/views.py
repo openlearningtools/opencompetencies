@@ -245,7 +245,16 @@ def edit_essential_understanding(request, essential_understanding_id):
                                'subdiscipline_area': sda, 'competency_area': ca,
                                'essential_understanding': eu, 'lt_formset': lt_formset},
                               context_instance = RequestContext(request))
-                              
+
+
+# --- Pathways pages ---
+def pathways(request, school_id):
+    school = School.objects.get(id=school_id)
+    pathways = school.pathway_set.all()
+
+    return render_to_response('competencies/pathways.html',
+                              {'school': school, 'pathways': pathways},
+                              context_instance = RequestContext(request))
 
 
 # --- Forking pages: pages related to forking an existing school ---
