@@ -8,12 +8,16 @@
 
 	 <h3>Pathway Description: </h3>
 
+	 <p>pw elements: {{ pathway.subject_areas.all }}
+
 	 {% if subject_areas %}
 
 		  {# ---  subject areas --- #}
 	     <ul>
 	     {% for sa, sdas in sa_sdas.items %}
-		      <li><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
+		      <li><h3>{% if sa in pathway.subject_areas.all %}<i>{% endif %}
+					 <a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a>
+				{% if sa in pathway.subject_areas.all %}</i>{% endif %}</h3></li>
 
 				{# competency areas for the general subject area #}
 				{# requires an empty nesting level (blank sda) #}
