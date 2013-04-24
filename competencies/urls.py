@@ -56,6 +56,10 @@ urlpatterns = patterns('',
     # pathways: Shows all the pathways for a given school.
     url(r'^pathways/(?P<school_id>\d+)/$', views.pathways, name='pathways'),
 
+    # pathway/id: Shows the entire system for a given school, with that pathway highlighted.
+    #  Later, will be a flag that stays active, highlighting elements of the pathway on every view page.
+    url(r'^pathway/(?P<pathway_id>\d+)/$', views.pathway, name='pathway'),
+
 
     # --- Forking pages ---
     # fork: Page offering an empty school the opportunity to fork an established school.

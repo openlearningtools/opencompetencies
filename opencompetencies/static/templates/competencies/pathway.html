@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title_extension %} - Schools{% endblock %}
+
+{% block content %}
+
+    <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a> - <a href='{% url 'competencies:pathways' school.id %}'>Pathway</a>: {{ pathway }}</h2>
+
+
+
+
+{% endblock %}

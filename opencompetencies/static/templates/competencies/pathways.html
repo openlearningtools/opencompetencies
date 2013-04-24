@@ -10,7 +10,7 @@
 
 	 <ul>
 	 {% for pathway in pathways %}
-	     <li><h5>{{ pathway }}</h5></li>
+	     <li><h5><a href='{% url 'competencies:pathway' pathway.id %}'>{{ pathway }}</a></h5></li>
 	 {% endfor %}
 	 </ul>
 

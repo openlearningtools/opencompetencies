@@ -249,6 +249,7 @@ def edit_essential_understanding(request, essential_understanding_id):
 
 # --- Pathways pages ---
 def pathways(request, school_id):
+    """Lists all pathways for a given school."""
     school = School.objects.get(id=school_id)
     pathways = school.pathway_set.all()
 
@@ -256,6 +257,14 @@ def pathways(request, school_id):
                               {'school': school, 'pathways': pathways},
                               context_instance = RequestContext(request))
 
+def pathway(request, pathway_id):
+    """Shows entire school system for a given pathway, with elements of the pathway highlighted."""
+    pathway = Pathway.objects.get(id=pathway_id)
+    school = pathway.school
+
+    return render_to_response('competencies/pathway.html',
+                              {'school': school, 'pathway': pathway},
+                              context_instance = RequestContext(request))
 
 # --- Forking pages: pages related to forking an existing school ---
 def fork(request, school_id):
