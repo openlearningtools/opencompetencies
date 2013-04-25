@@ -1,2 +1,5 @@
-h1 {font-size: 3em;
+/* Need to override bootstrap; requires very specific selectors. */
+a.current_pathway, li.current_pathway, h1.current_pathway, h2.current_pathway,
+h3.current_pathway, h4.current_pathway, h5.current_pathway {
+	 color: green;
 }

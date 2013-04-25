@@ -7,18 +7,24 @@
     <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a> - <a href='{% url 'competencies:pathways' school.id %}'>Pathway</a>: {{ pathway }}</h2>
 
 	 <h3>Pathway Description: </h3>
-
-	 <p>pw elements: {{ pathway.subject_areas.all }}
+	 <p>All elements of the current pathway, {{ pathway }}, are shown in green.</p>
 
 	 {% if subject_areas %}
 
 		  {# ---  subject areas --- #}
 	     <ul>
 	     {% for sa, sdas in sa_sdas.items %}
-		      <li><h3>{% if sa in pathway.subject_areas.all %}<i>{% endif %}
-					 <a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a>
-				{% if sa in pathway.subject_areas.all %}</i>{% endif %}</h3></li>
+		      {% if sa in pathway.subject_areas.all %}
+		          <li class='current_pathway'><h3 class='current_pathway'><a class='current_pathway' href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
+				{% else %}
+		          <li><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
+				{% endif %}
 
+<!--
+		      <li><h3>{% if sa in pathway.subject_areas.all %}<style="class: current_pathway">{% endif %}
+					 <a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a>
+				{% if sa in pathway.subject_areas.all %}</style>{% endif %}</h3></li>
+-->
 				{# competency areas for the general subject area #}
 				{# requires an empty nesting level (blank sda) #}
 				<ul>
