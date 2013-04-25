@@ -1,6 +1,6 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.forms.models import modelformset_factory, inlineformset_factory
+from django.forms.models import modelform_factory, modelformset_factory, inlineformset_factory
 
 from copy import copy
 
@@ -95,6 +95,7 @@ def entire_system(request, school_id):
                                'sda_cas': sda_cas, 'ca_eus': ca_eus,
                                'eu_lts': eu_lts},
                               context_instance = RequestContext(request))
+
 
 # --- Edit views, for editing parts of the system ---
 def edit_school(request, school_id):
@@ -301,9 +302,21 @@ def create_pathway(request, school_id):
     Links to pages that edit the pathway.
     """
     school = School.objects.get(id=school_id)
+    PathwayFormSet = modelformset_factory(Pathway, fields=('name',))
+
+    if request.method == 'POST':
+        pw_formset = PathwayFormSet(request.POST)
+        if pw_formset.is_valid():
+            instances = pw_formset.save(commit=False)
+            for instance in instances:
+                instance.school = school
+                instance.save()
+
+    pw_formset = PathwayFormSet()
 
     return render_to_response('competencies/create_pathway.html',
-                              {'school': school},
+                              {'school': school,
+                               'pw_formset': pw_formset},
                               context_instance = RequestContext(request))
 
 
