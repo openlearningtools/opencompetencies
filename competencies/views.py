@@ -323,7 +323,7 @@ def edit_pathway_subject_areas(request, pathway_id):
     pathway = Pathway.objects.get(id=pathway_id)
     school = pathway.school
 
-    PathwayFormSet = modelformset_factory(Pathway, fields=('name', 'subject_areas',), extra=0)
+    PathwayFormSet = modelformset_factory(Pathway, form=PathwayForm, fields=('name', 'subject_areas',), extra=0)
 
     if request.method == 'POST':
         pw_formset = PathwayFormSet(request.POST)

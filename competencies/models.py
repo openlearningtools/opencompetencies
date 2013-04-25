@@ -71,3 +71,12 @@ class LearningTargetForm(ModelForm):
         fields = ('learning_target', )
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
         widgets = {'learning_target': Textarea(attrs={'rows': 3, 'class': 'span8'}) }
+
+class PathwayForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(PathwayForm, self).__init__(*args, **kwargs)
+        pathway = self.instance
+        self.fields['subject_areas'].queryset = pathway.school.subjectarea_set.all()
+
+    class Meta:
+        model = Pathway
