@@ -6,7 +6,9 @@
 
     <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a>: Pathways</h2>
 
-	 <h4>A Pathway is a set of related learning targets. One example is a pathway that represents a given career. For example, a pathway might represent all of the learning targets that should be mastered in order to become a carpenter.</h4>
+	 <p>A Pathway is a set of related learning targets. One use of a pathway is to represent a given career. For example, a pathway might represent all of the learning targets that should be mastered in order to become a software developer.<p>
+	 <p><a href='{% url 'competencies:create_pathway' school.id %}'>Create a new pathway</a>
+	 </p>
 
 	 <ul>
 	 {% for pathway in pathways %}

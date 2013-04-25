@@ -60,6 +60,9 @@ urlpatterns = patterns('',
     #  Later, will be a flag that stays active, highlighting elements of the pathway on every view page.
     url(r'^pathway/(?P<pathway_id>\d+)/$', views.pathway, name='pathway'),
 
+    # create_pathway: Allows user to create a pathway. Links to pages that edit the pathway.
+    url(r'^create_pathway/(?P<school_id>\d+)/$', views.create_pathway, name='create_pathway'),
+
 
     # --- Forking pages ---
     # fork: Page offering an empty school the opportunity to fork an established school.

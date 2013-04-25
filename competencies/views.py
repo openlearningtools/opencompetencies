@@ -296,6 +296,17 @@ def pathway(request, pathway_id):
                                'eu_lts': eu_lts},
                               context_instance = RequestContext(request))
 
+def create_pathway(request, school_id):
+    """Allows user to create a new pathway.
+    Links to pages that edit the pathway.
+    """
+    school = School.objects.get(id=school_id)
+
+    return render_to_response('competencies/create_pathway.html',
+                              {'school': school},
+                              context_instance = RequestContext(request))
+
+
 # --- Forking pages: pages related to forking an existing school ---
 def fork(request, school_id):
     empty_school = School.objects.get(id=school_id)
