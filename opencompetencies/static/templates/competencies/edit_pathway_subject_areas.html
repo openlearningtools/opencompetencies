@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title_extension %} - {{ school }}{% endblock %}
+
+{% block content %}
+
+    <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a> - Edit pathway: <a href='{% url 'competencies:pathway' pathway.id %}'>{{ pathway }}</a></h2>
+
+	 <p>This page lets you add or remove subject areas from the pathway {{ pathway }}.</p>
+	 <p><a href='{% url 'competencies:pathways' school.id %}'>Current pathways</a>
+	 </p>
+
+	 <form method='post' action=''>
+		  {% csrf_token %}
+		  {{ pw_formset.as_p }}
+		  <input type='submit' value='Save Changes' />
+	 </form>
+
+
+{% endblock %}

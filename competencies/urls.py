@@ -63,6 +63,9 @@ urlpatterns = patterns('',
     # create_pathway: Allows user to create a pathway. Links to pages that edit the pathway.
     url(r'^create_pathway/(?P<school_id>\d+)/$', views.create_pathway, name='create_pathway'),
 
+    # edit_pathway_subjects: Allows user to add or remove subjects from a pathway.
+    url(r'^edit_pathway_subject_areas/(?P<pathway_id>\d+)/$', views.edit_pathway_subject_areas, name='edit_pathway_subject_areas'),
+
 
     # --- Forking pages ---
     # fork: Page offering an empty school the opportunity to fork an established school.

@@ -319,6 +319,30 @@ def create_pathway(request, school_id):
                                'pw_formset': pw_formset},
                               context_instance = RequestContext(request))
 
+def edit_pathway_subject_areas(request, pathway_id):
+    pathway = Pathway.objects.get(id=pathway_id)
+    school = pathway.school
+
+    PathwayFormSet = modelformset_factory(Pathway, fields=('name', 'subject_areas',), extra=0)
+
+    if request.method == 'POST':
+        pw_formset = PathwayFormSet(request.POST)
+        if pw_formset.is_valid():
+            instances = pw_formset.save(commit=True)
+            for instance in instances:
+                continue
+                instance.school = school
+                instance.save()
+
+    pw_formset = PathwayFormSet(queryset=Pathway.objects.all().filter(id=pathway_id))
+
+
+    return render_to_response('competencies/edit_pathway_subject_areas.html',
+                              {'school': school,
+                               'pathway': pathway, 'pw_formset': pw_formset,
+                               },
+                              context_instance = RequestContext(request))
+
 
 # --- Forking pages: pages related to forking an existing school ---
 def fork(request, school_id):
