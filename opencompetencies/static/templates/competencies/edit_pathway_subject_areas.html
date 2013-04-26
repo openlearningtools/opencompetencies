@@ -14,7 +14,9 @@
 		  {% csrf_token %}
 		  {{ pw_formset.as_p }}
 		  <input type='submit' value='Save Changes' />
+		  {% if saved_msg %}
+		      {{ saved_msg }} Back to <a href='{% url 'competencies:pathway' pathway.id %}'>{{ pathway }}</a>.
+		  {% endif %}
 	 </form>
-
 
 {% endblock %}

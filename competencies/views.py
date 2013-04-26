@@ -322,6 +322,7 @@ def create_pathway(request, school_id):
 def edit_pathway_subject_areas(request, pathway_id):
     pathway = Pathway.objects.get(id=pathway_id)
     school = pathway.school
+    saved_msg = ''
 
     PathwayFormSet = modelformset_factory(Pathway, form=PathwayForm, fields=('name', 'subject_areas',), extra=0)
 
@@ -329,10 +330,7 @@ def edit_pathway_subject_areas(request, pathway_id):
         pw_formset = PathwayFormSet(request.POST)
         if pw_formset.is_valid():
             instances = pw_formset.save(commit=True)
-            for instance in instances:
-                continue
-                instance.school = school
-                instance.save()
+            saved_msg = 'Your changes were saved.'
 
     pw_formset = PathwayFormSet(queryset=Pathway.objects.all().filter(id=pathway_id))
 
@@ -340,6 +338,7 @@ def edit_pathway_subject_areas(request, pathway_id):
     return render_to_response('competencies/edit_pathway_subject_areas.html',
                               {'school': school,
                                'pathway': pathway, 'pw_formset': pw_formset,
+                               'saved_msg': saved_msg,
                                },
                               context_instance = RequestContext(request))
 
