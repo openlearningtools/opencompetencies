@@ -324,7 +324,7 @@ def edit_pathway_subject_areas(request, pathway_id):
     school = pathway.school
     saved_msg = ''
 
-    PathwayFormSet = modelformset_factory(Pathway, form=PathwayForm, fields=('name', 'subject_areas',), extra=0)
+    PathwayFormSet = modelformset_factory(Pathway, form=PathwayForm, fields=('name', 'subject_areas', 'subdiscipline_areas',), extra=0)
 
     if request.method == 'POST':
         pw_formset = PathwayFormSet(request.POST)
@@ -333,7 +333,6 @@ def edit_pathway_subject_areas(request, pathway_id):
             saved_msg = 'Your changes were saved.'
 
     pw_formset = PathwayFormSet(queryset=Pathway.objects.all().filter(id=pathway_id))
-
 
     return render_to_response('competencies/edit_pathway_subject_areas.html',
                               {'school': school,
