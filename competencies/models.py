@@ -54,6 +54,8 @@ class Pathway(models.Model):
     subject_areas = models.ManyToManyField(SubjectArea)
     subdiscipline_areas = models.ManyToManyField(SubdisciplineArea, blank=True, null=True)
     competency_areas = models.ManyToManyField(CompetencyArea, blank=True, null=True)
+    essential_understandings = models.ManyToManyField(EssentialUnderstanding, blank=True, null=True)
+    learning_targets = models.ManyToManyField(LearningTarget, blank=True, null=True)
 
     def __unicode__(self):
         return self.name
@@ -101,6 +103,12 @@ class PathwayForm(ModelForm):
                     ca_queryset = ca_queryset | sda.competencyarea_set.all()
             self.fields['competency_areas'].queryset = ca_queryset
 
+        # eus
+        if pathway.competency_areas.all():
+            eu_queryset = EssentialUnderstanding.objects.none()
+            for ca in pathway.competency_areas.all():
+                eu_queryset |= ca.essentialunderstanding_set.all()
+            self.fields['essential_understandings'].queryset = eu_queryset
 
     class Meta:
         model = Pathway

@@ -41,7 +41,11 @@
 									 {% for new_ca, eus in ca_eus.items %}
 									     {% if new_ca == ca %}
 									         {% for eu in eus %}
-									             <li><a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+									             {% if eu in pathway.essential_understandings.all %}
+									                 <li><a class='current_pathway' href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+													 {% else %}
+									                 <li><a class='off_pathway' href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>														  
+													 {% endif %}
 
 													 {# --- learning targets --- #}
 													 <ul>
@@ -90,7 +94,11 @@
 									 {% for new_ca, eus in ca_eus.items %}
 									     {% if new_ca == ca %}
 									         {% for eu in eus %}
-									             <li><a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+									             {% if eu in pathway.essential_understandings.all %}
+									                 <li><a class='current_pathway' href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+													 {% else %}
+									                 <li><a class='off_pathway' href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>														  
+													 {% endif %}
 
 													 {# --- learning targets --- #}
 													 <ul>
