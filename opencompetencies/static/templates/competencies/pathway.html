@@ -9,7 +9,7 @@
 	 <h3>Pathway Description: </h3>
 	 <p>All elements of the current pathway, {{ pathway }}, are shown in green.</p>
 	 <p><a href='{% url 'competencies:pathways' school.id %}'>Current pathways</a>
-	    | <a href='{% url 'competencies:edit_pathway_subject_areas' pathway.id %}'>Edit pathway</a>
+	    | <a href='{% url 'competencies:edit_pathway' pathway.id %}'>Edit pathway</a>
 	 </p>
 
 	 {% if subject_areas %}

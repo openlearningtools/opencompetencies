@@ -319,7 +319,8 @@ def create_pathway(request, school_id):
                                'pw_formset': pw_formset},
                               context_instance = RequestContext(request))
 
-def edit_pathway_subject_areas(request, pathway_id):
+def edit_pathway(request, pathway_id):
+    """Allows a user to add or remove elements in a pathway."""
     pathway = Pathway.objects.get(id=pathway_id)
     school = pathway.school
     saved_msg = ''
@@ -343,7 +344,7 @@ def edit_pathway_subject_areas(request, pathway_id):
 
     pw_formset = PathwayFormSet(queryset=Pathway.objects.all().filter(id=pathway_id))
 
-    return render_to_response('competencies/edit_pathway_subject_areas.html',
+    return render_to_response('competencies/edit_pathway.html',
                               {'school': school,
                                'pathway': pathway, 'pw_formset': pw_formset,
                                'saved_msg': saved_msg,
