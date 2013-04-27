@@ -357,6 +357,8 @@ def get_fields(pathway):
         fields.append('competency_areas',)
     if pathway.competency_areas.all():
         fields.append('essential_understandings',)
+    if pathway.essential_understandings.all():
+        fields.append('learning_targets',)
 
     return tuple(fields)
 

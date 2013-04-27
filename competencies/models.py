@@ -110,5 +110,12 @@ class PathwayForm(ModelForm):
                 eu_queryset |= ca.essentialunderstanding_set.all()
             self.fields['essential_understandings'].queryset = eu_queryset
 
+        # lts
+        if pathway.essential_understandings.all():
+            lt_queryset = LearningTarget.objects.none()
+            for eu in pathway.essential_understandings.all():
+                lt_queryset |= eu.learningtarget_set.all()
+            self.fields['learning_targets'].queryset = lt_queryset
+
     class Meta:
         model = Pathway
