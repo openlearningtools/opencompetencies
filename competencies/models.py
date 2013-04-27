@@ -53,6 +53,7 @@ class Pathway(models.Model):
     school = models.ForeignKey(School)
     subject_areas = models.ManyToManyField(SubjectArea)
     subdiscipline_areas = models.ManyToManyField(SubdisciplineArea, blank=True, null=True)
+    competency_areas = models.ManyToManyField(CompetencyArea, blank=True, null=True)
 
     def __unicode__(self):
         return self.name
@@ -89,6 +90,18 @@ class PathwayForm(ModelForm):
                 else:
                     sda_queryset = sda_queryset | sa.subdisciplinearea_set.all()
             self.fields['subdiscipline_areas'].queryset = sda_queryset
+
+        # cas
+        if pathway.subject_areas.all():
+            for i, sa in enumerate(pathway.subject_areas.all()):
+                if i==0:
+                    ca_queryset = sa.competencyarea_set.all().filter(subdiscipline_area=None)
+                else:
+                    ca_queryset = ca_queryset | sa.competencyarea_set.all().filter(subdiscipline_area=None)
+            if pathway.subdiscipline_areas.all():
+                for sda in pathway.subdiscipline_areas.all():
+                    ca_queryset = ca_queryset | sda.competencyarea_set.all()
+            self.fields['competency_areas'].queryset = ca_queryset
 
     class Meta:
         model = Pathway

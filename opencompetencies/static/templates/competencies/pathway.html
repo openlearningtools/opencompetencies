@@ -30,7 +30,11 @@
 					 {% for new_sa, cas in sa_cas.items %}
 					     {% if new_sa == sa %}
 					         {% for ca in cas %}
-					             <li><h5><a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+					             {% if ca in pathway.competency_areas.all %}
+					                 <li><h5><a class='current_pathway' href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+									 {% else %}
+					                 <li><h5><a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+									 {% endif %}
 
 									 {# --- essential understandings --- #}
 									 <ul>
@@ -75,7 +79,11 @@
 					 {% for new_sda, cas in sda_cas.items %}
 					     {% if new_sda == sda %}
 					         {% for ca in cas %}
-					             <li><h5><a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+					             {% if ca in pathway.competency_areas.all %}
+					                 <li><h5><a class='current_pathway' href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+									 {% else %}
+					                 <li><h5><a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+									 {% endif %}
 
 									 {# --- essential understandings --- #}
 									 <ul>

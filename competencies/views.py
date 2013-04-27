@@ -354,6 +354,8 @@ def get_fields(pathway):
     fields = ['name', 'subject_areas',]
     if pathway.subject_areas.all():
         fields.append('subdiscipline_areas',)
+        fields.append('competency_areas',)
+
     return tuple(fields)
 
 
