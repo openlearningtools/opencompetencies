@@ -3,3 +3,8 @@ a.current_pathway, li.current_pathway, h1.current_pathway, h2.current_pathway,
 h3.current_pathway, h4.current_pathway, h5.current_pathway {
 	 color: green;
 }
+
+a.off_pathway, li.off_pathway, h1.off_pathway, h2.off_pathway,
+h3.off_pathway, h4.off_pathway, h5.off_pathway {
+	 color: #aaa;
+}

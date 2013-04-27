@@ -18,9 +18,9 @@
 	     <ul>
 	     {% for sa, sdas in sa_sdas.items %}
 		      {% if sa in pathway.subject_areas.all %}
-		          <li class='current_pathway'><h3 class='current_pathway'><a class='current_pathway' href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
+		          <li><h3><a class='current_pathway' href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
 				{% else %}
-		          <li><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
+		          <li><h3><a class='off_pathway' href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
 				{% endif %}
 
 				{# competency areas for the general subject area #}
@@ -33,7 +33,7 @@
 					             {% if ca in pathway.competency_areas.all %}
 					                 <li><h5><a class='current_pathway' href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
 									 {% else %}
-					                 <li><h5><a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+					                 <li><h5><a class='off_pathway' href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
 									 {% endif %}
 
 									 {# --- essential understandings --- #}
@@ -71,7 +71,7 @@
 				    {% if sda in pathway.subdiscipline_areas.all %}
 				        <li><h4><a class='current_pathway' href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></li>				
 				    {% else %}
-				        <li><h4><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></li>
+				        <li><h4><a class='off_pathway' href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></li>
 				    {% endif %}
 
 					 {# --- competency areas --- #}
@@ -82,7 +82,7 @@
 					             {% if ca in pathway.competency_areas.all %}
 					                 <li><h5><a class='current_pathway' href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
 									 {% else %}
-					                 <li><h5><a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+					                 <li><h5><a class='off_pathway' href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
 									 {% endif %}
 
 									 {# --- essential understandings --- #}
