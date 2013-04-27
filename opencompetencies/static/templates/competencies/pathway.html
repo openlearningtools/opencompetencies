@@ -9,7 +9,7 @@
 	 <h3>Pathway Description: </h3>
 	 <p>All elements of the current pathway, {{ pathway }}, are shown in green.</p>
 	 <p><a href='{% url 'competencies:pathways' school.id %}'>Current pathways</a>
-	    | <a href='{% url 'competencies:edit_pathway_subject_areas' pathway.id %}'>Edit subject areas</a>
+	    | <a href='{% url 'competencies:edit_pathway_subject_areas' pathway.id %}'>Edit pathway</a>
 	 </p>
 
 	 {% if subject_areas %}
@@ -23,11 +23,6 @@
 		          <li><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
 				{% endif %}
 
-<!--
-		      <li><h3>{% if sa in pathway.subject_areas.all %}<style="class: current_pathway">{% endif %}
-					 <a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a>
-				{% if sa in pathway.subject_areas.all %}</style>{% endif %}</h3></li>
--->
 				{# competency areas for the general subject area #}
 				{# requires an empty nesting level (blank sda) #}
 				<ul>
@@ -69,7 +64,11 @@
 				{# ---  subdiscipline areas --- #}
 				<ul>
 				{% for sda in sdas %}
-				    <li><h4><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></li>
+				    {% if sda in pathway.subdiscipline_areas.all %}
+				        <li><h4><a class='current_pathway' href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></li>				
+				    {% else %}
+				        <li><h4><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></li>
+				    {% endif %}
 
 					 {# --- competency areas --- #}
 					 <ul>
