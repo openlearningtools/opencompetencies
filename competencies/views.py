@@ -303,6 +303,7 @@ def create_pathway(request, school_id):
     """
     school = School.objects.get(id=school_id)
     PathwayFormSet = modelformset_factory(Pathway, fields=('name',))
+    saved_msg = ''
 
     if request.method == 'POST':
         pw_formset = PathwayFormSet(request.POST)
@@ -311,12 +312,13 @@ def create_pathway(request, school_id):
             for instance in instances:
                 instance.school = school
                 instance.save()
+                saved_msg = 'Your changes were saved.'
 
     pw_formset = PathwayFormSet()
 
     return render_to_response('competencies/create_pathway.html',
                               {'school': school,
-                               'pw_formset': pw_formset},
+                               'pw_formset': pw_formset, 'saved_msg': saved_msg,},
                               context_instance = RequestContext(request))
 
 def edit_pathway(request, pathway_id):
