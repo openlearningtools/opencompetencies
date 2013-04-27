@@ -6,7 +6,7 @@
 
     <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a> - Edit pathway: <a href='{% url 'competencies:pathway' pathway.id %}'>{{ pathway }}</a></h2>
 
-	 <p>This page lets you add or remove subject areas from the pathway {{ pathway }}.</p>
+	 <p>This page lets you add or remove subject areas from the pathway {{ pathway }}. After adding new elements at one level, save your changes; new options will appear for lower-level elements.</p>
 	 <p><a href='{% url 'competencies:pathways' school.id %}'>Current pathways</a>
 	 </p>
 

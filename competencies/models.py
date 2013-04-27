@@ -84,24 +84,23 @@ class PathwayForm(ModelForm):
 
         # sdas
         if pathway.subject_areas.all():
-            for i, sa in enumerate(pathway.subject_areas.all()):
-                if i==0:
-                    sda_queryset = sa.subdisciplinearea_set.all()
-                else:
-                    sda_queryset = sda_queryset | sa.subdisciplinearea_set.all()
+            sda_queryset = SubdisciplineArea.objects.none()
+            for sa in pathway.subject_areas.all():
+                sda_queryset = sda_queryset | sa.subdisciplinearea_set.all()
             self.fields['subdiscipline_areas'].queryset = sda_queryset
 
         # cas
         if pathway.subject_areas.all():
-            for i, sa in enumerate(pathway.subject_areas.all()):
-                if i==0:
-                    ca_queryset = sa.competencyarea_set.all().filter(subdiscipline_area=None)
-                else:
-                    ca_queryset = ca_queryset | sa.competencyarea_set.all().filter(subdiscipline_area=None)
+            ca_queryset = CompetencyArea.objects.none()
+            # General subject area competencies:
+            for sa in pathway.subject_areas.all():
+                ca_queryset = ca_queryset | sa.competencyarea_set.all().filter(subdiscipline_area=None)
+            # Subdiscipline area competencies:
             if pathway.subdiscipline_areas.all():
                 for sda in pathway.subdiscipline_areas.all():
                     ca_queryset = ca_queryset | sda.competencyarea_set.all()
             self.fields['competency_areas'].queryset = ca_queryset
+
 
     class Meta:
         model = Pathway
