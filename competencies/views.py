@@ -330,13 +330,13 @@ def edit_pathway_subject_areas(request, pathway_id):
     PathwayFormSet = modelformset_factory(Pathway, form=PathwayForm, fields=get_fields(pathway), extra=0)
 
     if request.method == 'POST':
-        saved_msg = 'POST request'
         pw_formset = PathwayFormSet(request.POST)
         if pw_formset.is_valid():
             instances = pw_formset.save(commit=True)
             saved_msg = 'Your changes were saved.'
         else:
-            saved_msg = 'Invalid form.' + str(pw_formset.errors)
+            # debugging:
+            pass #saved_msg = 'Invalid form.' + str(pw_formset.errors)
 
     # Get new formset, based on updated pathway object
     PathwayFormSet = modelformset_factory(Pathway, form=PathwayForm, fields=get_fields(pathway), extra=0)
@@ -351,10 +351,10 @@ def edit_pathway_subject_areas(request, pathway_id):
                               context_instance = RequestContext(request))
 
 def get_fields(pathway):
-    fields = ('name', 'subject_areas',)
+    fields = ['name', 'subject_areas',]
     if pathway.subject_areas.all():
-        fields = ('name', 'subject_areas', 'subdiscipline_areas',)
-    return fields
+        fields.append('subdiscipline_areas',)
+    return tuple(fields)
 
 
 # --- Forking pages: pages related to forking an existing school ---
