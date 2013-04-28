@@ -51,12 +51,12 @@
 													 <ul>
 													 {% for new_eu, lts in eu_lts.items %}
 													     {% if new_eu == eu %}
+													         {% for lt in lts %}
 													             {% if lt in pathway.learning_targets.all %}
 													                 <li class='current_pathway'>{{ lt }}</li>
 																    {% else %}
 													                 <li class='off_pathway'>{{ lt }}</li>																		  
 																	 {% endif %}
-													         {% for lt in lts %}
 															   {% endfor %}
 														  {% endif %}
 													 {% endfor %}
