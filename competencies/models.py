@@ -1,5 +1,5 @@
 from django.db import models
-from django.forms import ModelForm, Textarea
+from django.forms import ModelForm, Textarea, SelectMultiple, CheckboxSelectMultiple
 
 # --- Competency System Hierarchy ---
 
@@ -119,3 +119,13 @@ class PathwayForm(ModelForm):
 
     class Meta:
         model = Pathway
+        # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
+        #  Consider CheckboxSelectMultiple for some of these, especially eus and lts
+        # number of items to show in longer dropdown lists:
+        widgets = {
+            'subject_areas': SelectMultiple(attrs={'class': 'span8', 'size': 5}),
+            'subdiscipline_areas': SelectMultiple(attrs={'class': 'span8', 'size': 5}),
+            'competency_areas': SelectMultiple(attrs={'class': 'span8', 'size': 15}),
+            'essential_understandings': SelectMultiple(attrs={'class': 'span8', 'size': 20}),
+            'learning_targets': SelectMultiple(attrs={'class': 'span8', 'size': 20}),
+            }
