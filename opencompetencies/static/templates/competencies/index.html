@@ -4,11 +4,22 @@
 
       <h1>Welcome to Open Competencies</h1>
 		<h2>(pre-alpha demo version)</h2>
-		<p>To kick the tires, which are very tiny and wobbly at this early stage, click on the link below to view existing schools.</p>
-		<p>Poke around the <a href='{% url 'competencies:schools' %}'>existing schools</a> briefly, then go back and <a href='{% url 'competencies:schools' %}'>create your own school</a>.  If you create your own school, you will be able to fork an existing school's system.  This is a demo of the first main feature of the Open Competencies project.</p>
-		<p>You can also check out a <a href='{% url 'competencies:pathways' 1 %}'>sample pathway</a>. A pathway is a collection of related elements of the competency system. One use of a pathway is to represent all of the learning targets required for a certain career. Each pathway belongs to a particular school, so there is no direct link to all pathways.</p>
-		<p>If you are a developer, you can check out the code from <a href="https://github.com/openlearningtools/opencompetencies">github</a>. You can share <a href="https://github.com/openlearningtools/opencompetencies/issues/2">feedback</a> there as well.</p> 
-		<h3><a href="schools">View competencies by school</a></h3>
-		{# Need to implement: <h3><a href="entire_system">View entire competency system</a></h3> #}
+
+		<p>This is a bare-bones demonstration of what I'd like Open Competencies to be.  Please kick the tires a bit, and share some <a href="https://github.com/openlearningtools/opencompetencies/issues/2">feedback</a> if you'd like to see this project fully developed.</p>
+
+		<p>You can start by looking at some sample competencies from <a href='{% url 'competencies:school' phs.id %}'>Pacific High School</a>.  Then go back and <a href='{% url 'competencies:schools' %}'>create your own school</a>; once you create your own school, you will be able to fork an existing school's system.  This forking behavior is one of the core features of the Open Competencies project.</p>
+
+		<p>You can also check out a <a href='{% url 'competencies:pathways' phs.id %}'>sample pathway</a>, a collection of related elements of the competency system. One use of a pathway is to represent all of the learning targets required for a certain career. This is another main feature of Open Competencies: the ability to identify different graduation requirements for individual students, based on their post-high school plans.</p>
+
+		<p>If you are a developer, you can check out the code from <a href="https://github.com/openlearningtools/opencompetencies">github</a>. You can share <a href="https://github.com/openlearningtools/opencompetencies/issues/2">feedback</a> there as well.</p>
+
+		<p>If you'd like to get in touch directly, you can find me on twitter <a href='https://twitter.com/ehmatthes'>@ehmatthes</a>, or you can email me at ehmatthes at gmail.</p> 
+
+		<h3><a href='{% url 'competencies:school' phs.id %}'>View competencies for Pacific High School</a></h3>
 
 {% endblock %}
+
+
+
+
+

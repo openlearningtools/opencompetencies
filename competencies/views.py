@@ -8,7 +8,11 @@ from competencies.models import *
 
 
 def index(request):
-    return render_to_response('competencies/index.html')
+    phs = School.objects.get(name='Pacific High School')
+
+    return render_to_response('competencies/index.html',
+                              {'phs': phs,},
+                              context_instance = RequestContext(request))
 
 # --- Simple views, for exploring system without changing it: ---
 def schools(request):
