@@ -8,12 +8,12 @@ from competencies.models import *
 
 
 def index(request):
-    phs = School.objects.get(name='Pacific High School')
-    pw_min_hs_grad = Pathway.objects.filter(school=phs).get(name='Minimum High School Graduation Requirements')
-    pw_physicist = Pathway.objects.filter(school=phs).get(name='Physicist')
+    sample_school = School.objects.get(name='Sample High School')
+    pw_min_hs_grad = Pathway.objects.filter(school=sample_school).get(name='Minimum High School Graduation Requirements')
+    pw_physicist = Pathway.objects.filter(school=sample_school).get(name='Physicist')
 
     return render_to_response('competencies/index.html',
-                              {'phs': phs,
+                              {'sample_school': sample_school,
                                'pw_min_hs_grad': pw_min_hs_grad,
                                'pw_physicist': pw_physicist},
                               context_instance = RequestContext(request))
