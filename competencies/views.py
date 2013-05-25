@@ -84,13 +84,17 @@ def entire_system(request, school_id):
             sda_cas[sda] = sda.competencyarea_set.all()
     # all essential understandings for each competency area
     #  loop through all sa_cas, sda_cas
+    # also grab level descriptions for each competency area
     ca_eus = {}
+    ca_levels = {}
     for cas in sda_cas.values():
         for ca in cas:
             ca_eus[ca] = ca.essentialunderstanding_set.all()
+            ca_levels[ca] = ca.level_set.all()
     for cas in sa_cas.values():
         for ca in cas:
             ca_eus[ca] = ca.essentialunderstanding_set.all()
+            ca_levels[ca] = ca.level_set.all()
     # all learning targets for each essential understanding
     eu_lts = {}
     for eus in ca_eus.values():
@@ -101,7 +105,7 @@ def entire_system(request, school_id):
                               {'school': school, 'subject_areas': sas,
                                'sa_sdas': sa_sdas, 'sa_cas': sa_cas,
                                'sda_cas': sda_cas, 'ca_eus': ca_eus,
-                               'eu_lts': eu_lts},
+                               'ca_levels': ca_levels, 'eu_lts': eu_lts},
                               context_instance = RequestContext(request))
 
 

@@ -7,7 +7,6 @@
 	 <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a></h2>
 	 <p>This page shows the entire competency system for <a href='{% url 'competencies:school' school.id %}'</a>{{ school }}</a>.</p>
 
-
 	 {% if subject_areas %}
 
 		  {# ---  subject areas --- #}
@@ -23,6 +22,17 @@
 					     {% if new_sa == sa %}
 					         {% for ca in cas %}
 					             <li><h5><a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+
+									 {# --- levels --- #}
+									 <ul>
+									 {% for new_ca, levels in ca_levels.items %}
+									     {% if new_ca == ca %}
+									         {% for level in levels %}
+									             <li><b>{{ level.level_type }}</b>: {{ level }}</li>
+												{% endfor %}
+									     {% endif %}
+									 {% endfor %}
+									 </ul>
 
 									 {# --- essential understandings --- #}
 									 <ul>

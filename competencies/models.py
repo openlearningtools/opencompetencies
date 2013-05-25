@@ -31,6 +31,20 @@ class CompetencyArea(models.Model):
     def __unicode__(self):
         return self.competency_area
 
+class Level(models.Model):
+    APPRENTICE = 'Apprentice'
+    TECHNICIAN = 'Technician'
+    MASTER = 'Master'
+    PROFESSIONAL = 'Professional'
+    LEVEL_TYPE_CHOICES = ( (APPRENTICE, 'Apprentice'), (TECHNICIAN, 'Technician'),
+                           (MASTER, 'Master'), (PROFESSIONAL, 'Professional') )
+    level_type = models.CharField(max_length=500, choices=LEVEL_TYPE_CHOICES)
+    level_description = models.CharField(max_length=5000)
+    competency_area = models.ForeignKey(CompetencyArea)
+
+    def __unicode__(self):
+        return self.level_description
+
 class EssentialUnderstanding(models.Model):
     essential_understanding = models.CharField(max_length=2000)
     competency_area = models.ForeignKey(CompetencyArea)
