@@ -36,8 +36,12 @@ class EssentialUnderstandingInline(admin.TabularInline):
     model = EssentialUnderstanding
     extra = 1
 
+class LevelInline(admin.TabularInline):
+    model = Level
+    extra = 1
+
 class CompetencyAreaAdmin(admin.ModelAdmin):
-    inlines = [EssentialUnderstandingInline]
+    inlines = [EssentialUnderstandingInline, LevelInline]
 
 # --- Essential Understanding admin, with learning targets inline
 class LearningTargetInline(admin.TabularInline):
