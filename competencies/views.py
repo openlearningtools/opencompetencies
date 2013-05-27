@@ -90,11 +90,11 @@ def entire_system(request, school_id):
     for cas in sda_cas.values():
         for ca in cas:
             ca_eus[ca] = ca.essentialunderstanding_set.all()
-            ca_levels[ca] = ca.level_set.all()
+            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
     for cas in sa_cas.values():
         for ca in cas:
             ca_eus[ca] = ca.essentialunderstanding_set.all()
-            ca_levels[ca] = ca.level_set.all()
+            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
     # all learning targets for each essential understanding
     eu_lts = {}
     for eus in ca_eus.values():
