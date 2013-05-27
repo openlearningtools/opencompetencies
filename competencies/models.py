@@ -45,6 +45,9 @@ class Level(models.Model):
     def __unicode__(self):
         return self.level_description
 
+    class Meta:
+        order_with_respect_to = 'competency_area'
+
 class EssentialUnderstanding(models.Model):
     essential_understanding = models.CharField(max_length=2000)
     competency_area = models.ForeignKey(CompetencyArea)
