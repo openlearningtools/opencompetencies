@@ -43,9 +43,13 @@ def subdiscipline_area(request, subdiscipline_area_id):
     subject_area = subdiscipline_area.subject_area
     school = subject_area.school
     competency_areas = subdiscipline_area.competencyarea_set.all()
+    ca_levels = {}
+    for ca in competency_areas:
+        ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
     return render_to_response('competencies/subdiscipline_area.html',
                               {'subdiscipline_area': subdiscipline_area, 'subject_area': subject_area,
-                               'school': school, 'competency_areas': competency_areas})
+                               'school': school, 'competency_areas': competency_areas,
+                               'ca_levels': ca_levels})
 
 def competency_area(request, competency_area_id):
     """Shows all of the essential understandings for a given competency area."""

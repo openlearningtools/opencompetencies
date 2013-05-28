@@ -6,7 +6,7 @@
 
 	 <h2><a href="/schools/{{ school.id }}">{{ school.name }}</a></h2>
 
-	 <p>This page lists the essential understandings for the competency area {{ competency_area }}. The learning targets for each essential understanding are also listed.</p>
+	 <p>This page lists the essential understandings for the competency area {{ competency_area }}. The learning targets and performance levels for each essential understanding are also listed.</p>
 	 <p><a href='{% url 'competencies:edit_competency_area' competency_area.id %}'>Edit essential understandings</a>
 	    | <a href='{% url 'competencies:edit_levels' competency_area.id %}'>Edit levels</a>
 	    | <a href='{% url 'competencies:entire_system' school.id %}'>View entire system</a>
@@ -20,7 +20,7 @@
 
 	 <ul>
 	 {% for ca_level in ca_levels %}
-	     <li><b>{{ ca_level.level_type }}</b>: {{ ca_level }}</li>
+	     <li><b>{{ ca_level.level_type }} Level</b>: {{ ca_level }}</li>
 	 {% endfor %}
 	 </ul>
 	 

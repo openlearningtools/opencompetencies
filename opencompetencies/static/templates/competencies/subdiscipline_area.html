@@ -17,6 +17,18 @@
 	     <ul>
 		  {% for ca in competency_areas %}
 		      <li><a href='/competency_areas/{{ ca.id }}/'><h3>{{ ca }}</h3></a></li>
+
+				{# --- levels --- #}
+				<ul>
+				{% for new_ca, levels in ca_levels.items %}
+					 {% if new_ca == ca %}
+				        {% for level in levels %}
+				            <li><b>{{ level.level_type }} Level</b>: {{ level }}</li>
+						  {% endfor %}
+					 {% endif %}
+			   {% endfor %}
+				</ul>
+
 				<ul>
 			   {% for eu in ca.essentialunderstanding_set.all %}
 				    <li><a href='/essential_understandings/{{ eu.id }}/'><h4>{{ eu }}</h4></a></li>
