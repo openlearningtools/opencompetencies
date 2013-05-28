@@ -128,6 +128,8 @@ A performance level is a measure of the level of quality of a piece of work that
 
 A performance level is the level of skill or knowledge that a piece of work demonstrates.  Performance levels are [Apprentice](#apprentice), [Technician](#technician), [Master](#master), and [Professional](#professional).  These are not scores or grades; the lowest level still demonstrates basic competence.  A student may work at a high level in many subjects, but may never achieve professional level work during high school.
 
+Performance levels relate to the degree of independence a student demonstrates in their ability to meet a target. A student who needs constant assistance and supervision is at the Apprentice level. A student who knows a target well enough to meet that target independently has probably moved on to the Technician level. Quality is related to performance levels as well. Work at the professional level has to be high-quality. Work at the Apprentice level should be of reasonable quality. If the goal is learning a particular topic or skill rather than creating a high quality product, it may be appropriate to stop at a lower level of quality.
+
 [top](#top)
 
 <a name="apprentice"></a>apprentice
