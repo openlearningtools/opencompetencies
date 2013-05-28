@@ -47,6 +47,9 @@ urlpatterns = patterns('',
     # edit_competency_area: Allows editing of a competency area's essential understandings.
     url(r'^edit_competency_area/(?P<competency_area_id>\d+)/$', views.edit_competency_area, name='edit_competency_area'),
 
+    # edit_levels: Allows editing of levels for a given competency area.
+    url(r'^edit_levels/(?P<competency_area_id>\d+)/$', views.edit_levels, name='edit_levels'),
+
     # edit_essential_understanding: Allows editing of the learning targets
     #  associated with an essential understanding.
     url(r'^edit_essential_understanding/(?P<essential_understanding_id>\d+)/$', views.edit_essential_understanding, name='edit_essential_understanding'),

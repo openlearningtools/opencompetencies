@@ -235,6 +235,33 @@ def edit_competency_area(request, competency_area_id):
                                'eu_formset': eu_formset},
                               context_instance = RequestContext(request))
 
+def edit_levels(request, competency_area_id):
+    """Allows user to edit levels for a given competency area."""
+    ca = CompetencyArea.objects.get(id=competency_area_id)
+    ca_levels = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
+    sa = ca.subject_area
+    sda = ca.subdiscipline_area
+    school = sa.school
+
+    LevelFormSet = modelformset_factory(Level, form=LevelForm)
+    #LevelFormSet = modelformset_factory(Level)
+
+    if request.method == 'POST':
+        level_formset = LevelFormSet(request.POST)
+        if level_formset.is_valid():
+            isntances = eu_formset.save(commit=False)
+            for instance in instances:
+                instance.save()
+
+    level_formset = LevelFormSet(queryset=ca.level_set.all())
+
+    return render_to_response('competencies/edit_levels.html',
+                              {'school': school, 'subject_area': sa,
+                               'subdiscipline_area': sda, 'competency_area': ca,
+                               'level_formset': level_formset},
+                              context_instance = RequestContext(request))
+
+
 def edit_essential_understanding(request, essential_understanding_id):
     """Allows user to edit the learning targets associated with an essential understanding."""
     eu = EssentialUnderstanding.objects.get(id=essential_understanding_id)
