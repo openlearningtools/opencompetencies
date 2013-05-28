@@ -249,9 +249,21 @@ def edit_levels(request, competency_area_id):
     if request.method == 'POST':
         level_formset = LevelFormSet(request.POST)
         if level_formset.is_valid():
-            isntances = eu_formset.save(commit=False)
+            instances = level_formset.save(commit=False)
             for instance in instances:
+                instance.competency_area = ca
                 instance.save()
+                # Ensure that ordering is correct
+                #  (apprentice - technician - master - professional
+                correct_order = []
+                for type in [Level.APPRENTICE, Level.TECHNICIAN,
+                             Level.MASTER, Level.PROFESSIONAL]:
+                    try:
+                        correct_order.append(Level.objects.get(competency_area=ca, level_type=type).pk)
+                    except:
+                        pass
+                if ca.get_level_order() != correct_order:
+                    ca.set_level_order(correct_order)
 
     level_formset = LevelFormSet(queryset=ca.level_set.all())
 
