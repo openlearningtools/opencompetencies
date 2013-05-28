@@ -170,7 +170,7 @@ def edit_sa_competency_areas(request, subject_area_id):
 
     # Build the sa_comp_area formset by using queryset to exclude all
     #  competency areas with a defined sda. Need general ca_formset to do this.
-    CompetencyAreaFormSet = modelformset_factory(CompetencyArea, exclude=('subject_area', 'subdiscipline_area'))
+    CompetencyAreaFormSet = modelformset_factory(CompetencyArea, form=CompetencyAreaForm, exclude=('subject_area', 'subdiscipline_area'))
 
     if request.method == 'POST':
         # Process general sa competency areas:
@@ -196,7 +196,7 @@ def edit_sda_competency_areas(request, subdiscipline_area_id):
     sda_comps = subdiscipline_area.competencyarea_set.all()
 
     # Build the sda_comp_area formset by using queryset 
-    CompetencyAreaFormSet = modelformset_factory(CompetencyArea, exclude=('subject_area', 'subdiscipline_area'))
+    CompetencyAreaFormSet = modelformset_factory(CompetencyArea, form=CompetencyAreaForm, exclude=('subject_area', 'subdiscipline_area'))
 
     if request.method == 'POST':
         # Process sda competency areas:
