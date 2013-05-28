@@ -17,6 +17,12 @@
 		  {% endif %}
 		  {{ competency_area }}</h2>
 
+	 <ul>
+	 {% for ca_level in ca_levels %}
+	     <li><b>{{ ca_level.level_type }}</b>: {{ ca_level }}</li>
+	 {% endfor %}
+	 </ul>
+	 
 	 {% if essential_understandings %}
 	     <ul>
 	     {% for eu in essential_understandings %}

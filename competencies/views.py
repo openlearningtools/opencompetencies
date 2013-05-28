@@ -53,9 +53,11 @@ def competency_area(request, competency_area_id):
     subject_area = competency_area.subject_area
     school = subject_area.school
     essential_understandings = competency_area.essentialunderstanding_set.all()
+    ca_levels = [Level.objects.get(pk=level_pk) for level_pk in competency_area.get_level_order()]
     return render_to_response('competencies/competency_area.html',
                               {'school': school, 'subject_area': subject_area, 'competency_area': competency_area,
-                               'essential_understandings': essential_understandings})
+                               'essential_understandings': essential_understandings,
+                               'ca_levels': ca_levels})
 
 def essential_understanding(request, essential_understanding_id):
     """Shows all learning targets for a given essential understanding."""
