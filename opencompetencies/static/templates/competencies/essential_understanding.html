@@ -12,6 +12,14 @@
 	 </p>
 
 	 <h2><a href='/subject_areas/{{ subject_area.id }}/'>{{ subject_area }}</a>: <a href='/subdiscipline_areas/{{ competency_area.subdiscipline_area.id }}/'>{{ competency_area.subdiscipline_area }}</a> - <a href='/competency_areas/{{ competency_area.id }}/'>{{ competency_area }}</a></h2>
+
+				{# --- levels --- #}
+				<ul>
+				{% for level in ca_levels %}
+				    <li><b>{{ level.level_type }} Level</b>: {{ level }}</li>
+			   {% endfor %}
+				</ul>
+
 	 <h3>{{ essential_understanding }}</h3>
 
 	 {% if learning_targets %}
