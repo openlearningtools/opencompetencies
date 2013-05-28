@@ -11,7 +11,11 @@
 	    | <a href='{% url 'competencies:entire_system' school.id %}'>View entire system</a>
 	 </p>
 
-	 <h2><a href='/subject_areas/{{ subject_area.id }}/'>{{ subject_area }}</a>: <a href='/subdiscipline_areas/{{ competency_area.subdiscipline_area.id }}/'>{{ competency_area.subdiscipline_area }}</a> - <a href='/competency_areas/{{ competency_area.id }}/'>{{ competency_area }}</a></h2>
+	 <h2><a href='/subject_areas/{{ subject_area.id }}/'>{{ subject_area }}</a>: 
+		{% if competency_area.subdiscipline_area %}
+		    <a href='/subdiscipline_areas/{{ competency_area.subdiscipline_area.id }}/'>{{ competency_area.subdiscipline_area }}</a> - 
+		{% endif %}
+		<a href='/competency_areas/{{ competency_area.id }}/'>{{ competency_area }}</a></h2>
 
 				{# --- levels --- #}
 				<ul>
