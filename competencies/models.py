@@ -46,6 +46,7 @@ class Level(models.Model):
         return self.level_description
 
     class Meta:
+        unique_together = ('competency_area', 'level_type',)
         order_with_respect_to = 'competency_area'
 
 class EssentialUnderstanding(models.Model):
