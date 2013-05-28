@@ -5,9 +5,11 @@
 {% block content %}
 
 	 <h2><a href='/schools/{{ school.id }}/'>{{ school.name }}</a></h2>
-	 <h3><a href='/subject_areas/{{ subject_area.id }}/'>{{ subject_area }}</a>
-		: <a href='/subdiscipline_areas/{{ subdiscipline_area.id }}/'>{{ subdiscipline_area }}</a>
-	   - <a href='/competency_areas/{{ competency_area.id }}/'>{{ competency_area }}</a></h3>
+	 <h3><a href='/subject_areas/{{ subject_area.id }}/'>{{ subject_area }}</a>: 
+		{% if subdiscipline_area %}
+		    <a href='/subdiscipline_areas/{{ subdiscipline_area.id }}/'>{{ subdiscipline_area }}</a> - 
+	   {% endif %}
+		<a href='/competency_areas/{{ competency_area.id }}/'>{{ competency_area }}</a></h3>
 	 <h4><a href='/essential_understandings/{{ essential_understanding.id }}/'>{{ essential_understanding }}</a></h4>
 
 	 <p>This page allows you to edit the learning targets for the essential understanding "{{ essential_understanding }}".</p>
