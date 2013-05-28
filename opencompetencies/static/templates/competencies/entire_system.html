@@ -21,7 +21,7 @@
 					 {% for new_sa, cas in sa_cas.items %}
 					     {% if new_sa == sa %}
 					         {% for ca in cas %}
-					             <li><h5><a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+					             <li><h5>Competency: <a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
 
 									 {# --- levels --- #}
 									 <ul>
@@ -39,14 +39,14 @@
 									 {% for new_ca, eus in ca_eus.items %}
 									     {% if new_ca == ca %}
 									         {% for eu in eus %}
-									             <li><a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+									             <li>EU: <a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
 
 													 {# --- learning targets --- #}
 													 <ul>
 													 {% for new_eu, lts in eu_lts.items %}
 													     {% if new_eu == eu %}
 													         {% for lt in lts %}
-													             <li>{{ lt }}</li>
+													             <li>LT: {{ lt }}</li>
 															   {% endfor %}
 														  {% endif %}
 													 {% endfor %}
@@ -73,7 +73,7 @@
 					 {% for new_sda, cas in sda_cas.items %}
 					     {% if new_sda == sda %}
 					         {% for ca in cas %}
-					             <li><h5><a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+					             <li><h5>Competency: <a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
 
 									 {# --- levels --- #}
 									 <ul>
@@ -91,14 +91,14 @@
 									 {% for new_ca, eus in ca_eus.items %}
 									     {% if new_ca == ca %}
 									         {% for eu in eus %}
-									             <li><a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+									             <li>EU: <a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
 
 													 {# --- learning targets --- #}
 													 <ul>
 													 {% for new_eu, lts in eu_lts.items %}
 													     {% if new_eu == eu %}
 													         {% for lt in lts %}
-													             <li>{{ lt }}</li>
+													             <li>LT: {{ lt }}</li>
 															   {% endfor %}
 														  {% endif %}
 													 {% endfor %}
