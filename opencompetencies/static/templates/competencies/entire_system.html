@@ -28,7 +28,7 @@
 									 {% for new_ca, levels in ca_levels.items %}
 									     {% if new_ca == ca %}
 									         {% for level in levels %}
-									             <li><b>{{ level.level_type }}</b>: {{ level }}</li>
+									             <li><b>{{ level.level_type }} Level</b>: {{ level }}</li>
 												{% endfor %}
 									     {% endif %}
 									 {% endfor %}
@@ -74,6 +74,17 @@
 					     {% if new_sda == sda %}
 					         {% for ca in cas %}
 					             <li><h5><a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+
+									 {# --- levels --- #}
+									 <ul>
+									 {% for new_ca, levels in ca_levels.items %}
+									     {% if new_ca == ca %}
+									         {% for level in levels %}
+									             <li><b>{{ level.level_type }} Level</b>: {{ level }}</li>
+												{% endfor %}
+									     {% endif %}
+									 {% endfor %}
+									 </ul>
 
 									 {# --- essential understandings --- #}
 									 <ul>
