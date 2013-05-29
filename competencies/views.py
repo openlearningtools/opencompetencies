@@ -288,7 +288,7 @@ def edit_essential_understanding(request, essential_understanding_id):
     sda = ca.subdiscipline_area
     school = sa.school
 
-    LearningTargetFormSet = modelformset_factory(LearningTarget, form=LearningTargetForm)
+    LearningTargetFormSet = modelformset_factory(LearningTarget, form=LearningTargetForm, extra=3)
 
     if request.method == 'POST':
         lt_formset = LearningTargetFormSet(request.POST)
