@@ -85,7 +85,7 @@ class CompetencyAreaForm(ModelForm):
         model = CompetencyArea
         fields = ('competency_area',)
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
-        widgets = {'competency_area': Textarea(attrs={'rows': 3, 'class': 'span8'}) }
+        widgets = {'competency_area': Textarea(attrs={'rows': 5, 'class': 'span8'}) }
         
 
 class EssentialUnderstandingForm(ModelForm):
@@ -93,21 +93,21 @@ class EssentialUnderstandingForm(ModelForm):
         model = EssentialUnderstanding
         fields = ('essential_understanding',)
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
-        widgets = {'essential_understanding': Textarea(attrs={'rows': 3, 'class': 'span8'}) }
+        widgets = {'essential_understanding': Textarea(attrs={'rows': 5, 'class': 'span8'}) }
 
 class LevelForm(ModelForm):
     class Meta:
         model = Level
         fields = ('level_type', 'level_description',)
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
-        widgets = {'level_description': Textarea(attrs={'rows': 3, 'class': 'span8'}) }
+        widgets = {'level_description': Textarea(attrs={'rows': 5, 'class': 'span8'}) }
 
 class LearningTargetForm(ModelForm):
     class Meta:
         model = LearningTarget
         fields = ('learning_target', )
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
-        widgets = {'learning_target': Textarea(attrs={'rows': 3, 'class': 'span8'}) }
+        widgets = {'learning_target': Textarea(attrs={'rows': 5, 'class': 'span8'}) }
 
 class PathwayForm(ModelForm):
     def __init__(self, *args, **kwargs):
