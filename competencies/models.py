@@ -63,6 +63,9 @@ class LearningTarget(models.Model):
     def __unicode__(self):
         return self.learning_target
 
+    class Meta:
+        order_with_respect_to = 'essential_understanding'
+
 
 # --- Pathways ---
 from django.db.models import Q
