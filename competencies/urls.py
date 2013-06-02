@@ -54,6 +54,12 @@ urlpatterns = patterns('',
     #  associated with an essential understanding.
     url(r'^edit_essential_understanding/(?P<essential_understanding_id>\d+)/$', views.edit_essential_understanding, name='edit_essential_understanding'),
 
+    # edit_order: Allows editing the order of any child elements.
+    url(r'^edit_order/(?P<school_id>\d+)/$', views.edit_order, name='edit_order'),
+
+    # change_order: No template; changes the order of an element, and redirects to edit_order.
+    url(r'^change_order/(?P<school_id>\d+)/(?P<parent_type>\w+)/(?P<parent_id>\d+)/(?P<child_type>\w+)/(?P<child_id>\d+)/(?P<direction>\w+)/$', views.change_order, name='change_order'),
+
 
     # --- Pathways pages ---
     # pathways: Shows all the pathways for a given school.

@@ -1,6 +1,8 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.forms.models import modelform_factory, modelformset_factory, inlineformset_factory
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 from copy import copy
 
@@ -305,6 +307,76 @@ def edit_essential_understanding(request, essential_understanding_id):
                                'subdiscipline_area': sda, 'competency_area': ca,
                                'essential_understanding': eu, 'lt_formset': lt_formset},
                               context_instance = RequestContext(request))
+
+def edit_order(request, school_id):
+    """Shows the entire system for a given school,
+    with links to change the order of any child element.
+    """
+    school = School.objects.get(id=school_id)
+    # all subject areas for a school
+    sas = school.subjectarea_set.all()
+    # all subdiscipline areas for each subject area
+    sa_sdas = {sa: sa.subdisciplinearea_set.all() for sa in sas}
+    # all general competency areas for a subject
+    sa_cas = {sa: sa.competencyarea_set.all().filter(subdiscipline_area=None) for sa in sas}
+    # all competency areas for each subdiscipline area
+    sda_cas = {}
+    for sa in sas:
+        for sda in sa_sdas[sa]:
+            sda_cas[sda] = sda.competencyarea_set.all()
+    # all essential understandings for each competency area
+    #  loop through all sa_cas, sda_cas
+    # also grab level descriptions for each competency area
+    ca_eus = {}
+    ca_levels = {}
+    for cas in sda_cas.values():
+        for ca in cas:
+            ca_eus[ca] = ca.essentialunderstanding_set.all()
+            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
+    for cas in sa_cas.values():
+        for ca in cas:
+            ca_eus[ca] = ca.essentialunderstanding_set.all()
+            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
+    # all learning targets for each essential understanding
+    eu_lts = {}
+    for eus in ca_eus.values():
+        for eu in eus:
+            eu_lts[eu] = eu.learningtarget_set.all()
+
+    return render_to_response('competencies/edit_order.html', 
+                              {'school': school, 'subject_areas': sas,
+                               'sa_sdas': sa_sdas, 'sa_cas': sa_cas,
+                               'sda_cas': sda_cas, 'ca_eus': ca_eus,
+                               'ca_levels': ca_levels, 'eu_lts': eu_lts},
+                              context_instance = RequestContext(request))
+
+from django.db.models.loading import get_model
+def change_order(request, school_id, parent_type, parent_id, child_type, child_id, direction):
+    """Changes the order of the child element passed in, and redirects to edit_order."""
+    school = School.objects.get(id=school_id)
+
+    # Get parent object and order of children
+    parent_object = get_model('competencies', parent_type).objects.get(id=parent_id)
+    get_order_method = 'get_' + child_type + '_order'
+    order = getattr(parent_object, get_order_method)()
+    print school_id, parent_type, parent_id, child_id, direction, parent_object, order
+
+    redirect_url = '/edit_order/' + school_id
+    #return redirect(redirect_url)
+
+    # Set new order.
+    child_index = order.index(int(child_id))
+    if direction == 'up' and child_index != 0:
+        # Swap child id with element before it
+        order[child_index], order[child_index-1] = order[child_index-1], order[child_index]
+        set_order_method = 'set_' + child_type + '_order'
+        getattr(parent_object, set_order_method)(order)
+
+    print school_id, parent_type, parent_id, child_id, direction, parent_object, order
+            
+
+    redirect_url = '/edit_order/' + school_id
+    return redirect(redirect_url)
 
 
 # --- Pathways pages ---
