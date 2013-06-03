@@ -72,7 +72,9 @@
 				{# ---  subdiscipline areas --- #}
 				<ul>
 				{% for sda in sdas %}
-				    <li><h4><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></li>
+				    <h4><li>[<a href='{% url 'competencies:change_order' school_id=school.id parent_type='SubjectArea' parent_id=sa.id child_type='subdisciplinearea' child_id=sda.id direction='up' %}'>up</a>
+				      <a href='{% url 'competencies:change_order' school_id=school.id parent_type='SubjectArea' parent_id=sa.id child_type='subdisciplinearea' child_id=sda.id direction='down' %}'>down</a>]
+				      <a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></li>
 
 					 {# --- competency areas --- #}
 					 <ul>

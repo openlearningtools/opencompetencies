@@ -23,6 +23,9 @@ class SubdisciplineArea(models.Model):
     def __unicode__(self):
         return self.subdiscipline_area
 
+    class Meta:
+        order_with_respect_to = 'subject_area'
+
 class CompetencyArea(models.Model):
     competency_area = models.CharField(max_length=500)
     subject_area = models.ForeignKey(SubjectArea)
