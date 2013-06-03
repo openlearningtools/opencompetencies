@@ -56,6 +56,9 @@ class EssentialUnderstanding(models.Model):
     def __unicode__(self):
         return self.essential_understanding
 
+    class Meta:
+        order_with_respect_to = 'competency_area'
+
 class LearningTarget(models.Model):
     learning_target = models.CharField(max_length=2000)
     essential_understanding = models.ForeignKey(EssentialUnderstanding)
