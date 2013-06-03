@@ -41,7 +41,9 @@
 									 {% for new_ca, eus in ca_eus.items %}
 									     {% if new_ca == ca %}
 									         {% for eu in eus %}
-									             <li>EU: <a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+									             <li>[<a href='{% url 'competencies:change_order' school_id=school.id parent_type='CompetencyArea' parent_id=ca.id child_type='essentialunderstanding' child_id=eu.id direction='up' %}'>up</a>
+									               <a href='{% url 'competencies:change_order' school_id=school.id parent_type='CompetencyArea' parent_id=ca.id child_type='essentialunderstanding' child_id=eu.id direction='down' %}'>down</a>]
+									               EU: <a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
 
 													 {# --- learning targets --- #}
 													 <ul>
@@ -95,7 +97,9 @@
 									 {% for new_ca, eus in ca_eus.items %}
 									     {% if new_ca == ca %}
 									         {% for eu in eus %}
-									             <li>EU: <a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+									             <li>[<a href='{% url 'competencies:change_order' school_id=school.id parent_type='CompetencyArea' parent_id=ca.id child_type='essentialunderstanding' child_id=eu.id direction='up' %}'>up</a>
+									               <a href='{% url 'competencies:change_order' school_id=school.id parent_type='CompetencyArea' parent_id=ca.id child_type='essentialunderstanding' child_id=eu.id direction='down' %}'>down</a>]
+									               EU: <a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
 
 													 {# --- learning targets --- #}
 													 <ul>
