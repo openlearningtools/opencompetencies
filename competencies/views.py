@@ -352,28 +352,27 @@ def edit_order(request, school_id):
 
 from django.db.models.loading import get_model
 def change_order(request, school_id, parent_type, parent_id, child_type, child_id, direction):
-    """Changes the order of the child element passed in, and redirects to edit_order."""
+    """Changes the order of the child element passed in, and redirects to edit_order.
+    Requires parent_type to be a ModelName, and child_type to be a modelname.
+    """
     school = School.objects.get(id=school_id)
 
     # Get parent object and order of children
     parent_object = get_model('competencies', parent_type).objects.get(id=parent_id)
     get_order_method = 'get_' + child_type + '_order'
     order = getattr(parent_object, get_order_method)()
-    print school_id, parent_type, parent_id, child_id, direction, parent_object, order
-
-    redirect_url = '/edit_order/' + school_id
-    #return redirect(redirect_url)
 
     # Set new order.
     child_index = order.index(int(child_id))
+    set_order_method = 'set_' + child_type + '_order'
     if direction == 'up' and child_index != 0:
         # Swap child id with element before it
         order[child_index], order[child_index-1] = order[child_index-1], order[child_index]
-        set_order_method = 'set_' + child_type + '_order'
         getattr(parent_object, set_order_method)(order)
-
-    print school_id, parent_type, parent_id, child_id, direction, parent_object, order
-            
+    if direction == 'down' and child_index != (len(order)-1):
+        # Swap child id with element after it
+        order[child_index], order[child_index+1] = order[child_index+1], order[child_index]
+        getattr(parent_object, set_order_method)(order)
 
     redirect_url = '/edit_order/' + school_id
     return redirect(redirect_url)
