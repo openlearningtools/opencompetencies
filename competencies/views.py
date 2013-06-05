@@ -90,7 +90,10 @@ def entire_system(request, school_id):
     for sa in sas:
         sa_sdas[sa] = sa.subdisciplinearea_set.all()
     # all general competency areas for a subject
-    sa_cas = {sa: sa.competencyarea_set.all().filter(subdiscipline_area=None) for sa in sas}
+    #  need to preserve order for these as well
+    sa_cas = OrderedDict()
+    for sa in sas:
+        sa_cas[sa] = sa.competencyarea_set.all().filter(subdiscipline_area=None)
     # all competency areas for each subdiscipline area
     sda_cas = {}
     for sa in sas:
@@ -325,7 +328,10 @@ def edit_order(request, school_id):
     for sa in sas:
         sa_sdas[sa] = sa.subdisciplinearea_set.all()
     # all general competency areas for a subject
-    sa_cas = {sa: sa.competencyarea_set.all().filter(subdiscipline_area=None) for sa in sas}
+    #  need to preserve order for these as well
+    sa_cas = OrderedDict()
+    for sa in sas:
+        sa_cas[sa] = sa.competencyarea_set.all().filter(subdiscipline_area=None)
     # all competency areas for each subdiscipline area
     sda_cas = {}
     for sa in sas:

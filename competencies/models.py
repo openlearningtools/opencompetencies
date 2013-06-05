@@ -37,6 +37,9 @@ class CompetencyArea(models.Model):
     def __unicode__(self):
         return self.competency_area
 
+    class Meta:
+        order_with_respect_to = 'subject_area'
+
 class Level(models.Model):
     APPRENTICE = 'Apprentice'
     TECHNICIAN = 'Technician'
