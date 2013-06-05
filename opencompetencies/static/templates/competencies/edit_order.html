@@ -85,7 +85,10 @@
 					 {% for new_sda, cas in sda_cas.items %}
 					     {% if new_sda == sda %}
 					         {% for ca in cas %}
-					             <li><h5>Competency: <a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+									 <h5><li>[<a href='{% url 'competencies:change_order' school_id=school.id parent_type='SubjectArea' parent_id=sa.id child_type='competencyarea' child_id=ca.id direction='up' %}'>up</a>
+										  <a href='{% url 'competencies:change_order' school_id=school.id parent_type='SubjectArea' parent_id=sa.id child_type='competencyarea' child_id=ca.id direction='down' %}'>down</a>]
+										  Competency: <a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+
 
 									 {# --- levels --- #}
 									 <ul>
