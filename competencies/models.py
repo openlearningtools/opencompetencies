@@ -16,12 +16,18 @@ class SubjectArea(models.Model):
     def __unicode__(self):
         return self.subject_area
 
+    class Meta:
+        order_with_respect_to = 'school'
+
 class SubdisciplineArea(models.Model):
     subdiscipline_area = models.CharField(max_length=500)
     subject_area = models.ForeignKey(SubjectArea)
 
     def __unicode__(self):
         return self.subdiscipline_area
+
+    class Meta:
+        order_with_respect_to = 'subject_area'
 
 class CompetencyArea(models.Model):
     competency_area = models.CharField(max_length=500)
@@ -30,6 +36,9 @@ class CompetencyArea(models.Model):
 
     def __unicode__(self):
         return self.competency_area
+
+    class Meta:
+        order_with_respect_to = 'subject_area'
 
 class Level(models.Model):
     APPRENTICE = 'Apprentice'
@@ -56,12 +65,18 @@ class EssentialUnderstanding(models.Model):
     def __unicode__(self):
         return self.essential_understanding
 
+    class Meta:
+        order_with_respect_to = 'competency_area'
+
 class LearningTarget(models.Model):
     learning_target = models.CharField(max_length=2000)
     essential_understanding = models.ForeignKey(EssentialUnderstanding)
 
     def __unicode__(self):
         return self.learning_target
+
+    class Meta:
+        order_with_respect_to = 'essential_understanding'
 
 
 # --- Pathways ---

@@ -1,8 +1,11 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.forms.models import modelform_factory, modelformset_factory, inlineformset_factory
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 from copy import copy
+from collections import OrderedDict
 
 from competencies.models import *
 
@@ -82,9 +85,15 @@ def entire_system(request, school_id):
     # all subject areas for a school
     sas = school.subjectarea_set.all()
     # all subdiscipline areas for each subject area
-    sa_sdas = {sa: sa.subdisciplinearea_set.all() for sa in sas}
+    #  using OrderedDict to preserve order of subject areas
+    sa_sdas = OrderedDict()
+    for sa in sas:
+        sa_sdas[sa] = sa.subdisciplinearea_set.all()
     # all general competency areas for a subject
-    sa_cas = {sa: sa.competencyarea_set.all().filter(subdiscipline_area=None) for sa in sas}
+    #  need to preserve order for these as well
+    sa_cas = OrderedDict()
+    for sa in sas:
+        sa_cas[sa] = sa.competencyarea_set.all().filter(subdiscipline_area=None)
     # all competency areas for each subdiscipline area
     sda_cas = {}
     for sa in sas:
@@ -305,6 +314,135 @@ def edit_essential_understanding(request, essential_understanding_id):
                                'subdiscipline_area': sda, 'competency_area': ca,
                                'essential_understanding': eu, 'lt_formset': lt_formset},
                               context_instance = RequestContext(request))
+
+def edit_order(request, school_id):
+    """Shows the entire system for a given school,
+    with links to change the order of any child element.
+    """
+    school = School.objects.get(id=school_id)
+    # all subject areas for a school
+    sas = school.subjectarea_set.all()
+    # all subdiscipline areas for each subject area
+    #  using OrderedDict to preserve order of subject areas
+    sa_sdas = OrderedDict()
+    for sa in sas:
+        sa_sdas[sa] = sa.subdisciplinearea_set.all()
+    # all general competency areas for a subject
+    #  need to preserve order for these as well
+    sa_cas = OrderedDict()
+    for sa in sas:
+        sa_cas[sa] = sa.competencyarea_set.all().filter(subdiscipline_area=None)
+    # all competency areas for each subdiscipline area
+    sda_cas = {}
+    for sa in sas:
+        for sda in sa_sdas[sa]:
+            sda_cas[sda] = sda.competencyarea_set.all()
+    # all essential understandings for each competency area
+    #  loop through all sa_cas, sda_cas
+    # also grab level descriptions for each competency area
+    ca_eus = {}
+    ca_levels = {}
+    for cas in sda_cas.values():
+        for ca in cas:
+            ca_eus[ca] = ca.essentialunderstanding_set.all()
+            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
+    for cas in sa_cas.values():
+        for ca in cas:
+            ca_eus[ca] = ca.essentialunderstanding_set.all()
+            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
+    # all learning targets for each essential understanding
+    eu_lts = {}
+    for eus in ca_eus.values():
+        for eu in eus:
+            eu_lts[eu] = eu.learningtarget_set.all()
+
+    return render_to_response('competencies/edit_order.html', 
+                              {'school': school, 'subject_areas': sas,
+                               'sa_sdas': sa_sdas, 'sa_cas': sa_cas,
+                               'sda_cas': sda_cas, 'ca_eus': ca_eus,
+                               'ca_levels': ca_levels, 'eu_lts': eu_lts},
+                              context_instance = RequestContext(request))
+
+from django.db.models.loading import get_model
+def change_order(request, school_id, parent_type, parent_id, child_type, child_id, direction):
+    """Changes the order of the child element passed in, and redirects to edit_order.
+    Requires parent_type to be a ModelName, and child_type to be a modelname.
+    """
+    school = School.objects.get(id=school_id)
+
+    # Get parent object and order of children
+    parent_object = get_model('competencies', parent_type).objects.get(id=parent_id)
+    get_order_method = 'get_' + child_type + '_order'
+    order = getattr(parent_object, get_order_method)()
+
+    print 'old order', order
+
+    # Set new order.
+    child_index = order.index(int(child_id))
+    set_order_method = 'set_' + child_type + '_order'
+    if direction == 'up' and child_index != 0:
+        if child_type == 'competencyarea':
+            # Need to move before previous ca in given sda, or in general sa
+            #  Get pks of all cas in this sda
+            #  Get order, find prev element
+            ca = CompetencyArea.objects.get(id=child_id)
+            sda = ca.subdiscipline_area
+            if sda:
+                # pks for cas in this sda only
+                ca_sda_pks = [ca.pk for ca in sda.competencyarea_set.all()]
+            else:
+                # sda None, this is a ca for a general sa
+                # pks for cas in this general sa
+                sa = ca.subject_area
+                ca_sda_pks = [ca.pk for ca in sa.competencyarea_set.filter(subdiscipline_area=None)]
+            current_ca_index = ca_sda_pks.index(int(child_id))
+            if current_ca_index != 0:
+                # move ca up in the subset
+                # find pk of ca to switch with, then find index of that ca in order
+                #  then switch the two indices
+                target_ca_pk = ca_sda_pks[current_ca_index-1]
+                target_ca_order_index = order.index(target_ca_pk)
+                current_ca_order_index = order.index(int(child_id))
+                order[current_ca_order_index], order[target_ca_order_index] = order[target_ca_order_index], order[current_ca_order_index]
+                getattr(parent_object, set_order_method)(order)
+        else:
+            # Swap child id with element before it
+            order[child_index], order[child_index-1] = order[child_index-1], order[child_index]
+            getattr(parent_object, set_order_method)(order)
+    if direction == 'down' and child_index != (len(order)-1):
+        if child_type == 'competencyarea':
+            # Need to move after next ca in given sda, or in general sa
+            #  Get pks of all cas in this sda
+            #  Get order, find next element
+            ca = CompetencyArea.objects.get(id=child_id)
+            sda = ca.subdiscipline_area
+            if sda:
+                # pks for cas in this sda only
+                ca_sda_pks = [ca.pk for ca in sda.competencyarea_set.all()]
+            else:
+                # sda None, this is a ca for a general sa
+                # pks for cas in this general sa
+                sa = ca.subject_area
+                ca_sda_pks = [ca.pk for ca in sa.competencyarea_set.filter(subdiscipline_area=None)]
+            current_ca_index = ca_sda_pks.index(int(child_id))
+            if current_ca_index != (len(ca_sda_pks)-1):
+                # move ca down in the subset
+                # find pk of ca to switch with, then find index of that ca in order
+                #  then switch the two indices
+                target_ca_pk = ca_sda_pks[current_ca_index+1]
+                target_ca_order_index = order.index(target_ca_pk)
+                current_ca_order_index = order.index(int(child_id))
+                order[current_ca_order_index], order[target_ca_order_index] = order[target_ca_order_index], order[current_ca_order_index]
+                getattr(parent_object, set_order_method)(order)
+        else:
+            # Swap child id with element after it
+            order[child_index], order[child_index+1] = order[child_index+1], order[child_index]
+            getattr(parent_object, set_order_method)(order)
+
+    print 'new order:', order
+
+    redirect_url = '/edit_order/' + school_id
+    return redirect(redirect_url)
 
 
 # --- Pathways pages ---
