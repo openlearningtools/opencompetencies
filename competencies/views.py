@@ -375,21 +375,71 @@ def change_order(request, school_id, parent_type, parent_id, child_type, child_i
     get_order_method = 'get_' + child_type + '_order'
     order = getattr(parent_object, get_order_method)()
 
-    print parent_object, order
+    print 'old order', order
 
     # Set new order.
     child_index = order.index(int(child_id))
     set_order_method = 'set_' + child_type + '_order'
     if direction == 'up' and child_index != 0:
-        # Swap child id with element before it
-        order[child_index], order[child_index-1] = order[child_index-1], order[child_index]
-        getattr(parent_object, set_order_method)(order)
+        if child_type == 'competencyarea':
+            # Need to move before previous ca in given sda, or in general sa
+            #  Get pks of all cas in this sda
+            #  Get order, find prev element
+            ca = CompetencyArea.objects.get(id=child_id)
+            sda = ca.subdiscipline_area
+            if sda:
+                # pks for cas in this sda only
+                ca_sda_pks = [ca.pk for ca in sda.competencyarea_set.all()]
+            else:
+                # sda None, this is a ca for a general sa
+                # pks for cas in this general sa
+                sa = ca.subject_area
+                ca_sda_pks = [ca.pk for ca in sa.competencyarea_set.filter(subdiscipline_area=None)]
+            current_ca_index = ca_sda_pks.index(int(child_id))
+            if current_ca_index != 0:
+                # move ca up in the subset
+                # find pk of ca to switch with, then find index of that ca in order
+                #  then switch the two indices
+                target_ca_pk = ca_sda_pks[current_ca_index-1]
+                target_ca_order_index = order.index(target_ca_pk)
+                current_ca_order_index = order.index(int(child_id))
+                order[current_ca_order_index], order[target_ca_order_index] = order[target_ca_order_index], order[current_ca_order_index]
+                getattr(parent_object, set_order_method)(order)
+        else:
+            # Swap child id with element before it
+            order[child_index], order[child_index-1] = order[child_index-1], order[child_index]
+            getattr(parent_object, set_order_method)(order)
     if direction == 'down' and child_index != (len(order)-1):
-        # Swap child id with element after it
-        order[child_index], order[child_index+1] = order[child_index+1], order[child_index]
-        getattr(parent_object, set_order_method)(order)
+        if child_type == 'competencyarea':
+            # Need to move after next ca in given sda, or in general sa
+            #  Get pks of all cas in this sda
+            #  Get order, find next element
+            ca = CompetencyArea.objects.get(id=child_id)
+            sda = ca.subdiscipline_area
+            if sda:
+                # pks for cas in this sda only
+                ca_sda_pks = [ca.pk for ca in sda.competencyarea_set.all()]
+            else:
+                # sda None, this is a ca for a general sa
+                # pks for cas in this general sa
+                sa = ca.subject_area
+                ca_sda_pks = [ca.pk for ca in sa.competencyarea_set.filter(subdiscipline_area=None)]
+            current_ca_index = ca_sda_pks.index(int(child_id))
+            if current_ca_index != (len(ca_sda_pks)-1):
+                # move ca down in the subset
+                # find pk of ca to switch with, then find index of that ca in order
+                #  then switch the two indices
+                target_ca_pk = ca_sda_pks[current_ca_index+1]
+                target_ca_order_index = order.index(target_ca_pk)
+                current_ca_order_index = order.index(int(child_id))
+                order[current_ca_order_index], order[target_ca_order_index] = order[target_ca_order_index], order[current_ca_order_index]
+                getattr(parent_object, set_order_method)(order)
+        else:
+            # Swap child id with element after it
+            order[child_index], order[child_index+1] = order[child_index+1], order[child_index]
+            getattr(parent_object, set_order_method)(order)
 
-    print order
+    print 'new order:', order
 
     redirect_url = '/edit_order/' + school_id
     return redirect(redirect_url)
