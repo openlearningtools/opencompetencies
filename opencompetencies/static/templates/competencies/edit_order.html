@@ -14,7 +14,9 @@
 		  {# ---  subject areas --- #}
 	     <ul>
 	     {% for sa, sdas in sa_sdas.items %}
-		      <li><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
+		      <h3><li>[<a href='{% url 'competencies:change_order' school_id=school.id parent_type='School' parent_id=school.id child_type='subjectarea' child_id=sa.id direction='up' %}'>up</a>
+					 <a href='{% url 'competencies:change_order' school_id=school.id parent_type='School' parent_id=school.id child_type='subjectarea' child_id=sa.id direction='down' %}'>down</a>]
+		          <a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
 
 				{# competency areas for the general subject area #}
 				{# requires an empty nesting level (blank sda) #}

@@ -362,6 +362,8 @@ def change_order(request, school_id, parent_type, parent_id, child_type, child_i
     get_order_method = 'get_' + child_type + '_order'
     order = getattr(parent_object, get_order_method)()
 
+    print parent_object, order
+
     # Set new order.
     child_index = order.index(int(child_id))
     set_order_method = 'set_' + child_type + '_order'
@@ -373,6 +375,8 @@ def change_order(request, school_id, parent_type, parent_id, child_type, child_i
         # Swap child id with element after it
         order[child_index], order[child_index+1] = order[child_index+1], order[child_index]
         getattr(parent_object, set_order_method)(order)
+
+    print order
 
     redirect_url = '/edit_order/' + school_id
     return redirect(redirect_url)
