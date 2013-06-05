@@ -85,7 +85,10 @@ def entire_system(request, school_id):
     # all subject areas for a school
     sas = school.subjectarea_set.all()
     # all subdiscipline areas for each subject area
-    sa_sdas = {sa: sa.subdisciplinearea_set.all() for sa in sas}
+    #  using OrderedDict to preserve order of subject areas
+    sa_sdas = OrderedDict()
+    for sa in sas:
+        sa_sdas[sa] = sa.subdisciplinearea_set.all()
     # all general competency areas for a subject
     sa_cas = {sa: sa.competencyarea_set.all().filter(subdiscipline_area=None) for sa in sas}
     # all competency areas for each subdiscipline area
