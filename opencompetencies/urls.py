@@ -14,6 +14,10 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+
+    # Auth urls
+    url(r'^login/', 'django.contrib.auth.views.login', name='login'),
+    url(r'^logout/', 'competencies.views.logout_view', name='logout_view'),
 )
 
 # heroku static files:

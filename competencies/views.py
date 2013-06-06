@@ -3,6 +3,8 @@ from django.template import RequestContext
 from django.forms.models import modelform_factory, modelformset_factory, inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.db.models.loading import get_model
+from django.contrib.auth import logout
 
 from copy import copy
 from collections import OrderedDict
@@ -20,6 +22,12 @@ def index(request):
                                'pw_min_hs_grad': pw_min_hs_grad,
                                'pw_physicist': pw_physicist},
                               context_instance = RequestContext(request))
+
+# Authentication views
+def logout_view(request):
+    logout(request)
+    # Redirect to home page for now. Later, maybe stay on same page.
+    return redirect('/')
 
 # --- Simple views, for exploring system without changing it: ---
 def schools(request):
@@ -363,7 +371,6 @@ def edit_order(request, school_id):
                                'ca_levels': ca_levels, 'eu_lts': eu_lts},
                               context_instance = RequestContext(request))
 
-from django.db.models.loading import get_model
 def change_order(request, school_id, parent_type, parent_id, child_type, child_id, direction):
     """Changes the order of the child element passed in, and redirects to edit_order.
     Requires parent_type to be a ModelName, and child_type to be a modelname.
