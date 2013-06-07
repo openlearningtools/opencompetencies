@@ -588,6 +588,7 @@ def get_fields(pathway):
 
 
 # --- Forking pages: pages related to forking an existing school ---
+@login_required
 def fork(request, school_id):
     empty_school = School.objects.get(id=school_id)
     # Only get schools that have at least one subject area:
@@ -596,6 +597,7 @@ def fork(request, school_id):
                               {'empty_school': empty_school, 'forkable_schools': forkable_schools},
                               context_instance = RequestContext(request))
 
+@login_required
 def confirm_fork(request, forking_school_id, forked_school_id):
     """Forks the requested school, and confirms success."""
     forking_school = School.objects.get(id=forking_school_id)
@@ -605,6 +607,7 @@ def confirm_fork(request, forking_school_id, forked_school_id):
                               {'forking_school': forking_school, 'forked_school': forked_school},
                               context_instance = RequestContext(request))
 
+@login_required
 def new_school(request):
     """Creates a new school, then offers link to fork an existing
     school's competency system.
