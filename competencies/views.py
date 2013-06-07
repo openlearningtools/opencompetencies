@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.db.models.loading import get_model
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 
 from copy import copy
 from collections import OrderedDict
@@ -140,6 +141,7 @@ def entire_system(request, school_id):
 
 
 # --- Edit views, for editing parts of the system ---
+@login_required
 def edit_school(request, school_id):
     """Allows user to edit a school's subject areas.
     """
@@ -161,6 +163,7 @@ def edit_school(request, school_id):
     return render_to_response('competencies/edit_school.html', {'school': school, 'sa_formset': sa_formset},
                               context_instance = RequestContext(request))
 
+@login_required
 def edit_subject_area(request, subject_area_id):
     """Allows user to edit a subject_area's subdiscipline areas.
     """
@@ -184,6 +187,7 @@ def edit_subject_area(request, subject_area_id):
                               {'school': school, 'subject_area': subject_area, 'sda_formset': sda_formset},
                               context_instance = RequestContext(request))
 
+@login_required
 def edit_sa_competency_areas(request, subject_area_id):
     """Allows user to edit the competencies for a general subject area."""
     subject_area = SubjectArea.objects.get(id=subject_area_id)
@@ -210,6 +214,7 @@ def edit_sa_competency_areas(request, subject_area_id):
                               {'school': school, 'subject_area': subject_area, 'sa_ca_formset': sa_ca_formset},
                               context_instance = RequestContext(request))
 
+@login_required
 def edit_sda_competency_areas(request, subdiscipline_area_id):
     """Allows user to edit the competencies for a specific subdiscipline area."""
     subdiscipline_area = SubdisciplineArea.objects.get(id=subdiscipline_area_id)
@@ -238,6 +243,7 @@ def edit_sda_competency_areas(request, subdiscipline_area_id):
                                'subdiscipline_area': subdiscipline_area, 'sda_ca_formset': sda_ca_formset},
                               context_instance = RequestContext(request))
 
+@login_required
 def edit_competency_area(request, competency_area_id):
     """Allows user to edit the essential understandings for a given competency area."""
     ca = CompetencyArea.objects.get(id=competency_area_id)
@@ -263,6 +269,7 @@ def edit_competency_area(request, competency_area_id):
                                'eu_formset': eu_formset},
                               context_instance = RequestContext(request))
 
+@login_required
 def edit_levels(request, competency_area_id):
     """Allows user to edit levels for a given competency area."""
     ca = CompetencyArea.objects.get(id=competency_area_id)
@@ -302,6 +309,7 @@ def edit_levels(request, competency_area_id):
                               context_instance = RequestContext(request))
 
 
+@login_required
 def edit_essential_understanding(request, essential_understanding_id):
     """Allows user to edit the learning targets associated with an essential understanding."""
     eu = EssentialUnderstanding.objects.get(id=essential_understanding_id)
@@ -328,6 +336,7 @@ def edit_essential_understanding(request, essential_understanding_id):
                                'essential_understanding': eu, 'lt_formset': lt_formset},
                               context_instance = RequestContext(request))
 
+@login_required
 def edit_order(request, school_id):
     """Shows the entire system for a given school,
     with links to change the order of any child element.
@@ -376,6 +385,7 @@ def edit_order(request, school_id):
                                'ca_levels': ca_levels, 'eu_lts': eu_lts},
                               context_instance = RequestContext(request))
 
+@login_required
 def change_order(request, school_id, parent_type, parent_id, child_type, child_id, direction):
     """Changes the order of the child element passed in, and redirects to edit_order.
     Requires parent_type to be a ModelName, and child_type to be a modelname.
@@ -506,6 +516,7 @@ def pathway(request, pathway_id):
                                'eu_lts': eu_lts},
                               context_instance = RequestContext(request))
 
+@login_required
 def create_pathway(request, school_id):
     """Allows user to create a new pathway.
     Links to pages that edit the pathway.
@@ -530,6 +541,7 @@ def create_pathway(request, school_id):
                                'pw_formset': pw_formset, 'saved_msg': saved_msg,},
                               context_instance = RequestContext(request))
 
+@login_required
 def edit_pathway(request, pathway_id):
     """Allows a user to add or remove elements in a pathway."""
     pathway = Pathway.objects.get(id=pathway_id)
