@@ -60,6 +60,12 @@ urlpatterns = patterns('',
     # change_order: No template; changes the order of an element, and redirects to edit_order.
     url(r'^change_order/(?P<school_id>\d+)/(?P<parent_type>\w+)/(?P<parent_id>\d+)/(?P<child_type>\w+)/(?P<child_id>\d+)/(?P<direction>\w+)/$', views.change_order, name='change_order'),
 
+    # edit_visibility: Allows toggling of public/ private mode for all elements.
+    url(r'^edit_visibility/(?P<school_id>\d+)/$', views.edit_visibility, name='edit_visibility'),
+
+    # change_visibility: No template; changes the visibility of an elment, and redirects to edit_visibility.
+    url(r'^change_visibility/(?P<school_id>\d+)/(?P<object_type>\w+)/(?P<object_pk>\d+)/(?P<visibility_mode>\w+)/$', views.change_visibility, name='change_visibility'),
+
 
     # --- Pathways pages ---
     # pathways: Shows all the pathways for a given school.

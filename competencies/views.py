@@ -149,7 +149,10 @@ def entire_system(request, school_id):
     eu_lts = {}
     for eus in ca_eus.values():
         for eu in eus:
-            eu_lts[eu] = eu.learningtarget_set.all()
+            if request.user.is_authenticated():
+                eu_lts[eu] = eu.learningtarget_set.all()
+            else:
+                eu_lts[eu] = eu.learningtarget_set.filter(public=True)
 
     return render_to_response('competencies/entire_system.html', 
                               {'school': school, 'subject_areas': sas,
@@ -484,6 +487,71 @@ def change_order(request, school_id, parent_type, parent_id, child_type, child_i
 
     redirect_url = '/edit_order/' + school_id
     return redirect(redirect_url)
+
+@login_required
+def edit_visibility(request, school_id):
+    """Allows user to set the visibility of any item in the school's system."""
+    school = School.objects.get(id=school_id)
+    # all subject areas for a school
+    sas = school.subjectarea_set.all()
+    # all subdiscipline areas for each subject area
+    #  using OrderedDict to preserve order of subject areas
+    sa_sdas = OrderedDict()
+    for sa in sas:
+        sa_sdas[sa] = sa.subdisciplinearea_set.all()
+    # all general competency areas for a subject
+    #  need to preserve order for these as well
+    sa_cas = OrderedDict()
+    for sa in sas:
+        sa_cas[sa] = sa.competencyarea_set.all().filter(subdiscipline_area=None)
+    # all competency areas for each subdiscipline area
+    sda_cas = {}
+    for sa in sas:
+        for sda in sa_sdas[sa]:
+            sda_cas[sda] = sda.competencyarea_set.all()
+    # all essential understandings for each competency area
+    #  loop through all sa_cas, sda_cas
+    # also grab level descriptions for each competency area
+    ca_eus = {}
+    ca_levels = {}
+    for cas in sda_cas.values():
+        for ca in cas:
+            ca_eus[ca] = ca.essentialunderstanding_set.all()
+            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
+    for cas in sa_cas.values():
+        for ca in cas:
+            ca_eus[ca] = ca.essentialunderstanding_set.all()
+            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
+    # all learning targets for each essential understanding
+    eu_lts = {}
+    for eus in ca_eus.values():
+        for eu in eus:
+            if request.user.is_authenticated():
+                eu_lts[eu] = eu.learningtarget_set.all()
+            else:
+                eu_lts[eu] = eu.learningtarget_set.filter(public=True)
+
+    return render_to_response('competencies/edit_visibility.html', 
+                              {'school': school, 'subject_areas': sas,
+                               'sa_sdas': sa_sdas, 'sa_cas': sa_cas,
+                               'sda_cas': sda_cas, 'ca_eus': ca_eus,
+                               'ca_levels': ca_levels, 'eu_lts': eu_lts},
+                              context_instance = RequestContext(request))
+
+@login_required    
+def change_visibility(request, school_id, object_type, object_pk, visibility_mode):
+    
+    # Get object, and toggle attribute 'public'
+    current_object = get_model('competencies', object_type).objects.get(pk=object_pk)
+    if visibility_mode == 'public':
+        current_object.public = True
+    else:
+        current_object.public = False
+    current_object.save()
+
+    redirect_url = '/edit_visibility/' + school_id
+    return redirect(redirect_url)
+
 
 
 # --- Pathways pages ---

@@ -5,9 +5,10 @@
 {% block content %}
 
 	 <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a></h2>
-	 <p>This page shows the entire competency system for <a href='{% url 'competencies:school' school.id %}'</a>{{ school }}</a>.</p>
-	 <p><a href='{% url 'competencies:edit_order' school.id %}'>Edit order</a>
-	 | <a href='{% url 'competencies:edit_visibility' school.id %}'>Edit visibility</a>
+	 <p>This page allows you to set the visibility of any element in <a href='{% url 'competencies:school' school.id %}'</a>{{ school }}</a>'s system.</p>
+	 <p><a href='{% url 'competencies:entire_system' school.id %}'>View entire system</a>
+	 </p>
+
 	 </p>
 
 	 {% if subject_areas %}
@@ -49,7 +50,16 @@
 													 {% for new_eu, lts in eu_lts.items %}
 													     {% if new_eu == eu %}
 													         {% for lt in lts %}
-													             <li>LT: {{ lt }}</li>
+													             <li>
+																	     {% if lt.public %}
+																		      [<a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='private' %}'>private</a>
+																		      public ]
+																		  {% else %}
+																		      [ private
+																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='public' %}'>public</a>]
+																		  {% endif %}
+																	     LT: {{ lt }}</li>
+
 															   {% endfor %}
 														  {% endif %}
 													 {% endfor %}
@@ -101,7 +111,16 @@
 													 {% for new_eu, lts in eu_lts.items %}
 													     {% if new_eu == eu %}
 													         {% for lt in lts %}
-													             <li>LT: {{ lt }}</li>
+													             <li>
+																	     {% if lt.public %}
+																		      [<a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='private' %}'>private</a>
+																		      public ]
+																		  {% else %}
+																		      [ private
+																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='public' %}'>public</a>]
+																		  {% endif %}
+																	     LT: {{ lt }}</li>
+
 															   {% endfor %}
 														  {% endif %}
 													 {% endfor %}

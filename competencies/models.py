@@ -71,6 +71,7 @@ class EssentialUnderstanding(models.Model):
 class LearningTarget(models.Model):
     learning_target = models.CharField(max_length=2000)
     essential_understanding = models.ForeignKey(EssentialUnderstanding)
+    public = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.learning_target
