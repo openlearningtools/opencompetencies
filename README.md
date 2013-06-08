@@ -6,6 +6,7 @@ Sections
 - [Vision](#vision)
 - [Setting up your own development version on heroku](#dev_setup)
 - [Pre-coding decisions](#pre_coding_decisions)
+- [About](#about)
 
 <a name="vision"></a>Vision
 -------
@@ -127,5 +128,9 @@ A number of decisions need to be made before we write any code, beyond the demo 
 - [(done)](https://github.com/openlearningtools/opencompetencies/blob/master/docs/GLOSSARY.md) Write a glossary for the first few levels in the taxonomy
 - Move much of this file to a wiki? May be better than current /docs folder setup.
 - Agree on which framework to use
+
+[top](#top)
+<a name="about"></a>About
+Open Competencies is currently being developed by Eric Matthes (ehmatthes). If you would like to get in touch, feel free to send me an email at ehmatthes@gmail.com, or find me on twitter <a href="http://twitter.com/ehmatthes">@ehmatthes</a>.
 
 [top](#top)
