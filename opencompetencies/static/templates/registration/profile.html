@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+      <h1>Open Competencies</h1>
+		<h2>User profile:</h2>
+		<p>This page displays your account information.</p>
+
+		<h3>Username: {{ user.username }}</h3>
+		<h4>First Name: {{ user.first_name }}</h4>
+		<h4>Last Name: {{ user.last_name }}</h4>
+		<p>Email: {{ user.email }}</p>
+
+		<p><a href="{% url 'password_change_form' %}">Change password</a><p>
+
+
+{% endblock %}
+
+
+
+
+

@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.db.models.loading import get_model
 from django.contrib.auth import logout
+from django.contrib.auth.views import password_change
 from django.contrib.auth.decorators import login_required
 
 from copy import copy
@@ -29,6 +30,24 @@ def logout_view(request):
     logout(request)
     # Redirect to home page for now. Later, maybe stay on same page.
     return redirect('/')
+
+def profile(request):
+    return render_to_response('registration/profile.html',
+                              {},
+                              context_instance = RequestContext(request))
+
+def password_change_form(request):
+    if request.method == 'POST':
+        return password_change(request, post_change_redirect='/password_change_successful')
+    else:
+        return render_to_response('registration/password_change_form.html',
+                                  {},
+                                  context_instance = RequestContext(request))
+
+def password_change_successful(request):
+    return render_to_response('registration/password_change_successful.html',
+                              {},
+                              context_instance = RequestContext(request))
 
 # --- Simple views, for exploring system without changing it: ---
 def schools(request):
