@@ -134,4 +134,8 @@ A number of decisions need to be made before we write any code, beyond the demo 
 ---
 Open Competencies is currently being developed by Eric Matthes (ehmatthes). If you would like to get in touch feel free to send me an email at ehmatthes@gmail.com, or find me on twitter <a href="http://twitter.com/ehmatthes">@ehmatthes</a>.
 
+If you would like to support development of Open Competencies, please consider supporting me on Gittip:
+
+[![Gittip](http://badgr.co/Gittip/ehmatthes.png)](https://www.gittip.com/ehmatthes/)
+
 [top](#top)
