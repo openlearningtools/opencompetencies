@@ -12,6 +12,7 @@ class School(models.Model):
 class SubjectArea(models.Model):
     subject_area = models.CharField(max_length=500)
     school = models.ForeignKey(School)
+    public = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.subject_area
@@ -22,6 +23,7 @@ class SubjectArea(models.Model):
 class SubdisciplineArea(models.Model):
     subdiscipline_area = models.CharField(max_length=500)
     subject_area = models.ForeignKey(SubjectArea)
+    public = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.subdiscipline_area
@@ -33,6 +35,7 @@ class CompetencyArea(models.Model):
     competency_area = models.CharField(max_length=500)
     subject_area = models.ForeignKey(SubjectArea)
     subdiscipline_area = models.ForeignKey(SubdisciplineArea, blank=True, null=True)
+    public = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.competency_area
@@ -50,6 +53,7 @@ class Level(models.Model):
     level_type = models.CharField(max_length=500, choices=LEVEL_TYPE_CHOICES)
     level_description = models.CharField(max_length=5000)
     competency_area = models.ForeignKey(CompetencyArea)
+    public = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.level_description
@@ -61,6 +65,7 @@ class Level(models.Model):
 class EssentialUnderstanding(models.Model):
     essential_understanding = models.CharField(max_length=2000)
     competency_area = models.ForeignKey(CompetencyArea)
+    public = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.essential_understanding

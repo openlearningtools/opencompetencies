@@ -115,6 +115,13 @@ def essential_understanding(request, essential_understanding_id):
 def entire_system(request, school_id):
     """Shows the entire system for a given school."""
     school = School.objects.get(id=school_id)
+
+    # Get filter for visibility, based on logged-in status.
+    if request.user.is_authenticated():
+        kwargs = {}
+    else:
+        kwargs = {'{0}'.format('public'): True}
+
     # all subject areas for a school
     sas = school.subjectarea_set.all()
     # all subdiscipline areas for each subject area
@@ -149,10 +156,7 @@ def entire_system(request, school_id):
     eu_lts = {}
     for eus in ca_eus.values():
         for eu in eus:
-            if request.user.is_authenticated():
-                eu_lts[eu] = eu.learningtarget_set.all()
-            else:
-                eu_lts[eu] = eu.learningtarget_set.filter(public=True)
+            eu_lts[eu] = eu.learningtarget_set.filter(**kwargs)
 
     return render_to_response('competencies/entire_system.html', 
                               {'school': school, 'subject_areas': sas,
