@@ -131,6 +131,7 @@ A number of decisions need to be made before we write any code, beyond the demo 
 
 [top](#top)
 <a name="about"></a>About
-Open Competencies is currently being developed by Eric Matthes (ehmatthes). If you would like to get in touch, feel free to send me an email at ehmatthes@gmail.com, or find me on twitter <a href="http://twitter.com/ehmatthes">@ehmatthes</a>.
+---
+Open Competencies is currently being developed by Eric Matthes (ehmatthes). If you would like to get in touch feel free to send me an email at ehmatthes@gmail.com, or find me on twitter <a href="http://twitter.com/ehmatthes">@ehmatthes</a>.
 
 [top](#top)
