@@ -43,7 +43,16 @@
 									 {% for new_ca, eus in ca_eus.items %}
 									     {% if new_ca == ca %}
 									         {% for eu in eus %}
-									             <li>EU: <a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+									             <li>
+													     {% if eu.public %}
+														      [ public -
+														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='EssentialUnderstanding' object_pk=eu.pk visibility_mode='private' %}'>set private</a> ]
+														  {% else %}
+														      [ private -
+														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='EssentialUnderstanding' object_pk=eu.pk visibility_mode='public' %}'>set public</a> ]
+														  {% endif %}
+														  EU: <a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+
 
 													 {# --- learning targets --- #}
 													 <ul>
@@ -52,11 +61,11 @@
 													         {% for lt in lts %}
 													             <li>
 																	     {% if lt.public %}
-																		      [<a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='private' %}'>private</a>
-																		      public ]
+																		      [ public -
+																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='private' %}'>set private</a> ]
 																		  {% else %}
-																		      [ private
-																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='public' %}'>public</a>]
+																		      [ private -
+																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='public' %}'>set public</a> ]
 																		  {% endif %}
 																	     LT: {{ lt }}</li>
 
@@ -104,7 +113,15 @@
 									 {% for new_ca, eus in ca_eus.items %}
 									     {% if new_ca == ca %}
 									         {% for eu in eus %}
-									             <li>EU: <a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+									             <li>
+													     {% if eu.public %}
+														      [ public -
+														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='EssentialUnderstanding' object_pk=eu.pk visibility_mode='private' %}'>set private</a> ]
+														  {% else %}
+														      [ private -
+														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='EssentialUnderstanding' object_pk=eu.pk visibility_mode='public' %}'>set public</a> ]
+														  {% endif %}
+														  EU: <a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
 
 													 {# --- learning targets --- #}
 													 <ul>
@@ -113,11 +130,11 @@
 													         {% for lt in lts %}
 													             <li>
 																	     {% if lt.public %}
-																		      [<a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='private' %}'>private</a>
-																		      public ]
+																		      [ public -
+																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='private' %}'>set private</a> ]
 																		  {% else %}
-																		      [ private
-																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='public' %}'>public</a>]
+																		      [ private -
+																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='public' %}'>set public</a> ]
 																		  {% endif %}
 																	     LT: {{ lt }}</li>
 
