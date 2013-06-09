@@ -38,9 +38,11 @@
 					             <h5><li>
 									 {% if ca.public %}
 									     [ public -
+									     <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='CompetencyArea' object_pk=ca.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 									     <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='CompetencyArea' object_pk=ca.pk visibility_mode='private' %}'>set private</a> ]
 									 {% else %}
 										  [ private -
+									     <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='CompetencyArea' object_pk=ca.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 										  <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='CompetencyArea' object_pk=ca.pk visibility_mode='public' %}'>set public</a> ]
 								    {% endif %}
 					             Competency: <a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
@@ -53,9 +55,11 @@
 									             <li>
 													     {% if level.public %}
 														      [ public -
+														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='Level' object_pk=level.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='Level' object_pk=level.pk visibility_mode='private' %}'>set private</a> ]
 														  {% else %}
 														      [ private -
+														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='Level' object_pk=level.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='Level' object_pk=level.pk visibility_mode='public' %}'>set public</a> ]
 														  {% endif %}
 									                 <b>{{ level.level_type }} Level</b>: {{ level }}here</li>
@@ -73,9 +77,11 @@
 									             <li>
 													     {% if eu.public %}
 														      [ public -
+														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='EssentialUnderstanding' object_pk=eu.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='EssentialUnderstanding' object_pk=eu.pk visibility_mode='private' %}'>set private</a> ]
 														  {% else %}
 														      [ private -
+														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='EssentialUnderstanding' object_pk=eu.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='EssentialUnderstanding' object_pk=eu.pk visibility_mode='public' %}'>set public</a> ]
 														  {% endif %}
 														  EU: <a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
@@ -89,9 +95,11 @@
 													             <li>
 																	     {% if lt.public %}
 																		      [ public -
+																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='private' %}'>set private</a> ]
 																		  {% else %}
 																		      [ private -
+																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='public' %}'>set public</a> ]
 																		  {% endif %}
 																	     LT: {{ lt }}</li>
@@ -118,9 +126,11 @@
 					 <li><h4>
 				    {% if sda.public %}
 					     [ public -
+					     <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='SubdisciplineArea' object_pk=sda.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 					     <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='SubdisciplineArea' object_pk=sda.pk visibility_mode='private' %}'>set private</a> ]
 					 {% else %}
 						  [ private -
+					     <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='SubdisciplineArea' object_pk=sda.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 						  <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='SubdisciplineArea' object_pk=sda.pk visibility_mode='public' %}'>set public</a> ]
 					 {% endif %}
 				    <a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></li>
@@ -133,9 +143,11 @@
 					             <h5><li>
 									 {% if ca.public %}
 									     [ public -
+									     <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='CompetencyArea' object_pk=ca.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 									     <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='CompetencyArea' object_pk=ca.pk visibility_mode='private' %}'>set private</a> ]
 									 {% else %}
 										  [ private -
+									     <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='CompetencyArea' object_pk=ca.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 										  <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='CompetencyArea' object_pk=ca.pk visibility_mode='public' %}'>set public</a> ]
 								    {% endif %}
 					             Competency: <a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
@@ -148,9 +160,11 @@
 									             <li>
 													     {% if level.public %}
 														      [ public -
+														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='Level' object_pk=level.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='Level' object_pk=level.pk visibility_mode='private' %}'>set private</a> ]
 														  {% else %}
 														      [ private -
+														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='Level' object_pk=level.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='Level' object_pk=level.pk visibility_mode='public' %}'>set public</a> ]
 														  {% endif %}
 									                 <b>{{ level.level_type }} Level</b>: {{ level }}here</li>
@@ -168,9 +182,11 @@
 									             <li>
 													     {% if eu.public %}
 														      [ public -
+														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='EssentialUnderstanding' object_pk=eu.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='EssentialUnderstanding' object_pk=eu.pk visibility_mode='private' %}'>set private</a> ]
 														  {% else %}
 														      [ private -
+														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='EssentialUnderstanding' object_pk=eu.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='EssentialUnderstanding' object_pk=eu.pk visibility_mode='public' %}'>set public</a> ]
 														  {% endif %}
 														  EU: <a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
@@ -184,8 +200,10 @@
 																	     {% if lt.public %}
 																		      [ public -
 																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='private' %}'>set private</a> ]
+																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 																		  {% else %}
 																		      [ private -
+																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='cascade_public' %}'>cascade public</a> -
 																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='public' %}'>set public</a> ]
 																		  {% endif %}
 																	     LT: {{ lt }}</li>
