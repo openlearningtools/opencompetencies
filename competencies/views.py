@@ -552,30 +552,39 @@ def change_visibility(request, school_id, object_type, object_pk, visibility_mod
         if current_object.is_parent_public():
             current_object.public = True
             current_object.save()
+    elif visibility_mode == 'cascade_public':
+        if current_object.is_parent_public():
+            current_object.public = True
+            current_object.save()
+            set_related_visibility(current_object, 'public')
     else:
         # Setting an object private implies all the elements under it should be private.
         current_object.public = False
         current_object.save()
-        set_related_private(current_object)
+        set_related_visibility(current_object, 'private')
 
     redirect_url = '/edit_visibility/' + school_id
     return redirect(redirect_url)
 
-def set_related_private(object_in):
+def set_related_visibility(object_in, visibility_mode):
     """Finds all related objects, and sets them all private."""
     links = [rel.get_accessor_name() for rel in object_in._meta.get_all_related_objects()]
     for link in links:
         objects = getattr(object_in, link).all()
         for object in objects:
             try:
-                object.public = False
-                object.save()
+                if visibility_mode == 'public':
+                    object.public = True
+                    object.save()
+                else:
+                    object.public = False
+                    object.save()
             except:
                 # Must not be a public/ private object
                 pass
             # Check if this object has related objects, if so use recursion
             if object._meta.get_all_related_objects():
-                set_related_private(object)
+                set_related_visibility(object, visibility_mode)
 
 
 # --- Pathways pages ---

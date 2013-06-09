@@ -16,7 +16,17 @@
 		  {# ---  subject areas --- #}
 	     <ul>
 	     {% for sa, sdas in sa_sdas.items %}
-		      <li><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
+		      <li><h3>
+				{% if sa.public %}
+				    [ public -
+				    <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='SubjectArea' object_pk=sa.pk visibility_mode='cascade_public' %}'>cascade public</a> -
+				    <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='SubjectArea' object_pk=sa.pk visibility_mode='private' %}'>set private</a> ]
+			   {% else %}
+					 [ private -
+					 <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='SubjectArea' object_pk=sa.pk visibility_mode='cascade_public' %}'>cascade public</a> -
+					 <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='SubjectArea' object_pk=sa.pk visibility_mode='public' %}'>set public</a> ]
+			   {% endif %}
+		      <a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
 
 				{# competency areas for the general subject area #}
 				{# requires an empty nesting level (blank sda) #}
@@ -105,7 +115,15 @@
 				{# ---  subdiscipline areas --- #}
 				<ul>
 				{% for sda in sdas %}
-				    <li><h4><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></li>
+					 <li><h4>
+				    {% if sda.public %}
+					     [ public -
+					     <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='SubdisciplineArea' object_pk=sda.pk visibility_mode='private' %}'>set private</a> ]
+					 {% else %}
+						  [ private -
+						  <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='SubdisciplineArea' object_pk=sda.pk visibility_mode='public' %}'>set public</a> ]
+					 {% endif %}
+				    <a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></li>
 
 					 {# --- competency areas --- #}
 					 <ul>
@@ -121,7 +139,6 @@
 										  <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='CompetencyArea' object_pk=ca.pk visibility_mode='public' %}'>set public</a> ]
 								    {% endif %}
 					             Competency: <a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
-
 
 									 {# --- levels --- #}
 									 <ul>
