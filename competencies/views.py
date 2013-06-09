@@ -548,12 +548,15 @@ def change_visibility(request, school_id, object_type, object_pk, visibility_mod
     # Get object, and toggle attribute 'public'
     current_object = get_model('competencies', object_type).objects.get(pk=object_pk)
     if visibility_mode == 'public':
-        current_object.public = True
+        # Need to check that parent is public
+        if current_object.is_parent_public():
+            current_object.public = True
+            current_object.save()
     else:
         # Setting an object private implies all the elements under it should be private.
         current_object.public = False
+        current_object.save()
         set_related_private(current_object)
-    current_object.save()
 
     redirect_url = '/edit_visibility/' + school_id
     return redirect(redirect_url)
@@ -564,15 +567,13 @@ def set_related_private(object_in):
     for link in links:
         objects = getattr(object_in, link).all()
         for object in objects:
-            print object
             try:
                 object.public = False
                 object.save()
-                print 'set private'
             except:
                 # Must not be a public/ private object
-                print 'exception'
                 pass
+            # Check if this object has related objects, if so use recursion
             if object._meta.get_all_related_objects():
                 set_related_private(object)
 

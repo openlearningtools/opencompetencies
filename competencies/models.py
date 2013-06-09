@@ -20,6 +20,9 @@ class SubjectArea(models.Model):
     class Meta:
         order_with_respect_to = 'school'
 
+    def is_parent_public(self):
+        return True
+
 class SubdisciplineArea(models.Model):
     subdiscipline_area = models.CharField(max_length=500)
     subject_area = models.ForeignKey(SubjectArea)
@@ -30,6 +33,9 @@ class SubdisciplineArea(models.Model):
 
     class Meta:
         order_with_respect_to = 'subject_area'
+
+    def is_parent_public(self):
+        return self.subject_area.public
 
 class CompetencyArea(models.Model):
     competency_area = models.CharField(max_length=500)
@@ -42,6 +48,18 @@ class CompetencyArea(models.Model):
 
     class Meta:
         order_with_respect_to = 'subject_area'
+
+    def is_parent_public(self):
+        # If no sda, then only use subject_area
+        if self.subdiscipline_area:
+            sda_public = self.subdiscipline_area.public
+        else:
+            sda_public = True
+
+        if self.subject_area.public and sda_public:
+            return True
+        else:
+            return False
 
 class Level(models.Model):
     APPRENTICE = 'Apprentice'
@@ -62,6 +80,9 @@ class Level(models.Model):
         unique_together = ('competency_area', 'level_type',)
         order_with_respect_to = 'competency_area'
 
+    def is_parent_public(self):
+        return self.competency_area.public
+
 class EssentialUnderstanding(models.Model):
     essential_understanding = models.CharField(max_length=2000)
     competency_area = models.ForeignKey(CompetencyArea)
@@ -73,6 +94,9 @@ class EssentialUnderstanding(models.Model):
     class Meta:
         order_with_respect_to = 'competency_area'
 
+    def is_parent_public(self):
+        return self.competency_area.public
+
 class LearningTarget(models.Model):
     learning_target = models.CharField(max_length=2000)
     essential_understanding = models.ForeignKey(EssentialUnderstanding)
@@ -83,6 +107,9 @@ class LearningTarget(models.Model):
 
     class Meta:
         order_with_respect_to = 'essential_understanding'
+
+    def is_parent_public(self):
+        return self.essential_understanding.public
 
 
 # --- Pathways ---
