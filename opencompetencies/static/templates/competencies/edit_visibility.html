@@ -25,14 +25,31 @@
 					 {% for new_sa, cas in sa_cas.items %}
 					     {% if new_sa == sa %}
 					         {% for ca in cas %}
-					             <li><h5>Competency: <a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+					             <h5><li>
+									 {% if ca.public %}
+									     [ public -
+									     <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='CompetencyArea' object_pk=ca.pk visibility_mode='private' %}'>set private</a> ]
+									 {% else %}
+										  [ private -
+										  <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='CompetencyArea' object_pk=ca.pk visibility_mode='public' %}'>set public</a> ]
+								    {% endif %}
+					             Competency: <a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
 
 									 {# --- levels --- #}
 									 <ul>
 									 {% for new_ca, levels in ca_levels.items %}
 									     {% if new_ca == ca %}
 									         {% for level in levels %}
-									             <li><b>{{ level.level_type }} Level</b>: {{ level }}</li>
+									             <li>
+													     {% if level.public %}
+														      [ public -
+														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='Level' object_pk=level.pk visibility_mode='private' %}'>set private</a> ]
+														  {% else %}
+														      [ private -
+														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='Level' object_pk=level.pk visibility_mode='public' %}'>set public</a> ]
+														  {% endif %}
+									                 <b>{{ level.level_type }} Level</b>: {{ level }}here</li>
+
 												{% endfor %}
 									     {% endif %}
 									 {% endfor %}
@@ -95,14 +112,32 @@
 					 {% for new_sda, cas in sda_cas.items %}
 					     {% if new_sda == sda %}
 					         {% for ca in cas %}
-					             <li><h5>Competency: <a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+					             <h5><li>
+									 {% if ca.public %}
+									     [ public -
+									     <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='CompetencyArea' object_pk=ca.pk visibility_mode='private' %}'>set private</a> ]
+									 {% else %}
+										  [ private -
+										  <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='CompetencyArea' object_pk=ca.pk visibility_mode='public' %}'>set public</a> ]
+								    {% endif %}
+					             Competency: <a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+
 
 									 {# --- levels --- #}
 									 <ul>
 									 {% for new_ca, levels in ca_levels.items %}
 									     {% if new_ca == ca %}
 									         {% for level in levels %}
-									             <li><b>{{ level.level_type }} Level</b>: {{ level }}</li>
+									             <li>
+													     {% if level.public %}
+														      [ public -
+														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='Level' object_pk=level.pk visibility_mode='private' %}'>set private</a> ]
+														  {% else %}
+														      [ private -
+														      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='Level' object_pk=level.pk visibility_mode='public' %}'>set public</a> ]
+														  {% endif %}
+									                 <b>{{ level.level_type }} Level</b>: {{ level }}here</li>
+
 												{% endfor %}
 									     {% endif %}
 									 {% endfor %}
