@@ -56,6 +56,8 @@ def schools(request):
 
 def school(request, school_id):
     school = School.objects.get(id=school_id)
+    kwargs = get_visibility_filter(request)
+
     return render_to_response('competencies/school.html', {'school': school},
                               context_instance = RequestContext(request))
 
@@ -117,13 +119,11 @@ def entire_system(request, school_id):
     school = School.objects.get(id=school_id)
 
     # Get filter for visibility, based on logged-in status.
-    if request.user.is_authenticated():
-        kwargs = {}
-    else:
-        kwargs = {'{0}'.format('public'): True}
+    kwargs = get_visibility_filter(request)
 
     # all subject areas for a school
-    sas = school.subjectarea_set.filter(**kwargs)
+    sas = get_subject_areas(school, kwargs)
+
     # all subdiscipline areas for each subject area
     #  using OrderedDict to preserve order of subject areas
     sa_sdas = OrderedDict()
@@ -164,6 +164,21 @@ def entire_system(request, school_id):
                                'sda_cas': sda_cas, 'ca_eus': ca_eus,
                                'ca_levels': ca_levels, 'eu_lts': eu_lts},
                               context_instance = RequestContext(request))
+
+# helper methods to get elements of the system.
+
+def get_subject_areas(school, kwargs):
+    """Returns subject areas for a given school."""
+    return school.subjectarea_set.filter(**kwargs)
+
+
+def get_visibility_filter(request):
+    # Get filter for visibility, based on logged-in status.
+    if request.user.is_authenticated():
+        kwargs = {}
+    else:
+        kwargs = {'{0}'.format('public'): True}
+    return kwargs
 
 
 # --- Edit views, for editing parts of the system ---
