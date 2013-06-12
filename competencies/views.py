@@ -599,7 +599,7 @@ def set_related_visibility(object_in, visibility_mode):
 def check_parent_order(child_object, correct_order):
     """Hack to address ordering issue around order_with_respect_to."""
     if get_parent_order(child_object) != correct_order:
-        set_parent_order(current_object, correct_order)
+        set_parent_order(child_object, correct_order)
 
 def get_parent_order(child_object):
     parent_object = child_object.get_parent()
