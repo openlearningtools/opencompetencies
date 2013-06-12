@@ -123,22 +123,22 @@ def entire_system(request, school_id):
         kwargs = {'{0}'.format('public'): True}
 
     # all subject areas for a school
-    sas = school.subjectarea_set.all()
+    sas = school.subjectarea_set.filter(**kwargs)
     # all subdiscipline areas for each subject area
     #  using OrderedDict to preserve order of subject areas
     sa_sdas = OrderedDict()
     for sa in sas:
-        sa_sdas[sa] = sa.subdisciplinearea_set.all()
+        sa_sdas[sa] = sa.subdisciplinearea_set.filter(**kwargs)
     # all general competency areas for a subject
     #  need to preserve order for these as well
     sa_cas = OrderedDict()
     for sa in sas:
-        sa_cas[sa] = sa.competencyarea_set.all().filter(subdiscipline_area=None)
+        sa_cas[sa] = sa.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
     # all competency areas for each subdiscipline area
     sda_cas = {}
     for sa in sas:
         for sda in sa_sdas[sa]:
-            sda_cas[sda] = sda.competencyarea_set.all()
+            sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
     # all essential understandings for each competency area
     #  loop through all sa_cas, sda_cas
     # also grab level descriptions for each competency area
