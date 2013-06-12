@@ -122,41 +122,23 @@ def entire_system(request, school_id):
     kwargs = get_visibility_filter(request)
 
     # all subject areas for a school
-    sas = get_subject_areas(school, kwargs)
+    sas = get_subjectareas(school, kwargs)
 
     # all subdiscipline areas for each subject area
-    #  using OrderedDict to preserve order of subject areas
-    sa_sdas = OrderedDict()
-    for sa in sas:
-        sa_sdas[sa] = sa.subdisciplinearea_set.filter(**kwargs)
+    sa_sdas = get_sa_sdas(sas, kwargs)
+
     # all general competency areas for a subject
-    #  need to preserve order for these as well
-    sa_cas = OrderedDict()
-    for sa in sas:
-        sa_cas[sa] = sa.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
+    sa_cas = get_sa_cas(sas, kwargs)
+
     # all competency areas for each subdiscipline area
-    sda_cas = {}
-    for sa in sas:
-        for sda in sa_sdas[sa]:
-            sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
+    sda_cas = get_sda_cas(sas, sa_sdas, kwargs)
+
     # all essential understandings for each competency area
-    #  loop through all sa_cas, sda_cas
-    # also grab level descriptions for each competency area
-    ca_eus = {}
-    ca_levels = {}
-    for cas in sda_cas.values():
-        for ca in cas:
-            ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
-            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
-    for cas in sa_cas.values():
-        for ca in cas:
-            ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
-            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
+    # all level descriptions for each competency area
+    ca_eus, ca_levels = get_ca_eus_ca_levels(sda_cas, sa_cas, kwargs)
+
     # all learning targets for each essential understanding
-    eu_lts = {}
-    for eus in ca_eus.values():
-        for eu in eus:
-            eu_lts[eu] = eu.learningtarget_set.filter(**kwargs)
+    eu_lts = get_eu_lts(ca_eus, kwargs)
 
     return render_to_response('competencies/entire_system.html', 
                               {'school': school, 'subject_areas': sas,
@@ -167,10 +149,60 @@ def entire_system(request, school_id):
 
 # helper methods to get elements of the system.
 
-def get_subject_areas(school, kwargs):
+def get_subjectareas(school, kwargs):
     """Returns subject areas for a given school."""
     return school.subjectarea_set.filter(**kwargs)
 
+def get_sa_sdas(subject_areas, kwargs):
+    """ Returns all subdiscipline areas for each subject area.
+    Uses OrderedDict to preserve order of subject areas.
+    """
+    sa_sdas = OrderedDict()
+    for sa in subject_areas:
+        sa_sdas[sa] = sa.subdisciplinearea_set.filter(**kwargs)
+    return sa_sdas
+
+def get_sa_cas(subject_areas, kwargs):
+    """Returns all general competency areas for each subject.
+    Need to preserve the order of subject areas, so use OrderedDict.
+    """
+    sa_cas = OrderedDict()
+    for sa in subject_areas:
+        sa_cas[sa] = sa.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
+    return sa_cas
+
+def get_sda_cas(subject_areas, sa_sdas, kwargs):
+    """Returns all competency areas for each subdiscipline area."""
+    sda_cas = {}
+    for sa in subject_areas:
+        for sda in sa_sdas[sa]:
+            sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
+    return sda_cas
+
+def get_ca_eus_ca_levels(sda_cas, sa_cas, kwargs):
+    """Returns all essential understandings for each competency area.
+    Loops through all sa_cas, sda_cas.
+    Also grabs level descriptions for each competency area.
+    """
+    ca_eus = {}
+    ca_levels = {}
+    for cas in sda_cas.values():
+        for ca in cas:
+            ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
+            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
+    for cas in sa_cas.values():
+        for ca in cas:
+            ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
+            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
+    return (ca_eus, ca_levels)
+
+def get_eu_lts(ca_eus, kwargs):
+    """Returns all learning targets for each essential understanding."""
+    eu_lts = {}
+    for eus in ca_eus.values():
+        for eu in eus:
+            eu_lts[eu] = eu.learningtarget_set.filter(**kwargs)
+    return eu_lts
 
 def get_visibility_filter(request):
     # Get filter for visibility, based on logged-in status.
