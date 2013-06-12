@@ -12,22 +12,26 @@
 		 | <a href='{% url 'competencies:pathways' school.id %}'>View pathways</a>
 	 </p>
 
-	 {# Loop through subject areas. #}
+	 {% if subject_areas %}
 
-	 {% if school.subjectarea_set.all %}
+		  {# ---  subject areas --- #}
 	     <ul>
-	     {% for sa in school.subjectarea_set.all %}
+	     {% for sa, sdas in sa_sdas.items %}
 		      <li><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
-				{# Also show sdas. Should test if these exist. #}
+
+				{# ---  subdiscipline areas --- #}
 				<ul>
-				{% for sda in sa.subdisciplinearea_set.all %}
+				{% for sda in sdas %}
 				    <li><h4><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></li>
 				{% endfor %}
-			   </ul>
-	     {% endfor %}
-        </ul>
+				</ul>
+
+		  {% endfor %}
+		  </ul>
+
 	 {% else %}
 		  <p>This school does not have any subject areas yet. You may want to <a href="/schools/{{ school.id }}/fork">fork</a> another school's competency system instead of starting from scratch.</p>
     {% endif %}
+
 
 {% endblock %}

@@ -55,10 +55,17 @@ def schools(request):
     return render_to_response('competencies/schools.html', {'schools': schools}, context_instance=RequestContext(request))
 
 def school(request, school_id):
-    school = School.objects.get(id=school_id)
+    """Displays subject areas and subdiscipline areas for a given school."""
+    school = get_school(school_id)
+    # Get filter for visibility, based on logged-in status.
     kwargs = get_visibility_filter(request)
-
-    return render_to_response('competencies/school.html', {'school': school},
+    # all subject areas for a school
+    sas = get_subjectareas(school, kwargs)
+    # all subdiscipline areas for each subject area
+    sa_sdas = get_sa_sdas(sas, kwargs)
+    return render_to_response('competencies/school.html',
+                              {'school': school, 'subject_areas': sas,
+                               'sa_sdas': sa_sdas},
                               context_instance = RequestContext(request))
 
 def subject_area(request, subject_area_id):
@@ -116,27 +123,20 @@ def essential_understanding(request, essential_understanding_id):
 
 def entire_system(request, school_id):
     """Shows the entire system for a given school."""
-    school = School.objects.get(id=school_id)
-
+    school = get_school(school_id)
     # Get filter for visibility, based on logged-in status.
     kwargs = get_visibility_filter(request)
-
     # all subject areas for a school
     sas = get_subjectareas(school, kwargs)
-
     # all subdiscipline areas for each subject area
     sa_sdas = get_sa_sdas(sas, kwargs)
-
     # all general competency areas for a subject
     sa_cas = get_sa_cas(sas, kwargs)
-
     # all competency areas for each subdiscipline area
     sda_cas = get_sda_cas(sas, sa_sdas, kwargs)
-
     # all essential understandings for each competency area
     # all level descriptions for each competency area
     ca_eus, ca_levels = get_ca_eus_ca_levels(sda_cas, sa_cas, kwargs)
-
     # all learning targets for each essential understanding
     eu_lts = get_eu_lts(ca_eus, kwargs)
 
@@ -148,6 +148,10 @@ def entire_system(request, school_id):
                               context_instance = RequestContext(request))
 
 # helper methods to get elements of the system.
+
+def get_school(school_id):
+    """Returns school for given id."""
+    return School.objects.get(id=school_id)
 
 def get_subjectareas(school, kwargs):
     """Returns subject areas for a given school."""
