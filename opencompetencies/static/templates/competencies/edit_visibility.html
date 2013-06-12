@@ -199,8 +199,8 @@
 													             <li>
 																	     {% if lt.public %}
 																		      [ public -
-																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='private' %}'>set private</a> ]
-																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='cascade_public' %}'>cascade public</a> -
+																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='private' %}'>set private</a> -
+																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='cascade_public' %}'>cascade public</a> ]
 																		  {% else %}
 																		      [ private -
 																		      <a href='{% url 'competencies:change_visibility' school_id=school.id object_type='LearningTarget' object_pk=lt.pk visibility_mode='cascade_public' %}'>cascade public</a> -
