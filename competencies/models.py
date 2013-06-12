@@ -23,6 +23,9 @@ class SubjectArea(models.Model):
     def is_parent_public(self):
         return True
 
+    def get_parent(self):
+        return self.school
+
 class SubdisciplineArea(models.Model):
     subdiscipline_area = models.CharField(max_length=500)
     subject_area = models.ForeignKey(SubjectArea)
@@ -36,6 +39,9 @@ class SubdisciplineArea(models.Model):
 
     def is_parent_public(self):
         return self.subject_area.public
+
+    def get_parent(self):
+        return self.subject_area
 
 class CompetencyArea(models.Model):
     competency_area = models.CharField(max_length=500)
@@ -61,6 +67,9 @@ class CompetencyArea(models.Model):
         else:
             return False
 
+    def get_parent(self):
+        return self.subject_area
+
 class Level(models.Model):
     APPRENTICE = 'Apprentice'
     TECHNICIAN = 'Technician'
@@ -83,6 +92,9 @@ class Level(models.Model):
     def is_parent_public(self):
         return self.competency_area.public
 
+    def get_parent(self):
+        return self.competency_area
+
 class EssentialUnderstanding(models.Model):
     essential_understanding = models.CharField(max_length=2000)
     competency_area = models.ForeignKey(CompetencyArea)
@@ -97,6 +109,9 @@ class EssentialUnderstanding(models.Model):
     def is_parent_public(self):
         return self.competency_area.public
 
+    def get_parent(self):
+        return self.competency_area
+
 class LearningTarget(models.Model):
     learning_target = models.CharField(max_length=2000)
     essential_understanding = models.ForeignKey(EssentialUnderstanding)
@@ -110,6 +125,9 @@ class LearningTarget(models.Model):
 
     def is_parent_public(self):
         return self.essential_understanding.public
+
+    def get_parent(self):
+        return self.essential_understanding
 
 
 # --- Pathways ---

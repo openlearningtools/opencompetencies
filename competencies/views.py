@@ -496,6 +496,7 @@ def change_order(request, school_id, parent_type, parent_id, child_type, child_i
 def edit_visibility(request, school_id):
     """Allows user to set the visibility of any item in the school's system."""
     school = School.objects.get(id=school_id)
+    #print 'sa order:', school.get_subjectarea_order()
     # all subject areas for a school
     sas = school.subjectarea_set.all()
     # all subdiscipline areas for each subject area
@@ -535,6 +536,8 @@ def edit_visibility(request, school_id):
             else:
                 eu_lts[eu] = eu.learningtarget_set.filter(public=True)
 
+    #print 'sa order:', school.get_subjectarea_order()
+
     return render_to_response('competencies/edit_visibility.html', 
                               {'school': school, 'subject_areas': sas,
                                'sa_sdas': sa_sdas, 'sa_cas': sa_cas,
@@ -544,47 +547,99 @@ def edit_visibility(request, school_id):
 
 @login_required    
 def change_visibility(request, school_id, object_type, object_pk, visibility_mode):
-    
+    #print 'start cv', get_sa_order()
     # Get object, and toggle attribute 'public'
     current_object = get_model('competencies', object_type).objects.get(pk=object_pk)
+    #parent_object = current_object.get_parent()
+    old_order = get_parent_order(current_object)
+    print 'cv, old order:', old_order
+    #print '1: ', parent_object.get_
     if visibility_mode == 'public':
         # Need to check that parent is public
         if current_object.is_parent_public():
             current_object.public = True
             current_object.save()
+            new_order = get_parent_order(current_object)
+            print 'cv, new order:', new_order
+            if new_order != old_order:
+                print '--- cv order changed!!! ---'
+                set_parent_order(current_object, old_order)
     elif visibility_mode == 'cascade_public':
         if current_object.is_parent_public():
             current_object.public = True
             current_object.save()
             set_related_visibility(current_object, 'public')
-    else:
+            new_order = get_parent_order(current_object)
+            print 'cv, new order:', new_order
+            if new_order != old_order:
+                print '--- cv order changed!!! ---'
+                set_parent_order(current_object, old_order)
+    else:  # visibility mode == 'private'
         # Setting an object private implies all the elements under it should be private.
         current_object.public = False
         current_object.save()
         set_related_visibility(current_object, 'private')
+        new_order = get_parent_order(current_object)
+        print 'cv, new order:', new_order
+        if new_order != old_order:
+            print '--- cv order changed!!! ---'
+            set_parent_order(current_object, old_order)
+
+        #print 'end cv', get_sa_order()
+
+    from django.db import connection
+    #print '\n\n--- QUERIES ---', connection.queries, '\n\n'
+
 
     redirect_url = '/edit_visibility/' + school_id
     return redirect(redirect_url)
 
 def set_related_visibility(object_in, visibility_mode):
     """Finds all related objects, and sets them all private."""
+    #print 'in srv'
+    #print 'in srv, parent:', object_in.get_parent()
     links = [rel.get_accessor_name() for rel in object_in._meta.get_all_related_objects()]
     for link in links:
         objects = getattr(object_in, link).all()
         for object in objects:
             try:
+                old_order = get_parent_order(object)
+                #print 'old order:', old_order
                 if visibility_mode == 'public':
                     object.public = True
                     object.save()
                 else:
                     object.public = False
                     object.save()
+                new_order = get_parent_order(object)
+                #print 'new order:', new_order
+                if new_order != old_order:
+                    #print 'order changed!!!'
+                    set_parent_order(object, old_order)
+                    #print 'order reverted to:', get_parent_order(object)
             except:
                 # Must not be a public/ private object
+                #print 'exception in srv loop'
                 pass
             # Check if this object has related objects, if so use recursion
             if object._meta.get_all_related_objects():
                 set_related_visibility(object, visibility_mode)
+
+# diagnostic methods
+def get_parent_order(child_object):
+    parent_object = child_object.get_parent()
+    order_method = 'get_' + child_object.__class__.__name__.lower() + '_order'
+    parent_order = getattr(parent_object, order_method)()
+    return parent_order
+
+def set_parent_order(child_object, order):
+    parent_object = child_object.get_parent()
+    order_method = 'set_' + child_object.__class__.__name__.lower() + '_order'
+    getattr(parent_object, order_method)(order)
+
+def get_sa_order():
+    s=School.objects.get(pk=1)
+    return s.get_subjectarea_order()
 
 
 # --- Pathways pages ---
