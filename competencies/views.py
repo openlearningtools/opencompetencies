@@ -72,11 +72,19 @@ def subject_area(request, subject_area_id):
     """Shows a subject area's subdiscipline areas, and competency areas."""
     subject_area = SubjectArea.objects.get(id=subject_area_id)
     school = subject_area.school
-    # Competencies for the general subject area (no associated sda):
-    sa_competency_areas = subject_area.competencyarea_set.all().filter(subdiscipline_area=None)
+    # Get filter for visibility, based on logged-in status.
+    kwargs = get_visibility_filter(request)
+    # Get subdiscipline areas for this subject area:
+    sa_subdiscipline_areas = subject_area.subdisciplinearea_set.filter(**kwargs)
+    # Get competencies for the general subject area (no associated sda):
+    sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
+    # Get competencies for each subdiscipline area:
+    sda_competency_areas = {sda: sda.competencyarea_set.filter(**kwargs) for sda in sa_subdiscipline_areas}
     return render_to_response('competencies/subject_area.html',
                               {'subject_area': subject_area, 'school': school,
-                               'sa_competency_areas': sa_competency_areas},
+                               'sa_subdiscipline_areas': sa_subdiscipline_areas,
+                               'sa_general_competency_areas': sa_general_competency_areas,
+                               'sda_competency_areas': sda_competency_areas},
                               context_instance = RequestContext(request))
 
 def subdiscipline_area(request, subdiscipline_area_id):
@@ -126,18 +134,18 @@ def entire_system(request, school_id):
     school = get_school(school_id)
     # Get filter for visibility, based on logged-in status.
     kwargs = get_visibility_filter(request)
-    # all subject areas for a school
+    # Get all subject areas for a school
     sas = get_subjectareas(school, kwargs)
-    # all subdiscipline areas for each subject area
+    # Get all subdiscipline areas for each subject area
     sa_sdas = get_sa_sdas(sas, kwargs)
-    # all general competency areas for a subject
+    # Get all general competency areas for a subject
     sa_cas = get_sa_cas(sas, kwargs)
-    # all competency areas for each subdiscipline area
+    # Get all competency areas for each subdiscipline area
     sda_cas = get_sda_cas(sas, sa_sdas, kwargs)
-    # all essential understandings for each competency area
-    # all level descriptions for each competency area
+    # Get all essential understandings for each competency area
+    # Get all level descriptions for each competency area
     ca_eus, ca_levels = get_ca_eus_ca_levels(sda_cas, sa_cas, kwargs)
-    # all learning targets for each essential understanding
+    # Get all learning targets for each essential understanding
     eu_lts = get_eu_lts(ca_eus, kwargs)
 
     return render_to_response('competencies/entire_system.html', 
