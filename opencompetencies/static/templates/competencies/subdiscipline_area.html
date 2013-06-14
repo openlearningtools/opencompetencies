@@ -16,7 +16,7 @@
 	 {% if competency_areas %}
 	     <ul>
 		  {% for ca in competency_areas %}
-		      <li><a href='/competency_areas/{{ ca.id }}/'><h3>{{ ca }}</h3></a></li>
+		      <li><h4>Competency: <a href='/competency_areas/{{ ca.id }}/'>{{ ca }}</a></h4></li>
 
 				{# --- levels --- #}
 				<ul>
@@ -31,7 +31,7 @@
 
 				<ul>
 			   {% for eu in ca.essentialunderstanding_set.all %}
-				    <li><a href='/essential_understandings/{{ eu.id }}/'><h4>{{ eu }}</h4></a></li>
+				    <li>EU: <a href='/essential_understandings/{{ eu.id }}/'>{{ eu }}</a></li>
 				{% endfor %}
 				</ul>
 		  {% endfor %}
