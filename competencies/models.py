@@ -146,6 +146,14 @@ class Pathway(models.Model):
 
 
 # --- ModelForms ---
+class SubjectAreaForm(ModelForm):
+    class Meta:
+        model = SubjectArea
+        fields = ('subject_area',)
+        widgets = {
+            'subject_area': TextInput(attrs={'class': 'span4'}),
+            }
+
 class CompetencyAreaForm(ModelForm):
     class Meta:
         model = CompetencyArea

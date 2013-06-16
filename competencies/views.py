@@ -241,7 +241,7 @@ def edit_school(request, school_id):
     """
     school = School.objects.get(id=school_id)
     # fields arg not working, but exclude works???
-    SubjectAreaFormSet = modelformset_factory(SubjectArea, exclude=('school'))
+    SubjectAreaFormSet = modelformset_factory(SubjectArea, form=SubjectAreaForm)
 
     if request.method == 'POST':
         sa_formset = SubjectAreaFormSet(request.POST)
