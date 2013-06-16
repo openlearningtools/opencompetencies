@@ -105,12 +105,14 @@ def subdiscipline_area(request, subdiscipline_area_id):
                               context_instance = RequestContext(request))
 
 def competency_area(request, competency_area_id):
-    """Shows all of the essential understandings for a given competency area."""
+    """Shows all of the essential understandings and learning targets for a given competency area."""
     competency_area = CompetencyArea.objects.get(id=competency_area_id)
     subject_area = competency_area.subject_area
     school = subject_area.school
-    essential_understandings = competency_area.essentialunderstanding_set.all()
-    ca_levels = [Level.objects.get(pk=level_pk) for level_pk in competency_area.get_level_order()]
+    # Get filter for visibility, based on logged-in status.
+    kwargs = get_visibility_filter(request)
+    essential_understandings = competency_area.essentialunderstanding_set.filter(**kwargs)
+    ca_levels = get_levels(request, competency_area)
     return render_to_response('competencies/competency_area.html',
                               {'school': school, 'subject_area': subject_area, 'competency_area': competency_area,
                                'essential_understandings': essential_understandings,
