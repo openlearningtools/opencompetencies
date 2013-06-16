@@ -57,7 +57,6 @@ def schools(request):
 def school(request, school_id):
     """Displays subject areas and subdiscipline areas for a given school."""
     school = get_school(school_id)
-    # Get filter for visibility, based on logged-in status.
     kwargs = get_visibility_filter(request)
     # all subject areas for a school
     sas = get_subjectareas(school, kwargs)
@@ -72,7 +71,6 @@ def subject_area(request, subject_area_id):
     """Shows a subject area's subdiscipline areas, and competency areas."""
     subject_area = SubjectArea.objects.get(id=subject_area_id)
     school = subject_area.school
-    # Get filter for visibility, based on logged-in status.
     kwargs = get_visibility_filter(request)
     # Get subdiscipline areas for this subject area:
     sa_subdiscipline_areas = subject_area.subdisciplinearea_set.filter(**kwargs)
@@ -92,7 +90,6 @@ def subdiscipline_area(request, subdiscipline_area_id):
     subdiscipline_area = SubdisciplineArea.objects.get(id=subdiscipline_area_id)
     subject_area = subdiscipline_area.subject_area
     school = subject_area.school
-    # Get filter for visibility, based on logged-in status.
     kwargs = get_visibility_filter(request)
     competency_areas = subdiscipline_area.competencyarea_set.filter(**kwargs)
     ca_levels = {}
@@ -109,7 +106,6 @@ def competency_area(request, competency_area_id):
     competency_area = CompetencyArea.objects.get(id=competency_area_id)
     subject_area = competency_area.subject_area
     school = subject_area.school
-    # Get filter for visibility, based on logged-in status.
     kwargs = get_visibility_filter(request)
     essential_understandings = competency_area.essentialunderstanding_set.filter(**kwargs)
     ca_levels = get_levels(request, competency_area)
@@ -123,10 +119,11 @@ def essential_understanding(request, essential_understanding_id):
     """Shows all learning targets for a given essential understanding."""
     essential_understanding = EssentialUnderstanding.objects.get(id=essential_understanding_id)
     competency_area = essential_understanding.competency_area
-    ca_levels = [Level.objects.get(pk=level_pk) for level_pk in competency_area.get_level_order()]
+    ca_levels = get_levels(request, competency_area)
     subject_area = competency_area.subject_area
     school = subject_area.school
-    learning_targets = essential_understanding.learningtarget_set.all()
+    kwargs = get_visibility_filter(request)
+    learning_targets = essential_understanding.learningtarget_set.filter(**kwargs)
     return render_to_response('competencies/essential_understanding.html',
                               {'school': school, 'subject_area': subject_area, 'competency_area': competency_area,
                                'essential_understanding': essential_understanding, 'learning_targets': learning_targets,
@@ -136,7 +133,6 @@ def essential_understanding(request, essential_understanding_id):
 def entire_system(request, school_id):
     """Shows the entire system for a given school."""
     school = get_school(school_id)
-    # Get filter for visibility, based on logged-in status.
     kwargs = get_visibility_filter(request)
     # Get all subject areas for a school
     sas = get_subjectareas(school, kwargs)
