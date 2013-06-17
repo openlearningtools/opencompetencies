@@ -264,7 +264,7 @@ def edit_subject_area(request, subject_area_id):
     subject_area = SubjectArea.objects.get(id=subject_area_id)
     school = subject_area.school
     # fields arg not working, but exclude works???
-    SubdisciplineAreaFormSet = modelformset_factory(SubdisciplineArea, exclude=('subject_area'))
+    SubdisciplineAreaFormSet = modelformset_factory(SubdisciplineArea, form=SubdisciplineAreaForm)
 
     if request.method == 'POST':
         sda_formset = SubdisciplineAreaFormSet(request.POST)
@@ -290,7 +290,7 @@ def edit_sa_competency_areas(request, subject_area_id):
 
     # Build the sa_comp_area formset by using queryset to exclude all
     #  competency areas with a defined sda. Need general ca_formset to do this.
-    CompetencyAreaFormSet = modelformset_factory(CompetencyArea, form=CompetencyAreaForm, exclude=('subject_area', 'subdiscipline_area'))
+    CompetencyAreaFormSet = modelformset_factory(CompetencyArea, form=CompetencyAreaForm)
 
     if request.method == 'POST':
         # Process general sa competency areas:
@@ -317,7 +317,7 @@ def edit_sda_competency_areas(request, subdiscipline_area_id):
     sda_comps = subdiscipline_area.competencyarea_set.all()
 
     # Build the sda_comp_area formset by using queryset 
-    CompetencyAreaFormSet = modelformset_factory(CompetencyArea, form=CompetencyAreaForm, exclude=('subject_area', 'subdiscipline_area'))
+    CompetencyAreaFormSet = modelformset_factory(CompetencyArea, form=CompetencyAreaForm)
 
     if request.method == 'POST':
         # Process sda competency areas:

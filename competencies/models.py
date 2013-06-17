@@ -154,6 +154,14 @@ class SubjectAreaForm(ModelForm):
             'subject_area': TextInput(attrs={'class': 'span4'}),
             }
 
+class SubdisciplineAreaForm(ModelForm):
+    class Meta:
+        model = SubdisciplineArea
+        fields = ('subdiscipline_area',)
+        widgets = {
+            'subdiscipline_area': TextInput(attrs={'class': 'span4'}),
+            }
+
 class CompetencyAreaForm(ModelForm):
     class Meta:
         model = CompetencyArea
