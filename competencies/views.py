@@ -693,31 +693,20 @@ def pathway(request, pathway_id):
     school = pathway.school
 
     # data to render a school's entire system:
-    # all subject areas for a school
-    sas = school.subjectarea_set.all()
-    # all subdiscipline areas for each subject area
-    sa_sdas = {sa: sa.subdisciplinearea_set.all() for sa in sas}
-    # all general competency areas for a subject
-    sa_cas = {sa: sa.competencyarea_set.all().filter(subdiscipline_area=None) for sa in sas}
-    # all competency areas for each subdiscipline area
-    sda_cas = {}
-    for sa in sas:
-        for sda in sa_sdas[sa]:
-            sda_cas[sda] = sda.competencyarea_set.all()
-    # all essential understandings for each competency area
-    #  loop through all sa_cas, sda_cas
-    ca_eus = {}
-    for cas in sda_cas.values():
-        for ca in cas:
-            ca_eus[ca] = ca.essentialunderstanding_set.all()
-    for cas in sa_cas.values():
-        for ca in cas:
-            ca_eus[ca] = ca.essentialunderstanding_set.all()
-    # all learning targets for each essential understanding
-    eu_lts = {}
-    for eus in ca_eus.values():
-        for eu in eus:
-            eu_lts[eu] = eu.learningtarget_set.all()
+    kwargs = get_visibility_filter(request)
+    # Get all subject areas for a school
+    sas = get_subjectareas(school, kwargs)
+    # Get all subdiscipline areas for each subject area
+    sa_sdas = get_sa_sdas(sas, kwargs)
+    # Get all general competency areas for a subject
+    sa_cas = get_sa_cas(sas, kwargs)
+    # Get all competency areas for each subdiscipline area
+    sda_cas = get_sda_cas(sas, sa_sdas, kwargs)
+    # Get all essential understandings for each competency area
+    # Get all level descriptions for each competency area
+    ca_eus, ca_levels = get_ca_eus_ca_levels(request, sda_cas, sa_cas, kwargs)
+    # Get all learning targets for each essential understanding
+    eu_lts = get_eu_lts(ca_eus, kwargs)
 
     return render_to_response('competencies/pathway.html',
                               {'school': school, 'pathway': pathway, 'subject_areas': sas,
