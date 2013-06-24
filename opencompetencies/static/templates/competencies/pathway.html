@@ -36,6 +36,21 @@
 					                 <li><h5>Competency: <a class='off_pathway' href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
 									 {% endif %}
 
+									 {# --- levels --- #}
+									 <ul>
+									 {% for new_ca, levels in ca_levels.items %}
+									     {% if new_ca == ca %}
+									         {% for level in levels %}
+									             {% if ca in pathway.competency_areas.all %}
+									                 <li class='current_pathway'><b>{{ level.level_type }} Level</b>: {{ level }}</li>
+													 {% else %}
+									                 <li class='off_pathway'><b>{{ level.level_type }} Level</b>: {{ level }}</li>
+													 {% endif %}
+												{% endfor %}
+									     {% endif %}
+									 {% endfor %}
+									 </ul>
+
 									 {# --- essential understandings --- #}
 									 <ul>
 									 {% for new_ca, eus in ca_eus.items %}
@@ -93,6 +108,21 @@
 					                 <li><h5>Competency: <a class='off_pathway' href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
 									 {% endif %}
 
+									 {# --- levels --- #}
+									 <ul>
+									 {% for new_ca, levels in ca_levels.items %}
+									     {% if new_ca == ca %}
+									         {% for level in levels %}
+									             {% if ca in pathway.competency_areas.all %}
+									                 <li class='current_pathway'><b>{{ level.level_type }} Level</b>: {{ level }}</li>
+													 {% else %}
+									                 <li class='off_pathway'><b>{{ level.level_type }} Level</b>: {{ level }}</li>
+													 {% endif %}
+												{% endfor %}
+									     {% endif %}
+									 {% endfor %}
+									 </ul>
+
 									 {# --- essential understandings --- #}
 									 <ul>
 									 {% for new_ca, eus in ca_eus.items %}
@@ -138,8 +168,6 @@
 	 {% else %}
 		  <p>This school does not have any subject areas yet. You may want to <a href="/schools/{{ school.id }}/fork">fork</a> another school's competency system instead of starting from scratch.</p>
     {% endif %}
-
-
 
 
 {% endblock %}

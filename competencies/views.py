@@ -712,7 +712,7 @@ def pathway(request, pathway_id):
                               {'school': school, 'pathway': pathway, 'subject_areas': sas,
                                'sa_sdas': sa_sdas, 'sa_cas': sa_cas,
                                'sda_cas': sda_cas, 'ca_eus': ca_eus,
-                               'eu_lts': eu_lts},
+                               'ca_levels': ca_levels, 'eu_lts': eu_lts},
                               context_instance = RequestContext(request))
 
 @login_required
