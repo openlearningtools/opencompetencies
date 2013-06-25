@@ -12,6 +12,7 @@ class School(models.Model):
 class SubjectArea(models.Model):
     subject_area = models.CharField(max_length=500)
     school = models.ForeignKey(School)
+    public = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.subject_area
@@ -19,9 +20,16 @@ class SubjectArea(models.Model):
     class Meta:
         order_with_respect_to = 'school'
 
+    def is_parent_public(self):
+        return True
+
+    def get_parent(self):
+        return self.school
+
 class SubdisciplineArea(models.Model):
     subdiscipline_area = models.CharField(max_length=500)
     subject_area = models.ForeignKey(SubjectArea)
+    public = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.subdiscipline_area
@@ -29,16 +37,38 @@ class SubdisciplineArea(models.Model):
     class Meta:
         order_with_respect_to = 'subject_area'
 
+    def is_parent_public(self):
+        return self.subject_area.public
+
+    def get_parent(self):
+        return self.subject_area
+
 class CompetencyArea(models.Model):
     competency_area = models.CharField(max_length=500)
     subject_area = models.ForeignKey(SubjectArea)
     subdiscipline_area = models.ForeignKey(SubdisciplineArea, blank=True, null=True)
+    public = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.competency_area
 
     class Meta:
         order_with_respect_to = 'subject_area'
+
+    def is_parent_public(self):
+        # If no sda, then only use subject_area
+        if self.subdiscipline_area:
+            sda_public = self.subdiscipline_area.public
+        else:
+            sda_public = True
+
+        if self.subject_area.public and sda_public:
+            return True
+        else:
+            return False
+
+    def get_parent(self):
+        return self.subject_area
 
 class Level(models.Model):
     APPRENTICE = 'Apprentice'
@@ -50,6 +80,7 @@ class Level(models.Model):
     level_type = models.CharField(max_length=500, choices=LEVEL_TYPE_CHOICES)
     level_description = models.CharField(max_length=5000)
     competency_area = models.ForeignKey(CompetencyArea)
+    public = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.level_description
@@ -58,9 +89,16 @@ class Level(models.Model):
         unique_together = ('competency_area', 'level_type',)
         order_with_respect_to = 'competency_area'
 
+    def is_parent_public(self):
+        return self.competency_area.public
+
+    def get_parent(self):
+        return self.competency_area
+
 class EssentialUnderstanding(models.Model):
     essential_understanding = models.CharField(max_length=2000)
     competency_area = models.ForeignKey(CompetencyArea)
+    public = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.essential_understanding
@@ -68,15 +106,28 @@ class EssentialUnderstanding(models.Model):
     class Meta:
         order_with_respect_to = 'competency_area'
 
+    def is_parent_public(self):
+        return self.competency_area.public
+
+    def get_parent(self):
+        return self.competency_area
+
 class LearningTarget(models.Model):
     learning_target = models.CharField(max_length=2000)
     essential_understanding = models.ForeignKey(EssentialUnderstanding)
+    public = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.learning_target
 
     class Meta:
         order_with_respect_to = 'essential_understanding'
+
+    def is_parent_public(self):
+        return self.essential_understanding.public
+
+    def get_parent(self):
+        return self.essential_understanding
 
 
 # --- Pathways ---
@@ -89,12 +140,29 @@ class Pathway(models.Model):
     competency_areas = models.ManyToManyField(CompetencyArea, blank=True, null=True)
     essential_understandings = models.ManyToManyField(EssentialUnderstanding, blank=True, null=True)
     learning_targets = models.ManyToManyField(LearningTarget, blank=True, null=True)
+    public = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.name
 
 
 # --- ModelForms ---
+class SubjectAreaForm(ModelForm):
+    class Meta:
+        model = SubjectArea
+        fields = ('subject_area',)
+        widgets = {
+            'subject_area': TextInput(attrs={'class': 'span4'}),
+            }
+
+class SubdisciplineAreaForm(ModelForm):
+    class Meta:
+        model = SubdisciplineArea
+        fields = ('subdiscipline_area',)
+        widgets = {
+            'subdiscipline_area': TextInput(attrs={'class': 'span4'}),
+            }
+
 class CompetencyAreaForm(ModelForm):
     class Meta:
         model = CompetencyArea

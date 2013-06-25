@@ -7,6 +7,7 @@
 	 <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a></h2>
 	 <p>This page shows the entire competency system for <a href='{% url 'competencies:school' school.id %}'</a>{{ school }}</a>.</p>
 	 <p><a href='{% url 'competencies:edit_order' school.id %}'>Edit order</a>
+	 | <a href='{% url 'competencies:edit_visibility' school.id %}'>Edit visibility</a>
 	 </p>
 
 	 {% if subject_areas %}

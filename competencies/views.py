@@ -3,6 +3,10 @@ from django.template import RequestContext
 from django.forms.models import modelform_factory, modelformset_factory, inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.db.models.loading import get_model
+from django.contrib.auth import logout
+from django.contrib.auth.views import password_change
+from django.contrib.auth.decorators import login_required
 
 from copy import copy
 from collections import OrderedDict
@@ -21,102 +25,128 @@ def index(request):
                                'pw_physicist': pw_physicist},
                               context_instance = RequestContext(request))
 
+# Authentication views
+def logout_view(request):
+    logout(request)
+    # Redirect to home page for now. Later, maybe stay on same page.
+    return redirect('/')
+
+def profile(request):
+    return render_to_response('registration/profile.html',
+                              {},
+                              context_instance = RequestContext(request))
+
+def password_change_form(request):
+    if request.method == 'POST':
+        return password_change(request, post_change_redirect='/password_change_successful')
+    else:
+        return render_to_response('registration/password_change_form.html',
+                                  {},
+                                  context_instance = RequestContext(request))
+
+def password_change_successful(request):
+    return render_to_response('registration/password_change_successful.html',
+                              {},
+                              context_instance = RequestContext(request))
+
 # --- Simple views, for exploring system without changing it: ---
 def schools(request):
     schools = School.objects.all()
     return render_to_response('competencies/schools.html', {'schools': schools}, context_instance=RequestContext(request))
 
 def school(request, school_id):
-    school = School.objects.get(id=school_id)
-    return render_to_response('competencies/school.html', {'school': school})
+    """Displays subject areas and subdiscipline areas for a given school."""
+    school = get_school(school_id)
+    kwargs = get_visibility_filter(request)
+    # all subject areas for a school
+    sas = get_subjectareas(school, kwargs)
+    # all subdiscipline areas for each subject area
+    sa_sdas = get_sa_sdas(sas, kwargs)
+    return render_to_response('competencies/school.html',
+                              {'school': school, 'subject_areas': sas,
+                               'sa_sdas': sa_sdas},
+                              context_instance = RequestContext(request))
 
 def subject_area(request, subject_area_id):
     """Shows a subject area's subdiscipline areas, and competency areas."""
     subject_area = SubjectArea.objects.get(id=subject_area_id)
     school = subject_area.school
-    # Competencies for the general subject area (no associated sda):
-    sa_competency_areas = subject_area.competencyarea_set.all().filter(subdiscipline_area=None)
+    kwargs = get_visibility_filter(request)
+    # Get subdiscipline areas for this subject area:
+    sa_subdiscipline_areas = subject_area.subdisciplinearea_set.filter(**kwargs)
+    # Get competencies for the general subject area (no associated sda):
+    sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
+    # Get competencies for each subdiscipline area:
+    sda_competency_areas = {sda: sda.competencyarea_set.filter(**kwargs) for sda in sa_subdiscipline_areas}
     return render_to_response('competencies/subject_area.html',
                               {'subject_area': subject_area, 'school': school,
-                               'sa_competency_areas': sa_competency_areas})
+                               'sa_subdiscipline_areas': sa_subdiscipline_areas,
+                               'sa_general_competency_areas': sa_general_competency_areas,
+                               'sda_competency_areas': sda_competency_areas},
+                              context_instance = RequestContext(request))
 
 def subdiscipline_area(request, subdiscipline_area_id):
     """Shows all of the competency areas for a given subdiscipline area."""
     subdiscipline_area = SubdisciplineArea.objects.get(id=subdiscipline_area_id)
     subject_area = subdiscipline_area.subject_area
     school = subject_area.school
-    competency_areas = subdiscipline_area.competencyarea_set.all()
+    kwargs = get_visibility_filter(request)
+    competency_areas = subdiscipline_area.competencyarea_set.filter(**kwargs)
     ca_levels = {}
     for ca in competency_areas:
-        ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
+        ca_levels[ca] = get_levels(request, ca)
     return render_to_response('competencies/subdiscipline_area.html',
                               {'subdiscipline_area': subdiscipline_area, 'subject_area': subject_area,
                                'school': school, 'competency_areas': competency_areas,
-                               'ca_levels': ca_levels})
+                               'ca_levels': ca_levels},
+                              context_instance = RequestContext(request))
 
 def competency_area(request, competency_area_id):
-    """Shows all of the essential understandings for a given competency area."""
+    """Shows all of the essential understandings and learning targets for a given competency area."""
     competency_area = CompetencyArea.objects.get(id=competency_area_id)
     subject_area = competency_area.subject_area
     school = subject_area.school
-    essential_understandings = competency_area.essentialunderstanding_set.all()
-    ca_levels = [Level.objects.get(pk=level_pk) for level_pk in competency_area.get_level_order()]
+    kwargs = get_visibility_filter(request)
+    essential_understandings = competency_area.essentialunderstanding_set.filter(**kwargs)
+    ca_levels = get_levels(request, competency_area)
     return render_to_response('competencies/competency_area.html',
                               {'school': school, 'subject_area': subject_area, 'competency_area': competency_area,
                                'essential_understandings': essential_understandings,
-                               'ca_levels': ca_levels})
+                               'ca_levels': ca_levels},
+                              context_instance = RequestContext(request))
 
 def essential_understanding(request, essential_understanding_id):
     """Shows all learning targets for a given essential understanding."""
     essential_understanding = EssentialUnderstanding.objects.get(id=essential_understanding_id)
     competency_area = essential_understanding.competency_area
-    ca_levels = [Level.objects.get(pk=level_pk) for level_pk in competency_area.get_level_order()]
+    ca_levels = get_levels(request, competency_area)
     subject_area = competency_area.subject_area
     school = subject_area.school
-    learning_targets = essential_understanding.learningtarget_set.all()
+    kwargs = get_visibility_filter(request)
+    learning_targets = essential_understanding.learningtarget_set.filter(**kwargs)
     return render_to_response('competencies/essential_understanding.html',
                               {'school': school, 'subject_area': subject_area, 'competency_area': competency_area,
                                'essential_understanding': essential_understanding, 'learning_targets': learning_targets,
-                               'ca_levels': ca_levels})
+                               'ca_levels': ca_levels},
+                              context_instance = RequestContext(request))
 
 def entire_system(request, school_id):
     """Shows the entire system for a given school."""
-    school = School.objects.get(id=school_id)
-    # all subject areas for a school
-    sas = school.subjectarea_set.all()
-    # all subdiscipline areas for each subject area
-    #  using OrderedDict to preserve order of subject areas
-    sa_sdas = OrderedDict()
-    for sa in sas:
-        sa_sdas[sa] = sa.subdisciplinearea_set.all()
-    # all general competency areas for a subject
-    #  need to preserve order for these as well
-    sa_cas = OrderedDict()
-    for sa in sas:
-        sa_cas[sa] = sa.competencyarea_set.all().filter(subdiscipline_area=None)
-    # all competency areas for each subdiscipline area
-    sda_cas = {}
-    for sa in sas:
-        for sda in sa_sdas[sa]:
-            sda_cas[sda] = sda.competencyarea_set.all()
-    # all essential understandings for each competency area
-    #  loop through all sa_cas, sda_cas
-    # also grab level descriptions for each competency area
-    ca_eus = {}
-    ca_levels = {}
-    for cas in sda_cas.values():
-        for ca in cas:
-            ca_eus[ca] = ca.essentialunderstanding_set.all()
-            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
-    for cas in sa_cas.values():
-        for ca in cas:
-            ca_eus[ca] = ca.essentialunderstanding_set.all()
-            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
-    # all learning targets for each essential understanding
-    eu_lts = {}
-    for eus in ca_eus.values():
-        for eu in eus:
-            eu_lts[eu] = eu.learningtarget_set.all()
+    school = get_school(school_id)
+    kwargs = get_visibility_filter(request)
+    # Get all subject areas for a school
+    sas = get_subjectareas(school, kwargs)
+    # Get all subdiscipline areas for each subject area
+    sa_sdas = get_sa_sdas(sas, kwargs)
+    # Get all general competency areas for a subject
+    sa_cas = get_sa_cas(sas, kwargs)
+    # Get all competency areas for each subdiscipline area
+    sda_cas = get_sda_cas(sas, sa_sdas, kwargs)
+    # Get all essential understandings for each competency area
+    # Get all level descriptions for each competency area
+    ca_eus, ca_levels = get_ca_eus_ca_levels(request, sda_cas, sa_cas, kwargs)
+    # Get all learning targets for each essential understanding
+    eu_lts = get_eu_lts(ca_eus, kwargs)
 
     return render_to_response('competencies/entire_system.html', 
                               {'school': school, 'subject_areas': sas,
@@ -125,14 +155,93 @@ def entire_system(request, school_id):
                                'ca_levels': ca_levels, 'eu_lts': eu_lts},
                               context_instance = RequestContext(request))
 
+# helper methods to get elements of the system.
+
+def get_school(school_id):
+    """Returns school for given id."""
+    return School.objects.get(id=school_id)
+
+def get_subjectareas(school, kwargs):
+    """Returns subject areas for a given school."""
+    return school.subjectarea_set.filter(**kwargs)
+
+def get_sa_sdas(subject_areas, kwargs):
+    """ Returns all subdiscipline areas for each subject area.
+    Uses OrderedDict to preserve order of subject areas.
+    """
+    sa_sdas = OrderedDict()
+    for sa in subject_areas:
+        sa_sdas[sa] = sa.subdisciplinearea_set.filter(**kwargs)
+    return sa_sdas
+
+def get_sa_cas(subject_areas, kwargs):
+    """Returns all general competency areas for each subject.
+    Need to preserve the order of subject areas, so use OrderedDict.
+    """
+    sa_cas = OrderedDict()
+    for sa in subject_areas:
+        sa_cas[sa] = sa.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
+    return sa_cas
+
+def get_sda_cas(subject_areas, sa_sdas, kwargs):
+    """Returns all competency areas for each subdiscipline area."""
+    sda_cas = {}
+    for sa in subject_areas:
+        for sda in sa_sdas[sa]:
+            sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
+    return sda_cas
+
+def get_ca_eus_ca_levels(request, sda_cas, sa_cas, kwargs):
+    """Returns all essential understandings for each competency area.
+    Loops through all sa_cas, sda_cas.
+    Also grabs level descriptions for each competency area.
+    """
+    ca_eus = {}
+    ca_levels = {}
+    for cas in sda_cas.values():
+        for ca in cas:
+            ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
+            ca_levels[ca] = get_levels(request, ca)
+    for cas in sa_cas.values():
+        for ca in cas:
+            ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
+            ca_levels[ca] = get_levels(request, ca)
+    return (ca_eus, ca_levels)
+
+def get_levels(request, competency_area):
+    """Returns levels for a given competency area, respecting visibility privileges."""
+    levels = []
+    for level_pk in competency_area.get_level_order():
+        level = Level.objects.get(pk=level_pk)
+        if request.user.is_authenticated() or level.public:
+            levels.append(level)
+    return levels
+
+def get_eu_lts(ca_eus, kwargs):
+    """Returns all learning targets for each essential understanding."""
+    eu_lts = {}
+    for eus in ca_eus.values():
+        for eu in eus:
+            eu_lts[eu] = eu.learningtarget_set.filter(**kwargs)
+    return eu_lts
+
+def get_visibility_filter(request):
+    # Get filter for visibility, based on logged-in status.
+    if request.user.is_authenticated():
+        kwargs = {}
+    else:
+        kwargs = {'{0}'.format('public'): True}
+    return kwargs
+
 
 # --- Edit views, for editing parts of the system ---
+@login_required
 def edit_school(request, school_id):
     """Allows user to edit a school's subject areas.
     """
     school = School.objects.get(id=school_id)
     # fields arg not working, but exclude works???
-    SubjectAreaFormSet = modelformset_factory(SubjectArea, exclude=('school'))
+    SubjectAreaFormSet = modelformset_factory(SubjectArea, form=SubjectAreaForm)
 
     if request.method == 'POST':
         sa_formset = SubjectAreaFormSet(request.POST)
@@ -148,13 +257,14 @@ def edit_school(request, school_id):
     return render_to_response('competencies/edit_school.html', {'school': school, 'sa_formset': sa_formset},
                               context_instance = RequestContext(request))
 
+@login_required
 def edit_subject_area(request, subject_area_id):
     """Allows user to edit a subject_area's subdiscipline areas.
     """
     subject_area = SubjectArea.objects.get(id=subject_area_id)
     school = subject_area.school
     # fields arg not working, but exclude works???
-    SubdisciplineAreaFormSet = modelformset_factory(SubdisciplineArea, exclude=('subject_area'))
+    SubdisciplineAreaFormSet = modelformset_factory(SubdisciplineArea, form=SubdisciplineAreaForm)
 
     if request.method == 'POST':
         sda_formset = SubdisciplineAreaFormSet(request.POST)
@@ -171,6 +281,7 @@ def edit_subject_area(request, subject_area_id):
                               {'school': school, 'subject_area': subject_area, 'sda_formset': sda_formset},
                               context_instance = RequestContext(request))
 
+@login_required
 def edit_sa_competency_areas(request, subject_area_id):
     """Allows user to edit the competencies for a general subject area."""
     subject_area = SubjectArea.objects.get(id=subject_area_id)
@@ -179,7 +290,7 @@ def edit_sa_competency_areas(request, subject_area_id):
 
     # Build the sa_comp_area formset by using queryset to exclude all
     #  competency areas with a defined sda. Need general ca_formset to do this.
-    CompetencyAreaFormSet = modelformset_factory(CompetencyArea, form=CompetencyAreaForm, exclude=('subject_area', 'subdiscipline_area'))
+    CompetencyAreaFormSet = modelformset_factory(CompetencyArea, form=CompetencyAreaForm)
 
     if request.method == 'POST':
         # Process general sa competency areas:
@@ -197,6 +308,7 @@ def edit_sa_competency_areas(request, subject_area_id):
                               {'school': school, 'subject_area': subject_area, 'sa_ca_formset': sa_ca_formset},
                               context_instance = RequestContext(request))
 
+@login_required
 def edit_sda_competency_areas(request, subdiscipline_area_id):
     """Allows user to edit the competencies for a specific subdiscipline area."""
     subdiscipline_area = SubdisciplineArea.objects.get(id=subdiscipline_area_id)
@@ -205,7 +317,7 @@ def edit_sda_competency_areas(request, subdiscipline_area_id):
     sda_comps = subdiscipline_area.competencyarea_set.all()
 
     # Build the sda_comp_area formset by using queryset 
-    CompetencyAreaFormSet = modelformset_factory(CompetencyArea, form=CompetencyAreaForm, exclude=('subject_area', 'subdiscipline_area'))
+    CompetencyAreaFormSet = modelformset_factory(CompetencyArea, form=CompetencyAreaForm)
 
     if request.method == 'POST':
         # Process sda competency areas:
@@ -225,6 +337,7 @@ def edit_sda_competency_areas(request, subdiscipline_area_id):
                                'subdiscipline_area': subdiscipline_area, 'sda_ca_formset': sda_ca_formset},
                               context_instance = RequestContext(request))
 
+@login_required
 def edit_competency_area(request, competency_area_id):
     """Allows user to edit the essential understandings for a given competency area."""
     ca = CompetencyArea.objects.get(id=competency_area_id)
@@ -250,6 +363,7 @@ def edit_competency_area(request, competency_area_id):
                                'eu_formset': eu_formset},
                               context_instance = RequestContext(request))
 
+@login_required
 def edit_levels(request, competency_area_id):
     """Allows user to edit levels for a given competency area."""
     ca = CompetencyArea.objects.get(id=competency_area_id)
@@ -289,6 +403,7 @@ def edit_levels(request, competency_area_id):
                               context_instance = RequestContext(request))
 
 
+@login_required
 def edit_essential_understanding(request, essential_understanding_id):
     """Allows user to edit the learning targets associated with an essential understanding."""
     eu = EssentialUnderstanding.objects.get(id=essential_understanding_id)
@@ -315,6 +430,7 @@ def edit_essential_understanding(request, essential_understanding_id):
                                'essential_understanding': eu, 'lt_formset': lt_formset},
                               context_instance = RequestContext(request))
 
+@login_required
 def edit_order(request, school_id):
     """Shows the entire system for a given school,
     with links to change the order of any child element.
@@ -363,7 +479,7 @@ def edit_order(request, school_id):
                                'ca_levels': ca_levels, 'eu_lts': eu_lts},
                               context_instance = RequestContext(request))
 
-from django.db.models.loading import get_model
+@login_required
 def change_order(request, school_id, parent_type, parent_id, child_type, child_id, direction):
     """Changes the order of the child element passed in, and redirects to edit_order.
     Requires parent_type to be a ModelName, and child_type to be a modelname.
@@ -374,8 +490,6 @@ def change_order(request, school_id, parent_type, parent_id, child_type, child_i
     parent_object = get_model('competencies', parent_type).objects.get(id=parent_id)
     get_order_method = 'get_' + child_type + '_order'
     order = getattr(parent_object, get_order_method)()
-
-    print 'old order', order
 
     # Set new order.
     child_index = order.index(int(child_id))
@@ -439,17 +553,136 @@ def change_order(request, school_id, parent_type, parent_id, child_type, child_i
             order[child_index], order[child_index+1] = order[child_index+1], order[child_index]
             getattr(parent_object, set_order_method)(order)
 
-    print 'new order:', order
-
     redirect_url = '/edit_order/' + school_id
     return redirect(redirect_url)
+
+@login_required
+def edit_visibility(request, school_id):
+    """Allows user to set the visibility of any item in the school's system."""
+    school = School.objects.get(id=school_id)
+    # all subject areas for a school
+    sas = school.subjectarea_set.all()
+    # all subdiscipline areas for each subject area
+    #  using OrderedDict to preserve order of subject areas
+    sa_sdas = OrderedDict()
+    for sa in sas:
+        sa_sdas[sa] = sa.subdisciplinearea_set.all()
+    # all general competency areas for a subject
+    #  need to preserve order for these as well
+    sa_cas = OrderedDict()
+    for sa in sas:
+        sa_cas[sa] = sa.competencyarea_set.all().filter(subdiscipline_area=None)
+    # all competency areas for each subdiscipline area
+    sda_cas = {}
+    for sa in sas:
+        for sda in sa_sdas[sa]:
+            sda_cas[sda] = sda.competencyarea_set.all()
+    # all essential understandings for each competency area
+    #  loop through all sa_cas, sda_cas
+    # also grab level descriptions for each competency area
+    ca_eus = {}
+    ca_levels = {}
+    for cas in sda_cas.values():
+        for ca in cas:
+            ca_eus[ca] = ca.essentialunderstanding_set.all()
+            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
+    for cas in sa_cas.values():
+        for ca in cas:
+            ca_eus[ca] = ca.essentialunderstanding_set.all()
+            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
+    # all learning targets for each essential understanding
+    eu_lts = {}
+    for eus in ca_eus.values():
+        for eu in eus:
+            if request.user.is_authenticated():
+                eu_lts[eu] = eu.learningtarget_set.all()
+            else:
+                eu_lts[eu] = eu.learningtarget_set.filter(public=True)
+
+    return render_to_response('competencies/edit_visibility.html', 
+                              {'school': school, 'subject_areas': sas,
+                               'sa_sdas': sa_sdas, 'sa_cas': sa_cas,
+                               'sda_cas': sda_cas, 'ca_eus': ca_eus,
+                               'ca_levels': ca_levels, 'eu_lts': eu_lts},
+                              context_instance = RequestContext(request))
+
+@login_required    
+def change_visibility(request, school_id, object_type, object_pk, visibility_mode):
+    # Get object, and toggle attribute 'public'
+    current_object = get_model('competencies', object_type).objects.get(pk=object_pk)
+    # Hack to deal with bug around ordering
+    #  Saving an object after toggling 'public' attribute can affect _order
+    #  Probably need a custom migration that stops db from setting _order=0 on every save
+    old_order = get_parent_order(current_object)
+    if visibility_mode == 'public':
+        # Need to check that parent is public
+        if current_object.is_parent_public():
+            current_object.public = True
+            current_object.save()
+            check_parent_order(current_object, old_order)
+    elif visibility_mode == 'cascade_public':
+        if current_object.is_parent_public():
+            current_object.public = True
+            current_object.save()
+            check_parent_order(current_object, old_order)
+            set_related_visibility(current_object, 'public')
+    else:  # visibility mode == 'private'
+        # Setting an object private implies all the elements under it should be private.
+        current_object.public = False
+        current_object.save()
+        check_parent_order(current_object, old_order)
+        set_related_visibility(current_object, 'private')
+
+    redirect_url = '/edit_visibility/' + school_id
+    return redirect(redirect_url)
+
+def set_related_visibility(object_in, visibility_mode):
+    """Finds all related objects, and sets them all to the appropriate visibility mode."""
+    links = [rel.get_accessor_name() for rel in object_in._meta.get_all_related_objects()]
+    for link in links:
+        objects = getattr(object_in, link).all()
+        for object in objects:
+            try:
+                # Hack to deal with ordering issue
+                old_order = get_parent_order(object)
+                if visibility_mode == 'public':
+                    object.public = True
+                    object.save()
+                else:
+                    object.public = False
+                    object.save()
+                check_parent_order(object, old_order)
+            except:
+                # Must not be a public/ private object
+                pass
+            # Check if this object has related objects, if so use recursion
+            if object._meta.get_all_related_objects():
+                set_related_visibility(object, visibility_mode)
+
+# Methods to deal with ordering issue around order_with_respect_to
+def check_parent_order(child_object, correct_order):
+    """Hack to address ordering issue around order_with_respect_to."""
+    if get_parent_order(child_object) != correct_order:
+        set_parent_order(child_object, correct_order)
+
+def get_parent_order(child_object):
+    parent_object = child_object.get_parent()
+    order_method = 'get_' + child_object.__class__.__name__.lower() + '_order'
+    parent_order = getattr(parent_object, order_method)()
+    return parent_order
+
+def set_parent_order(child_object, order):
+    parent_object = child_object.get_parent()
+    order_method = 'set_' + child_object.__class__.__name__.lower() + '_order'
+    getattr(parent_object, order_method)(order)
 
 
 # --- Pathways pages ---
 def pathways(request, school_id):
     """Lists all pathways for a given school."""
     school = School.objects.get(id=school_id)
-    pathways = school.pathway_set.all()
+    kwargs = get_visibility_filter(request)
+    pathways = school.pathway_set.filter(**kwargs)
 
     return render_to_response('competencies/pathways.html',
                               {'school': school, 'pathways': pathways},
@@ -461,39 +694,29 @@ def pathway(request, pathway_id):
     school = pathway.school
 
     # data to render a school's entire system:
-    # all subject areas for a school
-    sas = school.subjectarea_set.all()
-    # all subdiscipline areas for each subject area
-    sa_sdas = {sa: sa.subdisciplinearea_set.all() for sa in sas}
-    # all general competency areas for a subject
-    sa_cas = {sa: sa.competencyarea_set.all().filter(subdiscipline_area=None) for sa in sas}
-    # all competency areas for each subdiscipline area
-    sda_cas = {}
-    for sa in sas:
-        for sda in sa_sdas[sa]:
-            sda_cas[sda] = sda.competencyarea_set.all()
-    # all essential understandings for each competency area
-    #  loop through all sa_cas, sda_cas
-    ca_eus = {}
-    for cas in sda_cas.values():
-        for ca in cas:
-            ca_eus[ca] = ca.essentialunderstanding_set.all()
-    for cas in sa_cas.values():
-        for ca in cas:
-            ca_eus[ca] = ca.essentialunderstanding_set.all()
-    # all learning targets for each essential understanding
-    eu_lts = {}
-    for eus in ca_eus.values():
-        for eu in eus:
-            eu_lts[eu] = eu.learningtarget_set.all()
+    kwargs = get_visibility_filter(request)
+    # Get all subject areas for a school
+    sas = get_subjectareas(school, kwargs)
+    # Get all subdiscipline areas for each subject area
+    sa_sdas = get_sa_sdas(sas, kwargs)
+    # Get all general competency areas for a subject
+    sa_cas = get_sa_cas(sas, kwargs)
+    # Get all competency areas for each subdiscipline area
+    sda_cas = get_sda_cas(sas, sa_sdas, kwargs)
+    # Get all essential understandings for each competency area
+    # Get all level descriptions for each competency area
+    ca_eus, ca_levels = get_ca_eus_ca_levels(request, sda_cas, sa_cas, kwargs)
+    # Get all learning targets for each essential understanding
+    eu_lts = get_eu_lts(ca_eus, kwargs)
 
     return render_to_response('competencies/pathway.html',
                               {'school': school, 'pathway': pathway, 'subject_areas': sas,
                                'sa_sdas': sa_sdas, 'sa_cas': sa_cas,
                                'sda_cas': sda_cas, 'ca_eus': ca_eus,
-                               'eu_lts': eu_lts},
+                               'ca_levels': ca_levels, 'eu_lts': eu_lts},
                               context_instance = RequestContext(request))
 
+@login_required
 def create_pathway(request, school_id):
     """Allows user to create a new pathway.
     Links to pages that edit the pathway.
@@ -518,6 +741,7 @@ def create_pathway(request, school_id):
                                'pw_formset': pw_formset, 'saved_msg': saved_msg,},
                               context_instance = RequestContext(request))
 
+@login_required
 def edit_pathway(request, pathway_id):
     """Allows a user to add or remove elements in a pathway."""
     pathway = Pathway.objects.get(id=pathway_id)
@@ -550,6 +774,27 @@ def edit_pathway(request, pathway_id):
                                },
                               context_instance = RequestContext(request))
 
+@login_required
+def edit_pw_visibility(request, school_id):
+    """Allows user to set the visibility of each pathway in the school's system."""
+    school = get_school(school_id)
+    pathways = school.pathway_set.all()
+
+    return render_to_response('competencies/edit_pw_visibility.html',
+                              {'school': school, 'pathways': pathways},
+                              context_instance = RequestContext(request))
+
+@login_required
+def change_pw_visibility(request, school_id, pathway_pk, visibility_mode):
+    pathway = Pathway.objects.get(pk=pathway_pk)
+    if visibility_mode == 'public':
+        pathway.public = True
+    else:
+        pathway.public = False
+    pathway.save()
+    redirect_url = '/edit_pw_visibility/' + school_id
+    return redirect(redirect_url)
+
 def get_fields(pathway):
     fields = ['name', 'subject_areas',]
     if pathway.subject_areas.all():
@@ -564,19 +809,26 @@ def get_fields(pathway):
 
 
 # --- Forking pages: pages related to forking an existing school ---
+@login_required
 def fork(request, school_id):
     empty_school = School.objects.get(id=school_id)
     # Only get schools that have at least one subject area:
     forkable_schools = [school for school in School.objects.all() if school.subjectarea_set.all()]
-    return render_to_response('competencies/fork.html',{'empty_school': empty_school, 'forkable_schools': forkable_schools})
+    return render_to_response('competencies/fork.html',
+                              {'empty_school': empty_school, 'forkable_schools': forkable_schools},
+                              context_instance = RequestContext(request))
 
+@login_required
 def confirm_fork(request, forking_school_id, forked_school_id):
     """Forks the requested school, and confirms success."""
     forking_school = School.objects.get(id=forking_school_id)
     forked_school = School.objects.get(id=forked_school_id)
     fork_school(forking_school, forked_school)
-    return render_to_response('competencies/confirm_fork.html',{'forking_school': forking_school, 'forked_school': forked_school})
+    return render_to_response('competencies/confirm_fork.html',
+                              {'forking_school': forking_school, 'forked_school': forked_school},
+                              context_instance = RequestContext(request))
 
+@login_required
 def new_school(request):
     """Creates a new school, then offers link to fork an existing
     school's competency system.

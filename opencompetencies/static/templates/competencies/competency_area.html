@@ -27,10 +27,10 @@
 	 {% if essential_understandings %}
 	     <ul>
 	     {% for eu in essential_understandings %}
-		      <li><h3><a href='/essential_understandings/{{ eu.id }}/'>{{ eu }}</a></h3></li>
+		      <li><h4><a href='/essential_understandings/{{ eu.id }}/'>{{ eu }}</a></h4></li>
 				<ul>
 				{% for lt in eu.learningtarget_set.all %}
-				    <li><h4>{{ lt }}</h4></li>
+				    <li>LT: {{ lt }}</li>
 				{% endfor %}
 				</ul>
 		  {% endfor %}

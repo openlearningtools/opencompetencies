@@ -47,6 +47,17 @@
             <ul class="nav">
               <li><a href="{% url 'competencies:index' %}">Home</a></li>
               <li><a href="{% url 'competencies:schools' %}">Schools</a></li>
+
+				  <!-- Authentication header links -->
+				  {% if user.is_authenticated %}
+                  <li><a href="{% url 'profile' %}">{{ user.username }}</a></li>
+                  <li><a href="{% url 'logout_view' %}">log out</a></li>
+				  {% else %}
+                  <li><a href="{% url 'login' %}">log in</a></li>
+				  {% endif %}
+				  
+
+
             </ul>
           </div><!--/.nav-collapse -->
         </div>

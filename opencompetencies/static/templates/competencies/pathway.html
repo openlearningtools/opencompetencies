@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title_extension %} - Schools{% endblock %}
+{% block title_extension %} - Pathway{% endblock %}
 
 {% block content %}
 
@@ -31,10 +31,25 @@
 					     {% if new_sa == sa %}
 					         {% for ca in cas %}
 					             {% if ca in pathway.competency_areas.all %}
-					                 <li><h5><a class='current_pathway' href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+					                 <li><h5>Competency: <a class='current_pathway' href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
 									 {% else %}
-					                 <li><h5><a class='off_pathway' href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+					                 <li><h5>Competency: <a class='off_pathway' href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
 									 {% endif %}
+
+									 {# --- levels --- #}
+									 <ul>
+									 {% for new_ca, levels in ca_levels.items %}
+									     {% if new_ca == ca %}
+									         {% for level in levels %}
+									             {% if ca in pathway.competency_areas.all %}
+									                 <li class='current_pathway'><b>{{ level.level_type }} Level</b>: {{ level }}</li>
+													 {% else %}
+									                 <li class='off_pathway'><b>{{ level.level_type }} Level</b>: {{ level }}</li>
+													 {% endif %}
+												{% endfor %}
+									     {% endif %}
+									 {% endfor %}
+									 </ul>
 
 									 {# --- essential understandings --- #}
 									 <ul>
@@ -42,9 +57,9 @@
 									     {% if new_ca == ca %}
 									         {% for eu in eus %}
 									             {% if eu in pathway.essential_understandings.all %}
-									                 <li><a class='current_pathway' href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+									                 <li>EU: <a class='current_pathway' href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
 													 {% else %}
-									                 <li><a class='off_pathway' href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>														  
+									                 <li>EU: <a class='off_pathway' href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>														  
 													 {% endif %}
 
 													 {# --- learning targets --- #}
@@ -53,9 +68,9 @@
 													     {% if new_eu == eu %}
 													         {% for lt in lts %}
 													             {% if lt in pathway.learning_targets.all %}
-													                 <li class='current_pathway'>{{ lt }}</li>
+													                 <li class='current_pathway'>LT: {{ lt }}</li>
 																    {% else %}
-													                 <li class='off_pathway'>{{ lt }}</li>																		  
+													                 <li class='off_pathway'>LT: {{ lt }}</li>
 																	 {% endif %}
 															   {% endfor %}
 														  {% endif %}
@@ -88,10 +103,25 @@
 					     {% if new_sda == sda %}
 					         {% for ca in cas %}
 					             {% if ca in pathway.competency_areas.all %}
-					                 <li><h5><a class='current_pathway' href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+					                 <li><h5>Competency: <a class='current_pathway' href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
 									 {% else %}
-					                 <li><h5><a class='off_pathway' href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+					                 <li><h5>Competency: <a class='off_pathway' href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
 									 {% endif %}
+
+									 {# --- levels --- #}
+									 <ul>
+									 {% for new_ca, levels in ca_levels.items %}
+									     {% if new_ca == ca %}
+									         {% for level in levels %}
+									             {% if ca in pathway.competency_areas.all %}
+									                 <li class='current_pathway'><b>{{ level.level_type }} Level</b>: {{ level }}</li>
+													 {% else %}
+									                 <li class='off_pathway'><b>{{ level.level_type }} Level</b>: {{ level }}</li>
+													 {% endif %}
+												{% endfor %}
+									     {% endif %}
+									 {% endfor %}
+									 </ul>
 
 									 {# --- essential understandings --- #}
 									 <ul>
@@ -99,9 +129,9 @@
 									     {% if new_ca == ca %}
 									         {% for eu in eus %}
 									             {% if eu in pathway.essential_understandings.all %}
-									                 <li><a class='current_pathway' href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+									                 <li>EU: <a class='current_pathway' href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
 													 {% else %}
-									                 <li><a class='off_pathway' href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>														  
+									                 <li>EU: <a class='off_pathway' href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>														  
 													 {% endif %}
 
 													 {# --- learning targets --- #}
@@ -110,9 +140,9 @@
 													     {% if new_eu == eu %}
 													         {% for lt in lts %}
 													             {% if lt in pathway.learning_targets.all %}
-													                 <li class='current_pathway'>{{ lt }}</li>
+													                 <li class='current_pathway'>LT: {{ lt }}</li>
 																    {% else %}
-													                 <li class='off_pathway'>{{ lt }}</li>																		  
+													                 <li class='off_pathway'>LT: {{ lt }}</li>																		  
 																	 {% endif %}
 															   {% endfor %}
 														  {% endif %}
@@ -138,8 +168,6 @@
 	 {% else %}
 		  <p>This school does not have any subject areas yet. You may want to <a href="/schools/{{ school.id }}/fork">fork</a> another school's competency system instead of starting from scratch.</p>
     {% endif %}
-
-
 
 
 {% endblock %}
