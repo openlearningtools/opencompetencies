@@ -681,7 +681,8 @@ def set_parent_order(child_object, order):
 def pathways(request, school_id):
     """Lists all pathways for a given school."""
     school = School.objects.get(id=school_id)
-    pathways = school.pathway_set.all()
+    kwargs = get_visibility_filter(request)
+    pathways = school.pathway_set.filter(**kwargs)
 
     return render_to_response('competencies/pathways.html',
                               {'school': school, 'pathways': pathways},
