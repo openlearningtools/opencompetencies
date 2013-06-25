@@ -773,6 +773,27 @@ def edit_pathway(request, pathway_id):
                                },
                               context_instance = RequestContext(request))
 
+@login_required
+def edit_pw_visibility(request, school_id):
+    """Allows user to set the visibility of each pathway in the school's system."""
+    school = get_school(school_id)
+    pathways = school.pathway_set.all()
+
+    return render_to_response('competencies/edit_pw_visibility.html',
+                              {'school': school, 'pathways': pathways},
+                              context_instance = RequestContext(request))
+
+@login_required
+def change_pw_visibility(request, school_id, pathway_pk, visibility_mode):
+    pathway = Pathway.objects.get(pk=pathway_pk)
+    if visibility_mode == 'public':
+        pathway.public = True
+    else:
+        pathway.public = False
+    pathway.save()
+    redirect_url = '/edit_pw_visibility/' + school_id
+    return redirect(redirect_url)
+
 def get_fields(pathway):
     fields = ['name', 'subject_areas',]
     if pathway.subject_areas.all():

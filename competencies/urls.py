@@ -81,6 +81,12 @@ urlpatterns = patterns('',
     # edit_pathway: Allows user to add or remove elements in a pathway.
     url(r'^edit_pathway/(?P<pathway_id>\d+)/$', views.edit_pathway, name='edit_pathway'),
 
+    # edit_pw_visibility: Allows toggling of public/ private mode for each pathway.
+    url(r'^edit_pw_visibility/(?P<school_id>\d+)/$', views.edit_pw_visibility, name='edit_pw_visibility'),
+
+    # change_pw_visibility: No template; changes the visibility of a pathway, and redirects to edit_pw_visibility.
+    url(r'^change_pw_visibility/(?P<school_id>\d+)/(?P<pathway_pk>\d+)/(?P<visibility_mode>\w+)/$', views.change_pw_visibility, name='change_pw_visibility'),
+
 
     # --- Forking pages ---
     # fork: Page offering an empty school the opportunity to fork an established school.

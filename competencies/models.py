@@ -140,6 +140,7 @@ class Pathway(models.Model):
     competency_areas = models.ManyToManyField(CompetencyArea, blank=True, null=True)
     essential_understandings = models.ManyToManyField(EssentialUnderstanding, blank=True, null=True)
     learning_targets = models.ManyToManyField(LearningTarget, blank=True, null=True)
+    public = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.name

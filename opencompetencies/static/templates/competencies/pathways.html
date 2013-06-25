@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title_extension %} - Schools{% endblock %}
+{% block title_extension %} - Pathways{% endblock %}
 
 {% block content %}
 
@@ -8,6 +8,7 @@
 
 	 <p>A pathway is a set of related learning targets. One use of a pathway is to represent a given career. For example, a pathway might represent all of the learning targets that should be mastered in order to become a software developer.<p>
 	 <p><a href='{% url 'competencies:create_pathway' school.id %}'>Create a new pathway</a>
+	 | <a href='{% url 'competencies:edit_pw_visibility' school.id %}'>Edit visibility</a>
 	 </p>
 
 	 <ul>
