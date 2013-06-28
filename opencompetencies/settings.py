@@ -132,6 +132,7 @@ INSTALLED_APPS = (
 
     # Utilities/ libraries
     'south',
+    'gunicorn',
 
     # My apps
     'competencies',
