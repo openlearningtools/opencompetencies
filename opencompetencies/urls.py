@@ -1,5 +1,8 @@
 from django.conf.urls import patterns, include, url
 from django.conf import settings
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+import os
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -23,8 +26,14 @@ urlpatterns = patterns('',
     url(r'^password_change_successful/', 'competencies.views.password_change_successful', name='password_change_successful'),
 )
 
-# heroku static files:
-urlpatterns += patterns('',
-    (r'^static/(.*)$', 'django.views.static.serve',
-     {'document_root': settings.STATIC_ROOT}),
-)
+
+# Set up static files appropriate to environment
+if os.environ.get('DEPLOY_ENVIRONMENT', None) == 'aws':
+    urlpatterns += staticfiles_urlpatterns()
+else:
+
+    # heroku static files:
+    urlpatterns += patterns('',
+                            (r'^static/(.*)$', 'django.views.static.serve',
+                             {'document_root': settings.STATIC_ROOT}),
+                            )
