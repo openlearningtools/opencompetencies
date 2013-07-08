@@ -28,11 +28,9 @@ urlpatterns = patterns('',
 
 
 # Set up static files appropriate to environment
-if os.environ.get('DEPLOY_ENVIRONMENT', None) == 'aws':
-    urlpatterns += staticfiles_urlpatterns()
-else:
-
-    # heroku static files:
+#  Right now, all static files in one place, not using collectstatic
+if os.environ.get('DEPLOY_ENVIRONMENT', None) == 'heroku':
+    # heroku static files setup:
     urlpatterns += patterns('',
                             (r'^static/(.*)$', 'django.views.static.serve',
                              {'document_root': settings.STATIC_ROOT}),
