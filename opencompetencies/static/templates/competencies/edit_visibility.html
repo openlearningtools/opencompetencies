@@ -6,6 +6,8 @@
 
 	 <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a></h2>
 	 <p>This page allows you to set the visibility of any element in <a href='{% url 'competencies:school' school.id %}'</a>{{ school }}</a>'s system.</p>
+    <p>Setting an element private automatically sets all related elements private.</p>
+    <p>An element can only be made public if its parent element is public. You can choose to make single elements public, or you can choose "cascade public". "Cascade public" sets that element, and all of its related elements public.</p>
 	 <p><a href='{% url 'competencies:entire_system' school.id %}'>View entire system</a>
 	 </p>
 
