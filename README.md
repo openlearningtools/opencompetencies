@@ -95,6 +95,10 @@ Now we need to set our DJANGO_SECRET_KEY environment variable:
 
     $ heroku config:set DJANGO_SECRET_KEY="your_secret_key"
 
+We also need to set a deploy environment variable, to properly serve static files:
+
+    $ heroku config:set DEPLOY_ENVIRONMENT=heroku
+
 After this, you will need to sync the development database on heroku.
 
     (venv)/srv/opencompetencies $ heroku run bash
