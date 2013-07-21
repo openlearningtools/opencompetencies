@@ -1,0 +1,28 @@
+server {
+        listen 80;
+        server_name public_ip or domain_name;
+        # no security issue with this, since / is passed to upstream
+        root /srv/projects/xxxcompetencies;
+
+        # This works for now; should be using collectstatic or dj-static
+        location /static/ {
+                alias /srv/projects/xxxcompetencies/opencompetencies/static/;
+        }
+
+        location /static/admin/ {
+                alias /srv/projects/xxxcompetencies/venv/lib/python2.7/site-packages/django/contrib/admin/static/admin/;
+        }
+
+        location / {
+                proxy_pass_header Server;
+                proxy_set_header Host $http_host;
+                proxy_redirect off;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Scheme $scheme;
+                proxy_connect_timeout 10;
+                proxy_read_timeout 10;
+                proxy_pass http://localhost:8000/;
+        }
+        # what to serve if upstream unavailable, or crashes:
+        # error_page 500 502 503 504 /media/50x.html;
+}
