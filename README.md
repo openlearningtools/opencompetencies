@@ -4,7 +4,7 @@
 Sections
 ---
 - [Vision](#vision)
-- [Setting up your own development version on heroku](#dev_setup)
+- [Setting up a local development version](#dev_setup)
 - [Pre-coding decisions](#pre_coding_decisions)
 - [About](#about)
 
@@ -20,13 +20,12 @@ More information is included in the [VISION.md](https://github.com/openlearningt
 
 [top](#top)
 
-<a name="dev_setup"></a>Setting up your own development version on heroku
+<a name="dev_setup"></a>Setting up a local development version
 ---
-You can see a live version of this project at [http://opencompetencies.herokuapp.com](http://opencompetencies.herokuapp.com), as long as it does not get clobbered because it's on a free tier.  If you want to ask questions or discuss the project, feel free to share your thoughts in issue 2, [Initial Feedback and Discussion](https://github.com/openlearningtools/opencompetencies/issues/2).
+You can see a live version of this project at [http://opencompetencies.org](http://opencompetencies.org), as long as it does not get clobbered because it is not set up for scale yet.  If you want to ask questions or discuss the project, feel free to share your thoughts in issue 2, [Initial Feedback and Discussion](https://github.com/openlearningtools/opencompetencies/issues/2).
 
 Instructions at this point are based on an Ubuntu development environment, or something similar. You may need some system-wide tools installed, which we can help clarify if you need. If you have any questions about setting up a local development environment for this project, please visit issue 1, [Installation Questions](https://github.com/openlearningtools/opencompetencies/issues/1).
 
-### Set up a local development environment:
 Go to a directory where you want to work with this project, and clone the repository, and cd into the new directory:
 
     $ cd /srv
@@ -76,48 +75,7 @@ Add the following lines to the end of /venv/bin/activate:
     # Use my env variables:
     export $(cat /srv/opencompetencies/.env)
 
-Now these environment variables will be loaded each time you activate your virtual environment.  Both the .env file and the venv/ directory are included in .gitignore, so neither will be committed in your local repository.
-
-### Deploy your test version to heroku:
-If you have not done so already, create a heroku account and install the heroku toolbelt. The [following command](https://toolbelt.heroku.com/) will install the heroku toolbelt on ubuntu:
-
-    $ wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
-
-Make sure you are logged in to heroku through the command line.  Then in your local project directory, activate the virtual environment and run "heroku create". After heroku creates your project, push your files to heroku:
-
-    $ heroku login
-    $ cd /srv/opencompetencies
-    /srv/opencompetencies $ source venv/bin/activate
-    (venv)/srv/opencompetencies $ heroku create
-    (venv)/srv/opencompetencies $ git push heroku master
-
-Now we need to set our DJANGO_SECRET_KEY environment variable:
-
-    $ heroku config:set DJANGO_SECRET_KEY="your_secret_key"
-
-We also need to set a deploy environment variable, to properly serve static files:
-
-    $ heroku config:set DEPLOY_ENVIRONMENT=heroku
-
-After this, you will need to sync the development database on heroku.
-
-    (venv)/srv/opencompetencies $ heroku run bash
-    $ python manage.py syncdb
-    $ python manage.py migrate competencies
-    $ exit
-    (venv)/srv/opencompetencies $ heroku open
-
-If you can run commands locally, but have trouble with "heroku run bash", you can run those commands individually through the command line:
-
-    (venv)/srv/opencompetencies $ heroku run python manage.py syncdb
-    (venv)/srv/opencompetencies $ heroku run python manage.py migrate competencies
-	 (venv)/srv/opencompetencies $ heroku open
-
-This should take you to your own live version of the opencompetencies project. When you make changes to your local project and you want to push those changes live, just push your changes to heroku:
-
-    (venv)/srv/opencompetencies $ git push heroku master
-
-If you are new to using heroku with django projects, take a look at the [heroku django](https://devcenter.heroku.com/articles/django) page.
+Now these environment variables will be loaded each time you activate your virtual environment.  Both the .env file and the venv/ directory are listed in .gitignore, so neither will be committed in your local repository.
 
 [top](#top)
 
@@ -131,7 +89,6 @@ A number of decisions need to be made before we write any code, beyond the demo 
 - Agree on an overall approach to identifying the kinds of relationships between different pieces of knowledge?
 - [(done)](https://github.com/openlearningtools/opencompetencies/blob/master/docs/GLOSSARY.md) Write a glossary for the first few levels in the taxonomy
 - Move much of this file to a wiki? May be better than current /docs folder setup.
-- Agree on which framework to use
 
 [top](#top)
 <a name="about"></a>About
