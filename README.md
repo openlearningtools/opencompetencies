@@ -6,6 +6,7 @@ Sections
 - [Vision](#vision)
 - [Setting up a local development version](#dev_setup)
 - [Pre-coding decisions](#pre_coding_decisions)
+- [License](#license)
 - [About](#about)
 
 <a name="vision"></a>Vision
@@ -91,6 +92,13 @@ A number of decisions need to be made before we write any code, beyond the demo 
 - Move much of this file to a wiki? May be better than current /docs folder setup.
 
 [top](#top)
+
+<a name="license"></a>License
+---
+Open Competencies is released under the [AGPLv3](http://www.gnu.org/licenses/agpl.html). If you feel it should be released under a more permissive license, please get in touch and I will reconsider. I want to build a developer community around the project, but I don't want to see this code used in a proprietary ed-tech startup.
+
+[top](#top)
+
 <a name="about"></a>About
 ---
 Open Competencies is currently being developed by Eric Matthes (ehmatthes). If you would like to get in touch feel free to send me an email at ehmatthes@gmail.com, or find me on twitter <a href="http://twitter.com/ehmatthes">@ehmatthes</a>.
