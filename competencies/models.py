@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import ModelForm, TextInput, Textarea, SelectMultiple, CheckboxSelectMultiple
+from django.contrib.auth.models import User
 
 # --- Competency System Hierarchy ---
 
@@ -144,6 +145,13 @@ class Pathway(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+# --- User Information ---
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    schools = models.ManyToManyField(School, blank=True, null=True)
 
 
 # --- ModelForms ---
