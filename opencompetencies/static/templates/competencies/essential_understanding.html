@@ -32,8 +32,10 @@
 		      <li>{{ lt }}</li>
 		  {% endfor %}
 		  </ul>
-	 {% else %}
+	 {% elif user.is_authenticated and school in user.profile.schools.all %}
 		  <p>This essential understanding does not have any learning targets defined yet.</p>
+	 {% else %}
+		  <p>This essential understanding does not have any public learning targets defined yet.</p>
 	 {% endif %}
 			   
 {% endblock %}

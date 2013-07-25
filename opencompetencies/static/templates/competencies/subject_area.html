@@ -31,8 +31,10 @@
 				</ul>
 		  {% endfor %}
 		  </ul>
-	 {% else %}
-		  <p>There are no subdiscipline areas defined for this subject area.</p>
+	 {% elif user.is_authenticated and school in user.profile.schools.all %}
+		  <p>There are no subdiscipline areas defined for this subject area yet.</p>
+    {% else %}
+		  <p>There are no public subdiscipline areas defined for this subject area yet.</p>
 	 {% endif %}
 
 {% endblock %}
