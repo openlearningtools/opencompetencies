@@ -284,6 +284,11 @@ def edit_subject_area(request, subject_area_id):
     """
     subject_area = SubjectArea.objects.get(id=subject_area_id)
     school = subject_area.school
+    # Test if user allowed to edit this school.
+    if not check_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
     # fields arg not working, but exclude works???
     SubdisciplineAreaFormSet = modelformset_factory(SubdisciplineArea, form=SubdisciplineAreaForm)
 
@@ -307,6 +312,11 @@ def edit_sa_competency_areas(request, subject_area_id):
     """Allows user to edit the competencies for a general subject area."""
     subject_area = SubjectArea.objects.get(id=subject_area_id)
     school = subject_area.school
+    # Test if user allowed to edit this school.
+    if not check_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
     sa_comps = subject_area.competencyarea_set.all()
 
     # Build the sa_comp_area formset by using queryset to exclude all
@@ -335,6 +345,11 @@ def edit_sda_competency_areas(request, subdiscipline_area_id):
     subdiscipline_area = SubdisciplineArea.objects.get(id=subdiscipline_area_id)
     subject_area = subdiscipline_area.subject_area
     school = subject_area.school
+    # Test if user allowed to edit this school.
+    if not check_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
     sda_comps = subdiscipline_area.competencyarea_set.all()
 
     # Build the sda_comp_area formset by using queryset 
@@ -365,6 +380,10 @@ def edit_competency_area(request, competency_area_id):
     sa = ca.subject_area
     sda = ca.subdiscipline_area
     school = sa.school
+    # Test if user allowed to edit this school.
+    if not check_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
 
     EssentialUnderstandingFormSet = modelformset_factory(EssentialUnderstanding, form=EssentialUnderstandingForm)
 
@@ -392,6 +411,10 @@ def edit_levels(request, competency_area_id):
     sa = ca.subject_area
     sda = ca.subdiscipline_area
     school = sa.school
+    # Test if user allowed to edit this school.
+    if not check_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
 
     LevelFormSet = modelformset_factory(Level, form=LevelForm)
     #LevelFormSet = modelformset_factory(Level)
@@ -432,6 +455,10 @@ def edit_essential_understanding(request, essential_understanding_id):
     sa = ca.subject_area
     sda = ca.subdiscipline_area
     school = sa.school
+    # Test if user allowed to edit this school.
+    if not check_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
 
     LearningTargetFormSet = modelformset_factory(LearningTarget, form=LearningTargetForm, extra=3)
 
@@ -457,6 +484,11 @@ def edit_order(request, school_id):
     with links to change the order of any child element.
     """
     school = School.objects.get(id=school_id)
+    # Test if user allowed to edit this school.
+    if not check_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
     # all subject areas for a school
     sas = school.subjectarea_set.all()
     # all subdiscipline areas for each subject area
@@ -506,6 +538,10 @@ def change_order(request, school_id, parent_type, parent_id, child_type, child_i
     Requires parent_type to be a ModelName, and child_type to be a modelname.
     """
     school = School.objects.get(id=school_id)
+    # Test if user allowed to edit this school.
+    if not check_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
 
     # Get parent object and order of children
     parent_object = get_model('competencies', parent_type).objects.get(id=parent_id)
@@ -581,6 +617,11 @@ def change_order(request, school_id, parent_type, parent_id, child_type, child_i
 def edit_visibility(request, school_id):
     """Allows user to set the visibility of any item in the school's system."""
     school = School.objects.get(id=school_id)
+    # Test if user allowed to edit this school.
+    if not check_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
     # all subject areas for a school
     sas = school.subjectarea_set.all()
     # all subdiscipline areas for each subject area
@@ -743,6 +784,11 @@ def create_pathway(request, school_id):
     Links to pages that edit the pathway.
     """
     school = School.objects.get(id=school_id)
+    # Test if user allowed to edit this school.
+    if not check_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
     PathwayFormSet = modelformset_factory(Pathway, fields=('name',))
     saved_msg = ''
 
@@ -767,6 +813,11 @@ def edit_pathway(request, pathway_id):
     """Allows a user to add or remove elements in a pathway."""
     pathway = Pathway.objects.get(id=pathway_id)
     school = pathway.school
+    # Test if user allowed to edit this school.
+    if not check_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
     saved_msg = ''
 
     # Only include relevant parts of a pathway
@@ -799,6 +850,11 @@ def edit_pathway(request, pathway_id):
 def edit_pw_visibility(request, school_id):
     """Allows user to set the visibility of each pathway in the school's system."""
     school = get_school(school_id)
+    # Test if user allowed to edit this school.
+    if not check_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
     pathways = school.pathway_set.all()
 
     return render_to_response('competencies/edit_pw_visibility.html',
@@ -833,6 +889,11 @@ def get_fields(pathway):
 @login_required
 def fork(request, school_id):
     empty_school = School.objects.get(id=school_id)
+    # Test if user allowed to edit this school.
+    if not check_edit_permission(request.user, empty_school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
     # Only get schools that have at least one subject area:
     forkable_schools = [school for school in School.objects.all() if school.subjectarea_set.all()]
     return render_to_response('competencies/fork.html',
