@@ -243,15 +243,22 @@ def get_visibility_filter(user, school):
 
 
 # --- Edit views, for editing parts of the system ---
+def check_edit_permission(user, school):
+    # Returns True if allowed to edit, False if not allowed to edit
+    if school in user.userprofile.schools.all():
+        return True
+    else:
+        return False
+
+
 @login_required
 def edit_school(request, school_id):
     """Allows user to edit a school's subject areas.
     """
     school = School.objects.get(id=school_id)
     # Test if user allowed to edit this school.
-    if school not in request.user.userprofile.schools.all():
-        # Redirect to page informing user they don't have proper permission to edit.
-        redirect_url = '/no_edit_permission/' + school_id
+    if not check_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
     # fields arg not working, but exclude works???
