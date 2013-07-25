@@ -49,6 +49,14 @@ def password_change_successful(request):
                               {},
                               context_instance = RequestContext(request))
 
+# --- Authorization views ---
+def no_edit_permission(request, school_id):
+    """Displays message that user does not have permission to make requested edits."""
+    school = get_school(school_id)
+    return render_to_response('competencies/no_edit_permission.html',
+                              {'school': school},
+                              context_instance = RequestContext(request))
+
 # --- Simple views, for exploring system without changing it: ---
 def schools(request):
     schools = School.objects.all()
@@ -240,6 +248,12 @@ def edit_school(request, school_id):
     """Allows user to edit a school's subject areas.
     """
     school = School.objects.get(id=school_id)
+    # Test if user allowed to edit this school.
+    if school not in request.user.userprofile.schools.all():
+        # Redirect to page informing user they don't have proper permission to edit.
+        redirect_url = '/no_edit_permission/' + school_id
+        return redirect(redirect_url)
+
     # fields arg not working, but exclude works???
     SubjectAreaFormSet = modelformset_factory(SubjectArea, form=SubjectAreaForm)
 
