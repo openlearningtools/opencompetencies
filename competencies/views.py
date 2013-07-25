@@ -842,10 +842,22 @@ def new_school(request):
         new_school = School(name=new_school_name)
         new_school.save()
         new_school_created = True
+        # Now need to associate current user with this school
+        associate_user_school(request.user, new_school)
+
     return render_to_response('competencies/new_school.html',
                               {'new_school_name': new_school_name, 'new_school_created': new_school_created,
                                'new_school': new_school }, context_instance=RequestContext(request))
-        
+
+def associate_user_school(user, school):
+    # Associates a given school with a given user
+    try:
+        user.userprofile.schools.add(school)
+    except: # User probably does not have a profile yet
+        up = UserProfile()
+        up.user = user
+        up.save()
+        up.schools.add(school)
 
 # --- Helper functions ---
 def fork_school(forking_school, forked_school):
