@@ -57,7 +57,7 @@ def schools(request):
 def school(request, school_id):
     """Displays subject areas and subdiscipline areas for a given school."""
     school = get_school(school_id)
-    kwargs = get_visibility_filter(request)
+    kwargs = get_visibility_filter(request.user, school)
     # all subject areas for a school
     sas = get_subjectareas(school, kwargs)
     # all subdiscipline areas for each subject area
@@ -71,7 +71,7 @@ def subject_area(request, subject_area_id):
     """Shows a subject area's subdiscipline areas, and competency areas."""
     subject_area = SubjectArea.objects.get(id=subject_area_id)
     school = subject_area.school
-    kwargs = get_visibility_filter(request)
+    kwargs = get_visibility_filter(request.user, school)
     # Get subdiscipline areas for this subject area:
     sa_subdiscipline_areas = subject_area.subdisciplinearea_set.filter(**kwargs)
     # Get competencies for the general subject area (no associated sda):
@@ -90,7 +90,7 @@ def subdiscipline_area(request, subdiscipline_area_id):
     subdiscipline_area = SubdisciplineArea.objects.get(id=subdiscipline_area_id)
     subject_area = subdiscipline_area.subject_area
     school = subject_area.school
-    kwargs = get_visibility_filter(request)
+    kwargs = get_visibility_filter(request.user, school)
     competency_areas = subdiscipline_area.competencyarea_set.filter(**kwargs)
     ca_levels = {}
     for ca in competency_areas:
@@ -106,7 +106,7 @@ def competency_area(request, competency_area_id):
     competency_area = CompetencyArea.objects.get(id=competency_area_id)
     subject_area = competency_area.subject_area
     school = subject_area.school
-    kwargs = get_visibility_filter(request)
+    kwargs = get_visibility_filter(request.user, school)
     essential_understandings = competency_area.essentialunderstanding_set.filter(**kwargs)
     ca_levels = get_levels(request, competency_area)
     return render_to_response('competencies/competency_area.html',
@@ -122,7 +122,7 @@ def essential_understanding(request, essential_understanding_id):
     ca_levels = get_levels(request, competency_area)
     subject_area = competency_area.subject_area
     school = subject_area.school
-    kwargs = get_visibility_filter(request)
+    kwargs = get_visibility_filter(request.user, school)
     learning_targets = essential_understanding.learningtarget_set.filter(**kwargs)
     return render_to_response('competencies/essential_understanding.html',
                               {'school': school, 'subject_area': subject_area, 'competency_area': competency_area,
@@ -133,7 +133,7 @@ def essential_understanding(request, essential_understanding_id):
 def entire_system(request, school_id):
     """Shows the entire system for a given school."""
     school = get_school(school_id)
-    kwargs = get_visibility_filter(request)
+    kwargs = get_visibility_filter(request.user, school)
     # Get all subject areas for a school
     sas = get_subjectareas(school, kwargs)
     # Get all subdiscipline areas for each subject area
@@ -225,9 +225,9 @@ def get_eu_lts(ca_eus, kwargs):
             eu_lts[eu] = eu.learningtarget_set.filter(**kwargs)
     return eu_lts
 
-def get_visibility_filter(request):
+def get_visibility_filter(user, school):
     # Get filter for visibility, based on logged-in status.
-    if request.user.is_authenticated():
+    if user.is_authenticated() and school in user.userprofile.schools.all():
         kwargs = {}
     else:
         kwargs = {'{0}'.format('public'): True}
@@ -681,7 +681,7 @@ def set_parent_order(child_object, order):
 def pathways(request, school_id):
     """Lists all pathways for a given school."""
     school = School.objects.get(id=school_id)
-    kwargs = get_visibility_filter(request)
+    kwargs = get_visibility_filter(request.user, school)
     pathways = school.pathway_set.filter(**kwargs)
 
     return render_to_response('competencies/pathways.html',
@@ -694,7 +694,7 @@ def pathway(request, pathway_id):
     school = pathway.school
 
     # data to render a school's entire system:
-    kwargs = get_visibility_filter(request)
+    kwargs = get_visibility_filter(request.user, school)
     # Get all subject areas for a school
     sas = get_subjectareas(school, kwargs)
     # Get all subdiscipline areas for each subject area
