@@ -151,7 +151,10 @@ class Pathway(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
+    # User is allowed to edit any aspect of any school in this list.
     schools = models.ManyToManyField(School, blank=True, null=True)
+    # User is allowed to edit any descendent of any subject_area in this list.
+    subject_areas = models.ManyToManyField(SubjectArea, blank=True, null=True)
 
 
 # --- ModelForms ---
