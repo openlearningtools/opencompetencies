@@ -243,9 +243,18 @@ def get_visibility_filter(user, school):
 
 
 # --- Edit views, for editing parts of the system ---
-def check_edit_permission(user, school):
+def check_edit_permission(user, school, subject_area=None):
+    """Checks whether given user has permission to edit given object.
+    """
     # Returns True if allowed to edit, False if not allowed to edit
+    # If school is in userprofile, user can edit anything
     if school in user.userprofile.schools.all():
+        return True
+    # User can not edit entire school system; check if user has permission to edit this subject area.
+    # Will throw error if user has no subject_areas defined? (public, guest)
+    #  Default sa is None, and None not in empty list, but this makes sure a subject_area
+    #   was actually passed in.
+    if subject_area and (subject_area in user.userprofile.subject_areas.all()):
         return True
     else:
         return False
@@ -285,7 +294,7 @@ def edit_subject_area(request, subject_area_id):
     subject_area = SubjectArea.objects.get(id=subject_area_id)
     school = subject_area.school
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school):
+    if not check_edit_permission(request.user, school, subject_area):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
@@ -313,7 +322,7 @@ def edit_sa_competency_areas(request, subject_area_id):
     subject_area = SubjectArea.objects.get(id=subject_area_id)
     school = subject_area.school
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school):
+    if not check_edit_permission(request.user, school, subject_area):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
@@ -346,7 +355,7 @@ def edit_sda_competency_areas(request, subdiscipline_area_id):
     subject_area = subdiscipline_area.subject_area
     school = subject_area.school
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school):
+    if not check_edit_permission(request.user, school, subject_area):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
@@ -381,7 +390,7 @@ def edit_competency_area(request, competency_area_id):
     sda = ca.subdiscipline_area
     school = sa.school
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school):
+    if not check_edit_permission(request.user, school, sa):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
@@ -412,7 +421,7 @@ def edit_levels(request, competency_area_id):
     sda = ca.subdiscipline_area
     school = sa.school
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school):
+    if not check_edit_permission(request.user, school, sa):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
@@ -456,7 +465,7 @@ def edit_essential_understanding(request, essential_understanding_id):
     sda = ca.subdiscipline_area
     school = sa.school
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school):
+    if not check_edit_permission(request.user, school, sa):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
