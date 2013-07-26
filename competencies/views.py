@@ -237,10 +237,21 @@ def get_visibility_filter(user, school):
     # Get filter for visibility, based on logged-in status.
     if user.is_authenticated() and school in user.userprofile.schools.all():
         kwargs = {}
+    elif user.is_authenticated() and school in get_user_sa_schools(user):
+        kwargs = {}
     else:
         kwargs = {'{0}'.format('public'): True}
     return kwargs
 
+def get_user_sa_schools(user):
+    """Return a list of schools associated with the subject areas this user can edit.
+    Needed because if a user can edit one subject area, that user needs to be able
+    to see all elements of that school's system. Can only edit some sa's, but can see everything.
+    """
+    # This is ugly implementation; should probably be in models.py
+    schools = [sa.school for sa in user.userprofile.subject_areas.all()]
+    print schools
+    return schools
 
 # --- Edit views, for editing parts of the system ---
 def check_edit_permission(user, school, subject_area=None):
