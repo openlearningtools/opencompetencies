@@ -659,8 +659,9 @@ def edit_visibility(request, school_id):
     school = School.objects.get(id=school_id)
     # Test if user allowed to edit this school.
     if not has_edit_permission(request.user, school):
-        redirect_url = '/no_edit_permission/' + str(school.id)
-        return redirect(redirect_url)
+        if school not in get_user_sa_schools(request.user):
+            redirect_url = '/no_edit_permission/' + str(school.id)
+            return redirect(redirect_url)
 
     # all subject areas for a school
     sas = school.subjectarea_set.all()
