@@ -856,8 +856,9 @@ def edit_pathway(request, pathway_id):
     school = pathway.school
     # Test if user allowed to edit this school.
     if not has_edit_permission(request.user, school):
-        redirect_url = '/no_edit_permission/' + str(school.id)
-        return redirect(redirect_url)
+        if not pathway in request.user.userprofile.pathways.all():
+            redirect_url = '/no_edit_permission/' + str(school.id)
+            return redirect(redirect_url)
 
     saved_msg = ''
 
