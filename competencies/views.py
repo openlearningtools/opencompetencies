@@ -827,8 +827,13 @@ def create_pathway(request, school_id):
     school = School.objects.get(id=school_id)
     # Test if user allowed to edit this school.
     if not has_edit_permission(request.user, school):
-        redirect_url = '/no_edit_permission/' + str(school.id)
-        return redirect(redirect_url)
+        # A user who has subject_area-level edit permission can create pathway.
+        #  This pathway will need to be added to their list.
+        if school in get_user_sa_schools(request.user):
+            add_pathway_to_user = True
+        else:
+            redirect_url = '/no_edit_permission/' + str(school.id)
+            return redirect(redirect_url)
 
     PathwayFormSet = modelformset_factory(Pathway, fields=('name',))
     saved_msg = ''
@@ -841,6 +846,8 @@ def create_pathway(request, school_id):
                 instance.school = school
                 instance.save()
                 saved_msg = 'Your changes were saved.'
+                if add_pathway_to_user:
+                    request.user.userprofile.pathways.add(instance)
 
     pw_formset = PathwayFormSet()
 
