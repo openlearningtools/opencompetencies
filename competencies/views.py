@@ -254,7 +254,7 @@ def get_user_sa_schools(user):
     return schools
 
 # --- Edit views, for editing parts of the system ---
-def check_edit_permission(user, school, subject_area=None):
+def has_edit_permission(user, school, subject_area=None):
     """Checks whether given user has permission to edit given object.
     """
     # Returns True if allowed to edit, False if not allowed to edit
@@ -277,7 +277,7 @@ def edit_school(request, school_id):
     """
     school = School.objects.get(id=school_id)
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school):
+    if not has_edit_permission(request.user, school):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
@@ -305,7 +305,7 @@ def edit_subject_area(request, subject_area_id):
     subject_area = SubjectArea.objects.get(id=subject_area_id)
     school = subject_area.school
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school, subject_area):
+    if not has_edit_permission(request.user, school, subject_area):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
@@ -333,7 +333,7 @@ def edit_sa_competency_areas(request, subject_area_id):
     subject_area = SubjectArea.objects.get(id=subject_area_id)
     school = subject_area.school
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school, subject_area):
+    if not has_edit_permission(request.user, school, subject_area):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
@@ -366,7 +366,7 @@ def edit_sda_competency_areas(request, subdiscipline_area_id):
     subject_area = subdiscipline_area.subject_area
     school = subject_area.school
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school, subject_area):
+    if not has_edit_permission(request.user, school, subject_area):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
@@ -401,7 +401,7 @@ def edit_competency_area(request, competency_area_id):
     sda = ca.subdiscipline_area
     school = sa.school
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school, sa):
+    if not has_edit_permission(request.user, school, sa):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
@@ -432,7 +432,7 @@ def edit_levels(request, competency_area_id):
     sda = ca.subdiscipline_area
     school = sa.school
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school, sa):
+    if not has_edit_permission(request.user, school, sa):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
@@ -476,7 +476,7 @@ def edit_essential_understanding(request, essential_understanding_id):
     sda = ca.subdiscipline_area
     school = sa.school
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school, sa):
+    if not has_edit_permission(request.user, school, sa):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
@@ -505,9 +505,10 @@ def edit_order(request, school_id):
     """
     school = School.objects.get(id=school_id)
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school):
-        redirect_url = '/no_edit_permission/' + str(school.id)
-        return redirect(redirect_url)
+    if not has_edit_permission(request.user, school):
+        if school not in get_user_sa_schools(request.user):
+            redirect_url = '/no_edit_permission/' + str(school.id)
+            return redirect(redirect_url)
 
     # all subject areas for a school
     sas = school.subjectarea_set.all()
@@ -557,14 +558,17 @@ def change_order(request, school_id, parent_type, parent_id, child_type, child_i
     """Changes the order of the child element passed in, and redirects to edit_order.
     Requires parent_type to be a ModelName, and child_type to be a modelname.
     """
+    # Get subject_area, to help determine if user has permission to edit
+    # Will need parent_object anyways.
     school = School.objects.get(id=school_id)
+    parent_object = get_model('competencies', parent_type).objects.get(id=parent_id)
+    sa = get_subjectarea_from_object(parent_object)
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school):
+    if not has_edit_permission(request.user, school, sa):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
-    # Get parent object and order of children
-    parent_object = get_model('competencies', parent_type).objects.get(id=parent_id)
+    # Get order of children
     get_order_method = 'get_' + child_type + '_order'
     order = getattr(parent_object, get_order_method)()
 
@@ -633,12 +637,28 @@ def change_order(request, school_id, parent_type, parent_id, child_type, child_i
     redirect_url = '/edit_order/' + school_id
     return redirect(redirect_url)
 
+def get_subjectarea_from_object(object_in):
+    """Returns the subject_area of the given object, and none if the
+    given object is above the level of a subject_area.
+    """
+    class_name = object_in.__class__.__name__
+    if class_name == 'School':
+        return None
+    elif class_name == 'SubjectArea':
+        return object_in
+    elif class_name in ['SubdisciplineArea', 'CompetencyArea']:
+        return object_in.subject_area
+    elif class_name == 'EssentialUnderstanding':
+        return object_in.competency_area.subject_area
+    elif class_name == 'LearningTarget':
+        return object_in.essential_understanding.competency_area.subject_area
+
 @login_required
 def edit_visibility(request, school_id):
     """Allows user to set the visibility of any item in the school's system."""
     school = School.objects.get(id=school_id)
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school):
+    if not has_edit_permission(request.user, school):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
@@ -805,7 +825,7 @@ def create_pathway(request, school_id):
     """
     school = School.objects.get(id=school_id)
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school):
+    if not has_edit_permission(request.user, school):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
@@ -834,7 +854,7 @@ def edit_pathway(request, pathway_id):
     pathway = Pathway.objects.get(id=pathway_id)
     school = pathway.school
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school):
+    if not has_edit_permission(request.user, school):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
@@ -871,7 +891,7 @@ def edit_pw_visibility(request, school_id):
     """Allows user to set the visibility of each pathway in the school's system."""
     school = get_school(school_id)
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, school):
+    if not has_edit_permission(request.user, school):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
@@ -910,7 +930,7 @@ def get_fields(pathway):
 def fork(request, school_id):
     empty_school = School.objects.get(id=school_id)
     # Test if user allowed to edit this school.
-    if not check_edit_permission(request.user, empty_school):
+    if not has_edit_permission(request.user, empty_school):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
