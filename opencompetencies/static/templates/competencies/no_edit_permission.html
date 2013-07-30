@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title_extension %} - {{ school }}{% endblock %}
+
+{% block content %}
+
+	 <h2><a href='/schools/{{ school.id }}/'>{{ school.name }}</a></h2>
+	 <p>You do not have permission to edit some or all elements of <a href='{% url 'competencies:school' school.id %}'>{{ school.name }}</a>'s competency system. You may wish to contact a <a href='{% url 'competencies:school' school.id %}'>{{ school.name }}</a> administrator if you think you should have editing privileges.</p>
+
+{% endblock %}

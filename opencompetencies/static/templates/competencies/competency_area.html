@@ -35,8 +35,10 @@
 				</ul>
 		  {% endfor %}
 		  </ul>
-	 {% else %}
+	 {% elif user.is_authenticated and school in user.profile.schools.all %}
 		  <p>There are no essential understandings for this competency area yet.
+	 {% else %}
+		  <p>There are no public essential understandings for this competency area yet.
 	 {% endif %}
 			   
 {% endblock %}

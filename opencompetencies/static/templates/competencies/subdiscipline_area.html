@@ -36,8 +36,10 @@
 				</ul>
 		  {% endfor %}
 		  </ul>
-	 {% else %}
+	 {% elif user.is_authenticated and school in user.profile.schools.all %}
 		  <p>This subdiscipline area has no competency areas defined yet.
+	 {% else %}
+		  <p>This subdiscipline area has no public competency areas defined yet.
 	 {% endif %}
 
 {% endblock %}

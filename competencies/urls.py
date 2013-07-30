@@ -31,6 +31,11 @@ urlpatterns = patterns('',
     url(r'^entire_system/(?P<school_id>\d+)/$', views.entire_system, name='entire_system'),
 
 
+    # --- Authorization pages ---
+    # no_edit_permission: Message that user does not have permission required to edit current elements.
+    url(r'^no_edit_permission/(?P<school_id>\d+)/$', views.no_edit_permission, name='no_edit_permission'),
+
+
     # --- Edit System pages ---
     # edit_school: Allows editing of a school's subject areas.
     url(r'^edit_school/(?P<school_id>\d+)/$', views.edit_school, name='edit_school'),
