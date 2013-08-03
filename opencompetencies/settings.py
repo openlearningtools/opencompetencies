@@ -5,7 +5,12 @@ import os.path
 
 PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 
-DEBUG = os.environ.get('DJANGO_DEBUG', False)
+# env var is returned as a string
+if os.environ.get('DJANGO_DEBUG', 'False') == 'True':
+    DEBUG = True
+else:
+    DEBUG = False
+
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
