@@ -12,13 +12,13 @@
     <!-- mission statement -->
 
     <div class="row">
-		  <div class="span12">
-			 <p class="lead">Open Competencies gives educators control over education standards. It allows us all to openly create, share, and revise the standards we want our students to meet.</p>
+		  <div class="span10 offset1">
+			 <p class="lead light_text">Open Competencies gives educators control over education standards. It allows us all to openly create, share, and revise the standards we want our students to meet.</p>
 		  </div>
 	 </div>
 
     <div class="row">
-		  <div class="span10 offset1">
+		  <div class="span12">
 			 <p class="lead2">There are fairly simple solutions to some long-standing problems in education. Here are some of the problems in education that Open Competencies addresses:</p>
 		  </div>
 	 </div>
@@ -83,9 +83,8 @@
 
 
     <!-- expanded sections -->
-	 <hr>
 	 <!-- external body -->
-	 <div class="row">
+	 <div class="row top_line">
 		<div class="span12">
 		  <p class="lead text-left"><a name="write_standards"></a>Problem: Most education standards are written by an external body.</p>
 	   </div>
@@ -111,7 +110,7 @@
 	 </div>
 
 	 <!-- forking -->
-	 <div class="row">
+	 <div class="row top_line">
 		<div class="span12">
 		  <p class="lead text-left"><a name="forking"></a>Problem: If you like a system that another school is using, it is often very difficult to help your own school adopt that school's system.</p>
 	   </div>
@@ -138,7 +137,7 @@
 
 
 	 <!-- pathways -->
-	 <div class="row">
+	 <div class="row top_line">
 		<div class="span12">
 		  <p class="lead text-left"><a name="pathways"></a>Problem: Most schools have one set of "graduation requirements", ignoring the fact that students have many different goals in life.</p>
 	   </div>
@@ -164,7 +163,7 @@
 	 </div>
 
 	 <!-- openness -->
-	 <div class="row">
+	 <div class="row top_line">
 		<div class="span12">
 		  <p class="lead text-left"><a name="openness"></a>Problem: Many technology-focused educational resources are built more with a profit motive in mind than with a goal of serving all students.</p>
 	   </div>
@@ -190,23 +189,11 @@
 	 </div>
 
 
-
-	 <br><br><br>
-	 <hr>
-
-		<p>This is a bare-bones demonstration of what I'd like Open Competencies to be.  Please kick the tires a bit, and share some <a href="https://github.com/openlearningtools/opencompetencies/issues/2">feedback</a> if you'd like to see this project fully developed.</p>
-
-		<p>You can start by looking at some sample competencies from <a href='{% url 'competencies:school' sample_school.id %}'>Sample High School</a>. Then go back and <a href='{% url 'competencies:schools' %}'>create your own school</a>; once you create your own school, you will be able to fork an existing school's system.  This forking behavior is one of the core features of the Open Competencies project.</p>
-
-		<p>You can also check out some sample pathways. A pathway is a collection of related elements of the competency system. You can check out a pathway that represents <a href='{% url 'competencies:pathway' pw_min_hs_grad.id %}'>minimum graduation requirements</a> for high school students, and a pathway that showing what a student who wants to become a <a href='{% url 'competencies:pathway' pw_physicist.id %}'>physicist</a> should focus on. This is another main feature of Open Competencies: the ability to identify different graduation requirements for individual students, based on their post-high school plans.</p>
-
-		<p>If you are a developer, you can check out the code from <a href="https://github.com/openlearningtools/opencompetencies">github</a>. You can share <a href="https://github.com/openlearningtools/opencompetencies/issues/2">feedback</a> there as well.</p>
-
-		<p>If you'd like to get in touch directly, you can find me on twitter <a href='https://twitter.com/ehmatthes'>@ehmatthes</a>, or you can email me at ehmatthes at gmail.</p> 
-
-		<h3><a href='{% url 'competencies:school' sample_school.id %}'>View competencies for Sample High School</a></h3>
-
-		<h4>To try out many features of Open Competencies, you will need to <a href='{% url 'login' %}'>log in</a>. There is a Guest account with username 'guest' and password 'guest'.</h4>
+	 <div class="row top_line">
+		<div class="span12">
+		  <p class="lead">If you'd like to get in touch directly, you can find me on twitter <a href='https://twitter.com/ehmatthes'>@ehmatthes</a>, or you can email me at ehmatthes at gmail.</p> 
+	   </div>
+    </div>
 
 {% endblock %}
 

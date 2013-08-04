@@ -30,3 +30,12 @@ div.feature_box {
 	 padding: 8px;
 	 border: 0px solid black;
 }
+
+.light_text {
+	 color: #04859D;
+}
+
+.top_line {
+	 padding-top: 25px;
+	 border-top: 1px solid #bbb;
+}
