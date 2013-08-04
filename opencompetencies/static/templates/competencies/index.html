@@ -2,10 +2,129 @@
 
 {% block content %}
 
-      <h1>Welcome to Open Competencies</h1>
-		<h2>(pre-alpha demo version)</h2>
+    <div class="row">
+		  <div class="span12">
+			 <h1>Open Competencies (alpha)</h1>
+		  </div>
+	 </div>
 
-		<h4>Open Competencies gives us control over education standards. It allows educators to identify the standards we want students to meet, and then continually revise those standards based on our daily experiences with students.</h4>
+
+    <!-- mission statement -->
+
+    <div class="row">
+		  <div class="span12">
+			 <p class="lead">Open Competencies gives educators control over education standards. It allows us all to openly create, share, and revise the standards we want our students to meet.</p>
+		  </div>
+	 </div>
+
+    <div class="row">
+		  <div class="span12">
+			 <p class="lead2">The software development world is about 40 years ahead of the education world in terms of sharing open tools and resources to help everyone focus on the interesting and challengin parts of their work. Open Competencies aims to bring some of these ideas to education:</p>
+		  </div>
+	 </div>
+
+
+    <!-- problems and solutions -->
+
+    <div class="row">
+		<div class="span12">
+		  <div class="span5 feature_box">
+			 <p class="lead text-center">Problem:</p>
+		  </div>
+		  <div class="span7 feature_box">
+			 <p class="lead text-center">How Open Competencies helps:</p>
+		  </div>
+	   </div>
+	 </div>
+
+    <div class="row">
+		<div class="span12">
+		  <div class="span5 feature_box">
+			 <p class="text-left">Most education standards are written by an external body.</p>
+		  </div>
+		  <div class="span7 feature_box">
+			 <p class="text-left">Open Competencies makes it easy to develop your own set of standards, by using an existing structure to organize the standards you are developing. <a href="#write_standards">more</a></p>
+		  </div>
+	   </div>
+	 </div>
+
+    <div class="row">
+		<div class="span12">
+		  <div class="span5 feature_box">
+			 <p class="text-left">Most education standards are not subject to continuous revision.</p>
+		  </div>
+		  <div class="span7 feature_box">
+			 <p class="text-left">When you see a way to improve your school's standards, you are free to revise them at any time, and it is easy to do so.</p>
+		  </div>
+	   </div>
+	 </div>
+
+    <div class="row">
+		<div class="span12">
+		  <div class="span5 feature_box">
+			 <p class="text-left">If you like a system that another school is using, it is often very difficult to help your own school adopt that school's system.</p>
+		  </div>
+		  <div class="span7 feature_box">
+			 <p class="text-left">If you like another school's standards on Open Competencies, you can "fork" that school's system. This lets you start working with your own copy of any school's entire system in a minute or two.</p>
+		  </div>
+	   </div>
+	 </div>
+
+    <div class="row">
+		<div class="span12">
+		  <div class="span5 feature_box">
+			 <p class="text-left">Most schools have one set of "graduation requirements", ignoring the fact that students have many different goals in life.</p>
+		  </div>
+		  <div class="span7 feature_box">
+			 <p class="text-left">Open Competencies allows you to create "Pathways" through a school's competency system. These are sets of standards that a student identifies as relevant and meaningful, which they must meet in order to graduate from high school.</p>
+		  </div>
+	   </div>
+	 </div>
+
+    <div class="row">
+		<div class="span12">
+		  <div class="span5 feature_box">
+			 <p class="text-left">Many technology-focused educational resources are built more with a profit motive in mind than with a goal of serving all students.</p>
+		  </div>
+		  <div class="span7 feature_box">
+			 <p class="text-left">Open Competencies is a completely open project, including source code and content.</p>
+		  </div>
+	   </div>
+	 </div>
+
+
+    <!-- expanded sections -->
+	 <hr>
+	 <div class="row">
+		<div class="span12">
+		  <p class="lead text-left"><a name="write_standards"></a>Problem: Most education standards are written by an external body.</p>
+	   </div>
+		<div class="span11 offset1">
+		  <p class="text-left">Most education standards are written by a group of people who are pulled together for the specific purpose of writing a set of standards. This might be a number of people from around a state education system who are pulled together throughout a school year to develop an individual state's standards, or it might be a group that is sponsored full-time to develop a set of standards.</p>
+		  <p class="text-left">The main problem with this model is that the sponsoring group almost always retains copyright over the standards that are developed. Using these standards commits you to going wherever this sponsoring body leads.</p>
+	   </div>
+		<div class="span12">
+		  <p class="lead text-left">How Open Competencies helps:
+	   </div>
+		<div class="span11 offset1">
+		  <p class="text-left">Open Competencies will make it easy to develop your own set of education standards, by giving you a dedicated tool for creating standards. Right now you can start from scratch, or you can start with a copy of another school's system. Soon you will be able to start from scratch, and bring in any group of standards from any other school to create your own mix of standards that suit your students' needs.</p>
+	   </div>
+		<div class="span12">
+		  <p class="lead text-left">Try it out:
+	   </div>
+		<div class="span11 offset1">
+		  <p class="text-left">To create a new school, you will have to be logged in. Open Competencies is in an invite-only alpha stage of development, but there is a guest account you can use to try things out. You can <a href='{% url 'login' %}'>log in</a> with the username 'guest' and the password 'guest', and you will be able to <a href='{% url 'competencies:schools' %}'>create your own school</a>.</p>
+	   </div>
+		<div class="span12">
+		  <p><a href="">top</a></p>
+	   </div>
+	 </div>
+
+
+
+
+	 <br><br><br>
+	 <hr>
 
 		<p>This is a bare-bones demonstration of what I'd like Open Competencies to be.  Please kick the tires a bit, and share some <a href="https://github.com/openlearningtools/opencompetencies/issues/2">feedback</a> if you'd like to see this project fully developed.</p>
 

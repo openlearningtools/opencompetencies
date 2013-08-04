@@ -15,3 +15,18 @@ h3.off_pathway, h4.off_pathway, h5.off_pathway {
 	 padding-top: 10px;
 	 color: #333;
 }
+
+/* lead is nice, but want a sub-version of lead */
+.lead2  {
+	 margin-bottom: 20px;
+	 font-size: 18px;
+	 font-weight: 100;
+	 line-height: 25px;
+}
+
+/* boxed pieces of copy on a page */
+div.feature_box {
+	 margin: -1px;
+	 padding: 8px;
+	 border: 0px solid black;
+}
