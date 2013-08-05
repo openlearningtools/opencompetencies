@@ -16,6 +16,12 @@ h3.off_pathway, h4.off_pathway, h5.off_pathway {
 	 color: #333;
 }
 
+/* lead sometimes has little space above */
+.my_lead {
+	 padding-top: 10px;
+	 font-size: 22px;
+}
+
 /* lead is nice, but want a sub-version of lead */
 .lead2  {
 	 margin-bottom: 20px;
@@ -38,4 +44,23 @@ div.feature_box {
 .top_line {
 	 padding-top: 25px;
 	 border-top: 1px solid #bbb;
+}
+
+/* hero unit is a bit overkill */
+.my_hero_unit {
+	 padding: 25px;
+	 border: 0px solid #333;
+}
+
+.my_hero_unit h1 {
+	 font-size: 45px;
+}
+
+.problem_label {
+	 font-size: 20px;
+	 font-weight: bold;
+}
+
+.problem_text {
+	 font-size: 16px;
 }
