@@ -23,7 +23,7 @@ h3.off_pathway, h4.off_pathway, h5.off_pathway {
 }
 
 /* lead is nice, but want a sub-version of lead */
-.lead2  {
+.lead_2  {
 	 margin-bottom: 20px;
 	 font-size: 18px;
 	 font-weight: 100;
@@ -54,6 +54,17 @@ div.feature_box {
 
 .my_hero_unit h1 {
 	 font-size: 45px;
+}
+
+/* a sub-hero unit, for sections lower on the page */
+.my_hero_unit_2 {
+	 padding: 15px;
+	 border: 0px solid #333;
+	 margin-bottom: 15px;
+}
+
+.oc_try_it {
+	 background-color: #f7f7f7;
 }
 
 .problem_label {
