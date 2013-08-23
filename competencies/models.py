@@ -117,6 +117,7 @@ class LearningTarget(models.Model):
     learning_target = models.CharField(max_length=2000)
     essential_understanding = models.ForeignKey(EssentialUnderstanding)
     public = models.BooleanField(default=False)
+    student_friendly = models.TextField(blank=True)
 
     def __unicode__(self):
         return self.learning_target
@@ -201,9 +202,10 @@ class LevelForm(ModelForm):
 class LearningTargetForm(ModelForm):
     class Meta:
         model = LearningTarget
-        fields = ('learning_target', )
+        fields = ('learning_target', 'student_friendly')
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
-        widgets = {'learning_target': Textarea(attrs={'rows': 5, 'class': 'span8'}) }
+        widgets = {'learning_target': Textarea(attrs={'rows': 5, 'class': 'span8'}),
+                   'student_friendly': Textarea(attrs={'rows': 5, 'class': 'span8'}) }
 
 class PathwayForm(ModelForm):
     def __init__(self, *args, **kwargs):
