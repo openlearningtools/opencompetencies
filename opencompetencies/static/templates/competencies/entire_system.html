@@ -49,7 +49,11 @@
 													 {% for new_eu, lts in eu_lts.items %}
 													     {% if new_eu == eu %}
 													         {% for lt in lts %}
-													             <li>LT: {{ lt }}</li>
+													             <li><div>LT: {{ lt }}</div>
+																		  {% if lt.student_friendly %}
+																		      <div class="student_friendly_element">SFLT: {{ lt.student_friendly }}</div>
+																		  {% endif %}
+																	 </li>
 															   {% endfor %}
 														  {% endif %}
 													 {% endfor %}
