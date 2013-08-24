@@ -24,7 +24,11 @@
 					 {% for new_sa, cas in sa_cas.items %}
 					     {% if new_sa == sa %}
 					         {% for ca in cas %}
-					             <li><h5>Competency: <a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+					             <li><div><b>Competency Area:</b> <a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></div>
+										  {% if ca.student_friendly %}
+										      <div class="student_friendly_element">SF: {{ ca.student_friendly }}</div>
+										  {% endif %}
+									 </li>
 
 									 {# --- levels --- #}
 									 <ul>
@@ -42,7 +46,11 @@
 									 {% for new_ca, eus in ca_eus.items %}
 									     {% if new_ca == ca %}
 									         {% for eu in eus %}
-									             <li>EU: <a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+									             <li><div>EU: <a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></div>
+														  {% if eu.student_friendly %}
+														     <div class="student_friendly_element">SF: {{ eu.student_friendly }}</div>
+														  {% endif %}
+													 </li>
 
 													 {# --- learning targets --- #}
 													 <ul>
@@ -51,7 +59,7 @@
 													         {% for lt in lts %}
 													             <li><div>LT: {{ lt }}</div>
 																		  {% if lt.student_friendly %}
-																		      <div class="student_friendly_element">SFLT: {{ lt.student_friendly }}</div>
+																		      <div class="student_friendly_element">SF: {{ lt.student_friendly }}</div>
 																		  {% endif %}
 																	 </li>
 															   {% endfor %}
@@ -80,7 +88,11 @@
 					 {% for new_sda, cas in sda_cas.items %}
 					     {% if new_sda == sda %}
 					         {% for ca in cas %}
-					             <li><h5>Competency: <a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></h5></li>
+					             <li><div><b>Competency Area:</b> <a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></div>
+										  {% if ca.student_friendly %}
+										      <div class="student_friendly_element">SF: {{ ca.student_friendly }}</div>
+										  {% endif %}
+									 </li>
 
 									 {# --- levels --- #}
 									 <ul>
@@ -98,14 +110,22 @@
 									 {% for new_ca, eus in ca_eus.items %}
 									     {% if new_ca == ca %}
 									         {% for eu in eus %}
-									             <li>EU: <a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></li>
+									             <li><div>EU: <a href='{% url 'competencies:essential_understanding' eu.id %}'>{{ eu }}</a></div>
+														  {% if eu.student_friendly %}
+														     <div class="student_friendly_element">SF: {{ eu.student_friendly }}</div>
+														  {% endif %}
+													 </li>
 
 													 {# --- learning targets --- #}
 													 <ul>
 													 {% for new_eu, lts in eu_lts.items %}
 													     {% if new_eu == eu %}
 													         {% for lt in lts %}
-													             <li>LT: {{ lt }}</li>
+													             <li><div>LT: {{ lt }}</div>
+																		  {% if lt.student_friendly %}
+																		      <div class="student_friendly_element">SF: {{ lt.student_friendly }}</div>
+																		  {% endif %}
+																	 </li>
 															   {% endfor %}
 														  {% endif %}
 													 {% endfor %}
