@@ -19,14 +19,22 @@
 			   {# Show general competencies not associated with any sda: #}
 				<ul>
 				{% for ca in sa_general_competency_areas %}
-				    <li><h4><a href='/competency_areas/{{ ca.id }}/'>{{ ca }}</a></h4></li>
+				    <li><div><h4><a href='/competency_areas/{{ ca.id }}/'>{{ ca }}</a></h4></div>
+						  {% if ca.student_friendly %}
+						       <div class="student_friendly_element">{{ ca.student_friendly }}</div>
+						  {% endif %}
+					 </li>
 				{% endfor %}
 			   </ul>
 		  {% for sda, cas in sda_competency_areas.items %}
 		      <li><h3><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h3></li>
 				<ul>
 				{% for ca in cas %}
-				    <li><h4><a href='/competency_areas/{{ ca.id }}/'>{{ ca }}</a><h4></li>
+				    <li><div><h4><a href='/competency_areas/{{ ca.id }}/'>{{ ca }}</a></h4></div>
+						  {% if ca.student_friendly %}
+						       <div class="student_friendly_element">{{ ca.student_friendly }}</div>
+						  {% endif %}
+					 </li>
 				{% endfor %}
 				</ul>
 		  {% endfor %}
