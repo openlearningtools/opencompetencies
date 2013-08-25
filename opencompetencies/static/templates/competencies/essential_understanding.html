@@ -16,6 +16,9 @@
 		    <a href='/subdiscipline_areas/{{ competency_area.subdiscipline_area.id }}/'>{{ competency_area.subdiscipline_area }}</a> - 
 		{% endif %}
 		<a href='/competency_areas/{{ competency_area.id }}/'>{{ competency_area }}</a></h2>
+	 {% if competency_area.student_friendly %}
+	     <h3 class="student_friendly_element">{{ competency_area.student_friendly }}</h3>
+	 {% endif %}
 
 				{# --- levels --- #}
 				<ul>
@@ -25,11 +28,18 @@
 				</ul>
 
 	 <h4>{{ essential_understanding }}</h4>
+	 {% if essential_understanding.student_friendly %}
+	     <h4 class="student_friendly_element">{{ essential_understanding.student_friendly }}</h4>
+	 {% endif %}
 
 	 {% if learning_targets %}
 	     <ul>
 		  {% for lt in learning_targets %}
-		      <li>{{ lt }}</li>
+		      <li><div>{{ lt }}</div>
+				    {% if lt.student_friendly %}
+				        <div class="student_friendly_element">{{ lt.student_friendly }}</div>
+				    {% endif %}
+				</li>
 		  {% endfor %}
 		  </ul>
 	 {% elif user.is_authenticated and school in user.profile.schools.all %}

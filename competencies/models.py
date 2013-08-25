@@ -49,6 +49,7 @@ class CompetencyArea(models.Model):
     subject_area = models.ForeignKey(SubjectArea)
     subdiscipline_area = models.ForeignKey(SubdisciplineArea, blank=True, null=True)
     public = models.BooleanField(default=False)
+    student_friendly = models.TextField(blank=True)
 
     def __unicode__(self):
         return self.competency_area
@@ -100,6 +101,7 @@ class EssentialUnderstanding(models.Model):
     essential_understanding = models.CharField(max_length=2000)
     competency_area = models.ForeignKey(CompetencyArea)
     public = models.BooleanField(default=False)
+    student_friendly = models.TextField(blank=True)
 
     def __unicode__(self):
         return self.essential_understanding
@@ -117,6 +119,7 @@ class LearningTarget(models.Model):
     learning_target = models.CharField(max_length=2000)
     essential_understanding = models.ForeignKey(EssentialUnderstanding)
     public = models.BooleanField(default=False)
+    student_friendly = models.TextField(blank=True)
 
     def __unicode__(self):
         return self.learning_target
@@ -179,17 +182,19 @@ class SubdisciplineAreaForm(ModelForm):
 class CompetencyAreaForm(ModelForm):
     class Meta:
         model = CompetencyArea
-        fields = ('competency_area',)
+        fields = ('competency_area', 'student_friendly',)
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
-        widgets = {'competency_area': Textarea(attrs={'rows': 5, 'class': 'span8'}) }
+        widgets = {'competency_area': Textarea(attrs={'rows': 5, 'class': 'span8'}),
+                   'student_friendly': Textarea(attrs={'rows': 5, 'class': 'span8'}) }
         
 
 class EssentialUnderstandingForm(ModelForm):
     class Meta:
         model = EssentialUnderstanding
-        fields = ('essential_understanding',)
+        fields = ('essential_understanding', 'student_friendly',)
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
-        widgets = {'essential_understanding': Textarea(attrs={'rows': 5, 'class': 'span8'}) }
+        widgets = {'essential_understanding': Textarea(attrs={'rows': 5, 'class': 'span8'}),
+                   'student_friendly': Textarea(attrs={'rows': 5, 'class': 'span8'}) }
 
 class LevelForm(ModelForm):
     class Meta:
@@ -201,9 +206,10 @@ class LevelForm(ModelForm):
 class LearningTargetForm(ModelForm):
     class Meta:
         model = LearningTarget
-        fields = ('learning_target', )
+        fields = ('learning_target', 'student_friendly')
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
-        widgets = {'learning_target': Textarea(attrs={'rows': 5, 'class': 'span8'}) }
+        widgets = {'learning_target': Textarea(attrs={'rows': 5, 'class': 'span8'}),
+                   'student_friendly': Textarea(attrs={'rows': 5, 'class': 'span8'}) }
 
 class PathwayForm(ModelForm):
     def __init__(self, *args, **kwargs):
