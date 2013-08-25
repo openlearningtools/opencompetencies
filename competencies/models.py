@@ -223,7 +223,7 @@ class LevelForm(ModelForm):
 class LearningTargetForm(ModelForm):
     class Meta:
         model = LearningTarget
-        fields = ('learning_target', 'student_friendly' 'description')
+        fields = ('learning_target', 'student_friendly', 'description')
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
         widgets = {'learning_target': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    'student_friendly': Textarea(attrs={'rows': 5, 'class': 'span8'}),
