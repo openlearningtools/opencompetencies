@@ -15,7 +15,11 @@
 		  {# ---  subject areas --- #}
 	     <ul>
 	     {% for sa, sdas in sa_sdas.items %}
-		      <li><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
+		      <li><div><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></div>
+				    {% if sa.description %}
+				        <div class="description_element">Description: {{ sa.description }}</div>
+					 {% endif %}
+				</li>
 
 				{# competency areas for the general subject area #}
 				{# requires an empty nesting level (blank sda) #}
@@ -27,6 +31,9 @@
 					             <li><div><b>Competency Area:</b> <a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></div>
 										  {% if ca.student_friendly %}
 										      <div class="student_friendly_element">SF: {{ ca.student_friendly }}</div>
+										  {% endif %}
+										  {% if ca.description %}
+												<div class="description_element">Description: {{ ca.description }}</div>
 										  {% endif %}
 									 </li>
 
@@ -50,6 +57,9 @@
 														  {% if eu.student_friendly %}
 														     <div class="student_friendly_element">SF: {{ eu.student_friendly }}</div>
 														  {% endif %}
+														  {% if eu.description %}
+															  <div class="description_element">Description: {{ eu.description }}</div>
+														  {% endif %}
 													 </li>
 
 													 {# --- learning targets --- #}
@@ -60,6 +70,9 @@
 													             <li><div>LT: {{ lt }}</div>
 																		  {% if lt.student_friendly %}
 																		      <div class="student_friendly_element">SF: {{ lt.student_friendly }}</div>
+																		  {% endif %}
+																		  {% if lt.description %}
+																				<div class="description_element">Description: {{ lt.description }}</div>
 																		  {% endif %}
 																	 </li>
 															   {% endfor %}
@@ -81,7 +94,11 @@
 				{# ---  subdiscipline areas --- #}
 				<ul>
 				{% for sda in sdas %}
-				    <li><h4><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></li>
+				    <li><div><h4><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></div>
+						  {% if sda.description %}
+						      <div class="description_element">Description: {{ sda.description }}</div>
+						  {% endif %}
+					 </li>
 
 					 {# --- competency areas --- #}
 					 <ul>
@@ -91,6 +108,9 @@
 					             <li><div><b>Competency Area:</b> <a href='{% url 'competencies:competency_area' ca.id %}'>{{ ca }}</a></div>
 										  {% if ca.student_friendly %}
 										      <div class="student_friendly_element">SF: {{ ca.student_friendly }}</div>
+										  {% endif %}
+										  {% if ca.description %}
+												<div class="description_element">Description: {{ ca.description }}</div>
 										  {% endif %}
 									 </li>
 
@@ -114,6 +134,9 @@
 														  {% if eu.student_friendly %}
 														     <div class="student_friendly_element">SF: {{ eu.student_friendly }}</div>
 														  {% endif %}
+														  {% if eu.description %}
+															  <div class="description_element">Description: {{ eu.description }}</div>
+														  {% endif %}
 													 </li>
 
 													 {# --- learning targets --- #}
@@ -124,6 +147,9 @@
 													             <li><div>LT: {{ lt }}</div>
 																		  {% if lt.student_friendly %}
 																		      <div class="student_friendly_element">SF: {{ lt.student_friendly }}</div>
+																		  {% endif %}
+																		  {% if lt.description %}
+																				<div class="description_element">Description: {{ lt.description }}</div>
 																		  {% endif %}
 																	 </li>
 															   {% endfor %}

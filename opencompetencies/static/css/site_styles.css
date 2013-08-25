@@ -78,5 +78,11 @@ div.feature_box {
 
 .student_friendly_element {
 	 padding-left: 10px;
-	 color: green;
+	 color: navy;
 }
+
+.description_element {
+	 padding-left: 10px;
+	 color: darkgreen;
+}
+
