@@ -17,12 +17,20 @@
 		  {# ---  subject areas --- #}
 	     <ul>
 	     {% for sa, sdas in sa_sdas.items %}
-		      <li><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></li>
+		      <li><div><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></div>
+				    {% if sa.description %}
+				        <div class="description_element">Description: {{ sa.description }}</div>
+					 {% endif %}
+				</li>
 
 				{# ---  subdiscipline areas --- #}
 				<ul>
 				{% for sda in sdas %}
-				    <li><h4><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></li>
+				    <li><div><h4><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></div>
+						  {% if sda.description %}
+				            <div class="description_element">Description: {{ sda.description }}</div>
+						  {% endif %}
+					 </li>
 				{% endfor %}
 				</ul>
 

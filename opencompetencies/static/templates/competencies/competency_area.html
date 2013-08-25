@@ -18,7 +18,10 @@
 		  {% endif %}
 		  {{ competency_area }}</h2>
 	 {% if competency_area.student_friendly %}
-	     <h3 class="student_friendly_element">{{ competency_area.student_friendly }}</h3>
+	     <h4 class="student_friendly_element">{{ competency_area.student_friendly }}</h4>
+	 {% endif %}
+	 {% if competency_area.description %}
+		  <h4 class="description_element">Description: {{ competency_area.description }}</h4>
 	 {% endif %}
 
 
@@ -33,13 +36,19 @@
 	     {% for eu in essential_understandings %}
 		      <li><h4><a href='/essential_understandings/{{ eu.id }}/'>{{ eu }}</a></h4></li>
 				{% if eu.student_friendly %}
-				    <h4 class="student_friendly_element">{{ eu.student_friendly }}</h4>
+				    <div class="student_friendly_element">{{ eu.student_friendly }}</div>
 			   {% endif %}
+			   {% if eu.description %}
+					 <div class="description_element">Description: {{ eu.description }}</div>
+				{% endif %}
 				<ul>
 				{% for lt in eu.learningtarget_set.all %}
 				    <li><div>LT: {{ lt }}</div>
 						  {% if lt.student_friendly %}
 						      <div class="student_friendly_element">SF: {{ lt.student_friendly }}</div>
+						  {% endif %}
+						  {% if lt.description %}
+								<div class="description_element">Description: {{ lt.description }}</div>
 						  {% endif %}
 					 </li>
 				{% endfor %}
