@@ -141,7 +141,7 @@ INSTALLED_APPS = (
 
     # My apps
     'competencies',
-    'django_css',
+    'django_ccss',
 )
 
 # A sample logging configuration. The only tangible logging
