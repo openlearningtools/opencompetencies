@@ -21,7 +21,7 @@ class Framework(models.Model):
         (ELA_LIT, 'ELA-Literacy'),
         (MATH, 'Math'),
         )
-    initative = models.ForeignKey(Initiative)
+    initiative = models.ForeignKey(Initiative)
     dot_notation = models.CharField(max_length=10)
     description = models.TextField(blank=True)
 
