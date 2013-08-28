@@ -9,6 +9,10 @@ class InitiativeAdmin(admin.ModelAdmin):
 class FrameworkAdmin(admin.ModelAdmin):
     model = Framework
 
+class DomainAdmin(admin.ModelAdmin):
+    model = Domain
+
 
 admin.site.register(Initiative)
 admin.site.register(Framework)
+admin.site.register(Domain)

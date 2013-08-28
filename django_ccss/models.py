@@ -47,19 +47,36 @@ class Set(models.Model):
     pass
 
 class Domain(models.Model):
-    WRITING = 'W'
-    MATH = 'M'
+    """These are like subdiscipline areas."""
+    WRITING = 'Writing'
+    READING = 'Reading'
+    SPEAKING_LISTENING = 'Speaking and Listening'
+    SSE = 'Seeing Structure in Expressions'
     DOMAIN_CHOICES = (
-        (WRITING, 'W'),
-        (MATH, 'M'),
+        (WRITING, 'Writing'),
+        (READING, 'Reading'),
+        (SPEAKING_LISTENING, 'Speaking and Listening'),
+        (SSE, 'Seeing Structure in Expressions'),
         )
+
+    DN_WRITING = 'W'
+    DN_READING = 'R'
+    DN_SPEAKING_LISTENING = 'SL'
+    DN_SSE = 'SSE'
+    DN_CHOICES = (
+        (DN_WRITING, 'W'),
+        (DN_READING, 'R'),
+        (DN_SPEAKING_LISTENING, 'SL'),
+        (DN_SSE, 'SSE'),
+        )
+
     framework = models.ForeignKey(Framework)
-    dot_notation = models.CharField(max_length=10)
+    dot_notation = models.CharField(max_length=10,
+                                    choices=DN_CHOICES)
     description = models.TextField(blank=True)
 
     domain = models.CharField(max_length=255,
-                                     choices=DOMAIN_CHOICES,
-                                     default=WRITING)
+                                     choices=DOMAIN_CHOICES)
 
     def __unicode__(self):
         return self.domain
