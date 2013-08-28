@@ -15,14 +15,25 @@ class Initiative(models.Model):
         return self.initiative
 
 class Framework(models.Model):
+    """Frameworks are basically subject areas."""
+    # Existing frameworks/ subject areas
     ELA_LIT = 'ELA_LIT'
     MATH = 'Math'
     FRAMEWORK_CHOICES = (
         (ELA_LIT, 'ELA-Literacy'),
         (MATH, 'Math'),
         )
+
+    # Dot notations for these frameworks
+    DN_ELA_LIT = 'ELA-Literacy'
+    DN_MATH = 'Math'
+    DN_CHOICES = (
+        (DN_ELA_LIT, 'ELA-Literacy'),
+        (DN_MATH, 'Math'),
+        )
+
     initiative = models.ForeignKey(Initiative)
-    dot_notation = models.CharField(max_length=10)
+    dot_notation = models.CharField(max_length=255, choices=DN_CHOICES)
     description = models.TextField(blank=True)
 
     framework = models.CharField(max_length=255,
