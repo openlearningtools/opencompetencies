@@ -5,7 +5,7 @@ class Initiative(models.Model):
     INITIATIVE_CHOICES = (
         (CCSS, 'Common Core State Standards'),
         )
-    dot_notation = models.CharField(max_length=10)
+    dot_notation = models.CharField(max_length=255)
 
     initiative = models.CharField(max_length=255,
                            choices=INITIATIVE_CHOICES,
@@ -71,7 +71,7 @@ class Domain(models.Model):
         )
 
     framework = models.ForeignKey(Framework)
-    dot_notation = models.CharField(max_length=10,
+    dot_notation = models.CharField(max_length=255,
                                     choices=DN_CHOICES)
     description = models.TextField(blank=True)
 
@@ -83,7 +83,7 @@ class Domain(models.Model):
 
 class Grade(models.Model):
     grade = models.CharField(max_length=255)
-    dot_notation = models.CharField(max_length=10)
+    dot_notation = models.CharField(max_length=255)
 
     def __unicode__(self):
         return self.grade
@@ -92,7 +92,7 @@ class Standard(models.Model):
     standard = models.TextField()
     domain = models.ForeignKey(Domain)
     grade = models.ManyToManyField(Grade)
-    dot_notation = models.CharField(max_length=10)
+    dot_notation = models.CharField(max_length=255)
     student_friendly = models.TextField(blank=True)
     description = models.TextField(blank=True)
     
@@ -102,7 +102,7 @@ class Standard(models.Model):
 class Component(models.Model):
     component = models.TextField()
     standard = models.ForeignKey(Standard)
-    dot_notation = models.CharField(max_length=10)
+    dot_notation = models.CharField(max_length=255)
     student_friendly = models.TextField(blank=True)
     description = models.TextField(blank=True)
 
