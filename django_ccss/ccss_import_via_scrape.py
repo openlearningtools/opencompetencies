@@ -2,8 +2,8 @@ import xml.etree.ElementTree as ET
 import requests
 from django_ccss.models import *
 
-standard = Standard.objects.get(pk=2)
-
+standard = Standard.objects.get(pk=3)
+print '\n\nStandard: ', standard
 def get_statement_from_url(url, component_dn):
     r = requests.get(url)
     if r.status_code == 200:
@@ -24,7 +24,8 @@ def get_statement_from_url(url, component_dn):
         new_component.component = component.text
         new_component.standard = standard
         new_component.dot_notation = 'CCSS.ELA-Literacy.W.9-10.2.' + component_dn
-        new_component.save()
+        # HERE: Should check to see if identical to any existing components.
+        #new_component.save()
         print '\n*** nc: ', new_component
         return True
     else:
@@ -33,7 +34,7 @@ def get_statement_from_url(url, component_dn):
 
 
 for component_dn in ['a','b','c','d','e','f','g','h','i']:
-    urlstring = 'http://www.corestandards.org/ELA-Literacy/W/9-10/2/' + component_dn + '.xml'
+    urlstring = 'http://www.corestandards.org/ELA-Literacy/W/9-10/1/' + component_dn + '.xml'
     element_found = get_statement_from_url(urlstring, component_dn)
     if not element_found:
         break
