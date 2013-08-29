@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title_extension %} - {{ school }}{% endblock %}
+
+{% block content %}
+
+	 <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a></h2>
+	 <p>This page shows elements of the Common Core State Standards which are associated with <a href='{% url 'competencies:school' school.id %}'</a>{{ school }}</a>.</p>
+
+    <!--																																
+	 <p><a href='{% url 'competencies:edit_order' school.id %}'>Edit order</a>
+	 | <a href='{% url 'competencies:edit_visibility' school.id %}'>Edit visibility</a>
+	 </p>
+	 -->
+
+    <div class='row'>
+		<div class='span4'>
+		  Initiative: {{ initiative }}
+		</div>
+	 </div>
+
+	 {% for framework in frameworks %}
+        <div class='row'>
+		        <div class='span4 offset1'>
+					   Framework: {{ framework }}
+						{% for domain in framework.domain_set.all %}
+					       <div class='row'>
+								<div class='span4 offset1'>
+								    Domain: {{ domain }}
+									 {% for standard in domain.standard_set.all %}
+									     <div class='row'>
+											   <div class='span8 offset1'>
+												    Standard: {{ standard }}
+													 {% for component in standard.component_set.all %}
+													     <div class='row'>
+															 <div class='span8 offset1'>
+																Component: {{ component }}
+															 </div>
+														  </div>
+													 {% endfor %}
+												</div>
+										  </div>
+									 {% endfor %}
+								</div>
+							 </div>
+						{% endfor %}
+				  </div>
+		  </div>
+	 {% endfor %}
+
+
+{% endblock %}

@@ -12,7 +12,7 @@ from copy import copy
 from collections import OrderedDict
 
 from competencies.models import *
-
+from django_ccss.models import *
 
 def index(request):
     sample_school = School.objects.get(name='Sample High School')
@@ -161,6 +161,19 @@ def entire_system(request, school_id):
                                'sa_sdas': sa_sdas, 'sa_cas': sa_cas,
                                'sda_cas': sda_cas, 'ca_eus': ca_eus,
                                'ca_levels': ca_levels, 'eu_lts': eu_lts},
+                              context_instance = RequestContext(request))
+
+# HERE: TEMPORARY require login to see
+@login_required
+def ccss(request, school_id):
+    """Shows all ccss elements associated with this school."""
+    school = get_school(school_id)
+    initiative = Initiative.objects.all()[0]
+    frameworks = initiative.framework_set.all()
+
+    return render_to_response('competencies/ccss.html',
+                              {'school': school,
+                               'initiative': initiative, 'frameworks': frameworks},
                               context_instance = RequestContext(request))
 
 # helper methods to get elements of the system.

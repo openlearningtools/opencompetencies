@@ -31,6 +31,10 @@ urlpatterns = patterns('',
     url(r'^entire_system/(?P<school_id>\d+)/$', views.entire_system, name='entire_system'),
 
 
+    # --- Simple views of common core elements ---
+    # ccss/id: List all ccss elements for a given school.                       
+    url(r'^ccss/(?P<school_id>\d+)/$', views.ccss, name='ccss'),                       
+
     # --- Authorization pages ---
     # no_edit_permission: Message that user does not have permission required to edit current elements.
     url(r'^no_edit_permission/(?P<school_id>\d+)/$', views.no_edit_permission, name='no_edit_permission'),
