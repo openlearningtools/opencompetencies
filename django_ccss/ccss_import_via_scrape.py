@@ -1,28 +1,38 @@
 import xml.etree.ElementTree as ET
-filepath = '/home/ehmatthes/development_resources/project_notes/opencompetencies/Resources/standards/ccss_W_9-10.xml'
+import requests
 
-tree = ET.parse(filepath)
-root = tree.getroot()
+def get_statement_from_url(url):
+    r = requests.get(url)
+    if r.status_code == 200:
 
-"""
-print 'tag', root.tag
-print 'attrib', root.attrib
+        #print '\n\n---url', url
+        #print '\nstring', r.text
 
-for child in root:
-    pass#print 'child tag, child attrib', child.tag, child.attrib
+        root = ET.fromstring(r.text)
+        #print '\nroot', root
+        if root.findall('.//content'):
+            content_string = root.findall('.//content')[0].text
+            if 'Error 404' in content_string:
+                #print 'failed, 404 in xml'
+                return False
+        component = root.findall('.//Statement')[0]
+        print '\nComponent:', component.text
+        return True
+    else:
+        print 'failed', r.status_code, type(r.status_code)
+        return False
 
-print '----\n'
 
-for lsi in root:
-    for child in lsi:
-        if child.tag == 'StandardHierarchyLevel':
-            for grandchild in child:
-                if grandchild.tag == 'description':
-                    if grandchild.text == 'Standard':
-                        pass#print child[
-"""
+for component_dn in ['a','b','c','d','e','f','g','h','i']:
+    urlstring = 'http://www.corestandards.org/ELA-Literacy/W/9-10/2/' + component_dn + '.xml'
+    element_found = get_statement_from_url(urlstring)
+    if not element_found:
+        break
+
+from django_ccss.models import *
+standards = Standard.objects.all()
+for standard in standards:
+    print '\n\npk, standard:', standard.pk, standard
 
 
-for lsi in root:
-    for description in lsi.iter('description'):
-        print description.text
+print '\n\nFinished.\n\n'
