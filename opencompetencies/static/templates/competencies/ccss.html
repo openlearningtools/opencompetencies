@@ -15,18 +15,18 @@
 
     <div class='row'>
 		<div class='span4'>
-		  Initiative: {{ initiative }}
+		  Initiative: {{ initiative.get_initiative_display }}
 		</div>
 	 </div>
 
 	 {% for framework in frameworks %}
         <div class='row'>
 		        <div class='span4 offset1'>
-					   Framework: {{ framework }}
+					   Framework: {{ framework.get_framework_display }}
 						{% for domain in framework.domain_set.all %}
 					       <div class='row'>
 								<div class='span4 offset1'>
-								    Domain: {{ domain }}
+								    Domain: {{ domain.get_domain_display }}
 									 {% for standard in domain.standard_set.all %}
 									     <div class='row'>
 											   <div class='span8 offset1'>

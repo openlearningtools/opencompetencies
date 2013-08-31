@@ -50,10 +50,10 @@ class Set(models.Model):
 
 class Domain(models.Model):
     """These are like subdiscipline areas."""
-    WRITING = 'Writing'
-    READING = 'Reading'
-    SPEAKING_LISTENING = 'Speaking and Listening'
-    SSE = 'Seeing Structure in Expressions'
+    WRITING = 'W'
+    READING = 'R'
+    SPEAKING_LISTENING = 'SL'
+    SSE = 'SSE'
     DOMAIN_CHOICES = (
         (WRITING, 'Writing'),
         (READING, 'Reading'),
