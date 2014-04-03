@@ -21,6 +21,7 @@ class CompetencyViewTests(TestCase):
     def test_index_view(self):
         """Index page is a static page for now, so just check status."""
         response = self.client.get(reverse('competencies:index'))
+        print('here')
         self.assertEqual(response.status_code, 200)
 
     def test_schools_view(self):
