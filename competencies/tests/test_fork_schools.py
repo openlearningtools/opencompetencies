@@ -6,11 +6,34 @@ import testing_utilities as tu
 class TestForkSchools(TestCase):
 
     def setUp(self):
-        # Create a school.
-        self.school_0 = tu.create_school(name="School 0")
+        num_schools = 3
+        num_subject_areas = 5
+
+        # Create some schools.
+        self.schools = []
+        for school_num in range(0, num_schools):
+            school_name = "School %d" % school_num
+            self.schools.append(tu.create_school(name=school_name))
+
+        # Create some subject areas.
+        for school in self.schools:
+            for sa_num in range(0, num_subject_areas):
+                subject_area = "Subject %d" % sa_num
+                tu.create_subject_area(subject_area, school)
+        
+        #self.show_schools()
+        
+
+    def show_schools(self):
+
+        for school in self.schools:
+            print("\nSchool: %s" % school.name)
+            for subject_area in SubjectArea.objects.filter(school=school):
+                print("Subject area: %s" % subject_area)
+
 
     def test_fork_school(self):
-        # Make a new school, and fork school_o's system.
+        # Make a new school, and fork school_0's system.
         pass
 
     def test_fork_school_from_view(self):
