@@ -36,7 +36,21 @@ class TestForkSchools(TestCase):
     def test_fork_school(self):
         # Make a new school, and fork school_0's system.
         new_school = tu.create_school(name="New School")
-        views.fork_school(new_school, school_0)
+        views.fork_school(new_school, self.schools[0])
+
+        # Verify that all of forking school's subject areas are in forked school's sa's.
+        #  Get sa objects. Then get sa names for the forked school.
+        #  Really want to verify that the names of each sa are in the forked school.
+        #  Not testing for object identity.
+        new_school_sas = SubjectArea.objects.filter(school=new_school)
+        forked_school_sas = SubjectArea.objects.filter(school=self.schools[0])
+        forked_school_sa_names = [sa.subject_area for sa in forked_school_sas]
+
+        for sa in new_school_sas:
+            self.assertEqual(sa.subject_area in forked_school_sa_names, True)
+
+        # DEV: Full test will verify that all appropriate aspects of a forked school
+        #  get copied over correctly to the new school.
 
 
     def test_fork_school_from_view(self):
