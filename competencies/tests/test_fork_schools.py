@@ -2,6 +2,7 @@ from django.test import TestCase
 
 from competencies.models import *
 import testing_utilities as tu
+import competencies.views as views
 
 class TestForkSchools(TestCase):
 
@@ -34,7 +35,9 @@ class TestForkSchools(TestCase):
 
     def test_fork_school(self):
         # Make a new school, and fork school_0's system.
-        pass
+        new_school = tu.create_school(name="New School")
+        views.fork_school(new_school, school_0)
+
 
     def test_fork_school_from_view(self):
         # Do the same thing as test_fork_school, but through 
