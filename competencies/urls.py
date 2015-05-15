@@ -72,27 +72,6 @@ urlpatterns = patterns('',
     url(r'^change_visibility/(?P<school_id>\d+)/(?P<object_type>\w+)/(?P<object_pk>\d+)/(?P<visibility_mode>\w+)/$', views.change_visibility, name='change_visibility'),
 
 
-    # --- Pathways pages ---
-    # pathways: Shows all the pathways for a given school.
-    url(r'^pathways/(?P<school_id>\d+)/$', views.pathways, name='pathways'),
-
-    # pathway/id: Shows the entire system for a given school, with that pathway highlighted.
-    #  Later, will be a flag that stays active, highlighting elements of the pathway on every view page.
-    url(r'^pathway/(?P<pathway_id>\d+)/$', views.pathway, name='pathway'),
-
-    # create_pathway: Allows user to create a pathway. Links to pages that edit the pathway.
-    url(r'^create_pathway/(?P<school_id>\d+)/$', views.create_pathway, name='create_pathway'),
-
-    # edit_pathway: Allows user to add or remove elements in a pathway.
-    url(r'^edit_pathway/(?P<pathway_id>\d+)/$', views.edit_pathway, name='edit_pathway'),
-
-    # edit_pw_visibility: Allows toggling of public/ private mode for each pathway.
-    url(r'^edit_pw_visibility/(?P<school_id>\d+)/$', views.edit_pw_visibility, name='edit_pw_visibility'),
-
-    # change_pw_visibility: No template; changes the visibility of a pathway, and redirects to edit_pw_visibility.
-    url(r'^change_pw_visibility/(?P<school_id>\d+)/(?P<pathway_pk>\d+)/(?P<visibility_mode>\w+)/$', views.change_pw_visibility, name='change_pw_visibility'),
-
-
     # --- Forking pages ---
     # fork: Page offering an empty school the opportunity to fork an established school.
     url(r'^schools/(?P<school_id>\d+)/fork/$', views.fork, name='fork'),
