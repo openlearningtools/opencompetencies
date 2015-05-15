@@ -2,6 +2,7 @@
 .env
 venv/
 notes.txt
+notes/
 # emacs backups:
 \#*#
 .\#*
