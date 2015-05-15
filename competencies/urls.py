@@ -71,15 +71,6 @@ urlpatterns = patterns('',
     # change_visibility: No template; changes the visibility of an elment, and redirects to edit_visibility.
     url(r'^change_visibility/(?P<school_id>\d+)/(?P<object_type>\w+)/(?P<object_pk>\d+)/(?P<visibility_mode>\w+)/$', views.change_visibility, name='change_visibility'),
 
-
-    # --- Forking pages ---
-    # fork: Page offering an empty school the opportunity to fork an established school.
-    url(r'^schools/(?P<school_id>\d+)/fork/$', views.fork, name='fork'),
-
-    # confirm_fork: Confirms that a fork was successful.
-    url(r'^schools/(?P<forking_school_id>\d+)/fork/(?P<forked_school_id>\d+)/$',
-        views.confirm_fork, name='confirm_fork'),
-
     # new_school: Create a new school.
     url(r'^new_school/$', views.new_school, name='new_school'),
 

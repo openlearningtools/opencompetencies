@@ -37,7 +37,7 @@
 		  </ul>
 
 	 {% elif user.is_authenticated and school in user.profile.schools.all %}
-		  <p>This school does not have any subject areas yet. You may want to <a href="/schools/{{ school.id }}/fork">fork</a> another school's competency system instead of starting from scratch.</p>
+		  <p>This school does not have any subject areas yet.</p>
     {% else %}
 		  <p>This school does not have any public subject areas yet.</p>
     {% endif %}

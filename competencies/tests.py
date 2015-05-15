@@ -48,17 +48,6 @@ class CompetencyViewTests(TestCase):
         #  create_learning_target
         pass
 
-    def test_fork_view(self):
-        """Fork page offers an empty school the opportunity to fork an existing
-        school's competency system.
-        """
-        pass
-
-    def test_confirm_fork_view(self):
-        """Confirm fork page confirms that a fork was successful.
-        """
-        pass
-
     def test_new_school(self):
         """New school processes form to create a new school.
         """
