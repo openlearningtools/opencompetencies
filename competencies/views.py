@@ -15,10 +15,8 @@ from competencies.models import *
 
 
 def index(request):
-    sample_school = School.objects.get(name='Sample High School')
-
     return render_to_response('competencies/index.html',
-                              {'sample_school': sample_school},
+                              {},
                               context_instance = RequestContext(request))
 
 # Authentication views
