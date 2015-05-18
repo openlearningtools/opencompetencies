@@ -54,11 +54,14 @@ def no_edit_permission(request, school_id):
 # --- Simple views, for exploring system without changing it: ---
 def schools(request):
     schools = School.objects.all()
+    for school in schools:
+        print('sn:', school.name)
     return render_to_response('competencies/schools.html', {'schools': schools}, context_instance=RequestContext(request))
 
 def school(request, school_id):
     """Displays subject areas and subdiscipline areas for a given school."""
     school = get_school(school_id)
+    print('sn', school.name)
     kwargs = get_visibility_filter(request.user, school)
     # all subject areas for a school
     sas = get_subjectareas(school, kwargs)

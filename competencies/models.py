@@ -14,7 +14,7 @@ from django.contrib.auth.models import User
 class School(models.Model):
     name = models.CharField(max_length=500)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 class SubjectArea(models.Model):
@@ -23,7 +23,7 @@ class SubjectArea(models.Model):
     public = models.BooleanField(default=False)
     description = models.TextField(blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.subject_area
 
     class Meta:
@@ -41,7 +41,7 @@ class SubdisciplineArea(models.Model):
     public = models.BooleanField(default=False)
     description = models.TextField(blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.subdiscipline_area
 
     class Meta:
@@ -60,8 +60,9 @@ class CompetencyArea(models.Model):
     public = models.BooleanField(default=False)
     student_friendly = models.TextField(blank=True)
     description = models.TextField(blank=True)
+    alias = models.CharField(max_length=500, default="Graduation Standard")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.competency_area
 
     class Meta:
@@ -94,7 +95,7 @@ class Level(models.Model):
     competency_area = models.ForeignKey(CompetencyArea)
     public = models.BooleanField(default=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.level_description
 
     class Meta:
@@ -114,7 +115,7 @@ class EssentialUnderstanding(models.Model):
     student_friendly = models.TextField(blank=True)
     description = models.TextField(blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.essential_understanding
 
     class Meta:
@@ -133,7 +134,7 @@ class LearningTarget(models.Model):
     student_friendly = models.TextField(blank=True)
     description = models.TextField(blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.learning_target
 
     class Meta:
