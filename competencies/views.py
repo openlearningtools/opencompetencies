@@ -244,7 +244,7 @@ def get_user_sa_schools(user):
     """
     # This is ugly implementation; should probably be in models.py
     schools = [sa.school for sa in user.userprofile.subject_areas.all()]
-    print schools
+    print(schools)
     return schools
 
 # --- Edit views, for editing parts of the system ---
