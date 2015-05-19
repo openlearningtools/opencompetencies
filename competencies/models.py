@@ -167,6 +167,14 @@ class SubjectAreaForm(ModelForm):
             'description': Textarea(attrs={'rows': 5, 'class': 'span8'}),
             }
 
+
+from django.forms import Form, CharField
+class SubjectAreaSummaryForm(Form):
+    """Class for editing an sa_summary."""
+    subject_area = CharField(label='sa', max_length=500)
+
+
+
 class SubdisciplineAreaForm(ModelForm):
     class Meta:
         model = SubdisciplineArea

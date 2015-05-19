@@ -114,6 +114,7 @@ def sa_summary(request, sa_id):
                                'ca_eus': ca_eus},
                               context_instance = RequestContext(request))
     
+@login_required
 def edit_sa_summary(request, sa_id):
     """Edit a GSP-style summary for a subject area."""
     # This should work for a given sa_id, or with no sa_id.
@@ -123,10 +124,27 @@ def edit_sa_summary(request, sa_id):
 
     subject_area = SubjectArea.objects.get(id=sa_id)
     school = subject_area.school
-    kwargs = get_visibility_filter(request.user, school)
+
+    # Test if user allowed to edit this school.
+    if not has_edit_permission(request.user, school, subject_area):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
+
+    from competencies.models import SubjectAreaSummaryForm as SASF
+
+    # if request.method == 'POST':
+    #     safs = SAFS(request.POST)
+    #     if safs.is_valid():
+    #         print('saving mf!')
+    sasf = SASF(initial={'subject_area': subject_area.subject_area})
+
+
+
     
     return render_to_response('competencies/edit_sa_summary.html',
                               {'subject_area': subject_area, 'school': school,
+                               'form': sasf,
                                },
                               context_instance = RequestContext(request))
 
@@ -337,7 +355,10 @@ def edit_school(request, school_id):
     #  This allows continuing to add more items after saving.
     sa_formset = SubjectAreaFormSet(queryset=SubjectArea.objects.all().filter(school_id=school_id))
 
-    return render_to_response('competencies/edit_school.html', {'school': school, 'sa_formset': sa_formset},
+    return render_to_response('competencies/edit_school.html', 
+                              {'school': school,
+                               'sa_formset': sa_formset
+                               },
                               context_instance = RequestContext(request))
 
 @login_required
