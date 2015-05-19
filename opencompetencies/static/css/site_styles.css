@@ -76,3 +76,17 @@ div.feature_box {
 	 color: darkgreen;
 }
 
+/* GSP-style pages */
+.summary_box {
+	 margin-bottom: 5px;
+	 padding: 10px;
+}
+
+.grad_std_col {
+	 background-color: #ccc;
+}
+
+.pi_col {
+	 background-color: #eee;
+	 border: 0px solid green;
+}
