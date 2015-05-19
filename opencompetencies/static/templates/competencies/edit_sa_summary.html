@@ -13,6 +13,8 @@
 		<div class="span7 lead summary_box pi_col"><strong>Performance Indicators</strong></div>
 	 </div>
 
-    <a href='{% url 'competencies:sa_summary' subject_area.id %}'>view</a>
+	 <p class="edit_view_link">
+		<a href='{% url 'competencies:sa_summary' subject_area.id %}'>view</a>
+	 </p>
 
 {% endblock %}

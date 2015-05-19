@@ -29,6 +29,8 @@
 		</div>
 	 {% endfor %}
 
-    <a href='{% url 'competencies:edit_sa_summary' subject_area.id %}'>edit</a>
+	 <p class="edit_view_link">
+		<a href='{% url 'competencies:edit_sa_summary' subject_area.id %}'>edit</a>
+	 </p>
 
 {% endblock %}
