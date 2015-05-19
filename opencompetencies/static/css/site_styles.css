@@ -78,14 +78,19 @@ div.feature_box {
 
 /* GSP-style pages */
 .gsp_grid {
-	 display: table;
+}
+
+.row-eq-height {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display:         flex;
 }
 
 .summary_box {
-	 margin-bottom: 5px;
+	 margin: 2px;
 	 padding: 10px;
-	 float: none;
-	 display: table-cell;
+	 border: 0px solid blue;
 }
 
 .grad_std_col {
@@ -94,5 +99,4 @@ div.feature_box {
 
 .pi_col {
 	 background-color: #eee;
-	 border: 0px solid green;
 }
