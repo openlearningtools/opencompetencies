@@ -114,6 +114,26 @@ def sa_summary(request, sa_id):
                                'ca_eus': ca_eus},
                               context_instance = RequestContext(request))
     
+def edit_sa_summary(request, sa_id):
+    """Edit a GSP-style summary for a subject area."""
+    # This should work for a given sa_id, or with no sa_id.
+    # Have an id, edit a subject area.
+    # No id, create a new subject area.
+    # Needs sda elements as well.
+
+    subject_area = SubjectArea.objects.get(id=sa_id)
+    school = subject_area.school
+    kwargs = get_visibility_filter(request.user, school)
+    
+    return render_to_response('competencies/edit_sa_summary.html',
+                              {'subject_area': subject_area, 'school': school,
+                               },
+                              context_instance = RequestContext(request))
+
+
+
+
+
 
 def subdiscipline_area(request, subdiscipline_area_id):
     """Shows all of the competency areas for a given subdiscipline area."""

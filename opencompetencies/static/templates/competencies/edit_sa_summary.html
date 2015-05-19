@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title_extension %} - {{ school }}{% endblock %}
+
+{% block content %}
+
+	 <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a></h2>
+
+	 <h2>{{ subject_area }}</h2>
+
+	 <div class="row row-eq-height">
+		<div class="span4 lead summary_box grad_std_col"><strong>Graduation Standards</strong></div>
+		<div class="span7 lead summary_box pi_col"><strong>Performance Indicators</strong></div>
+	 </div>
+
+    <a href='{% url 'competencies:sa_summary' subject_area.id %}'>view</a>
+
+{% endblock %}

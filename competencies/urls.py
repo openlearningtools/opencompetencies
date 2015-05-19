@@ -30,8 +30,15 @@ urlpatterns = patterns('',
     # entire_system/id: List the entire system for a given school.
     url(r'^entire_system/(?P<school_id>\d+)/$', views.entire_system, name='entire_system'),
 
+
+
+
+    # Align to GSP work
     # sa_summary/id: Show a GSP-style summary for a given subject area.
     url(r'^sa_summary/(?P<sa_id>\d+)/$', views.sa_summary, name='sa_summary'),
+
+    # edit_sa_summary/id: Edit a GSP-style summary for a given subject area.
+    url(r'^edit_sa_summary/(?P<sa_id>\d+)/$', views.edit_sa_summary, name='edit_sa_summary'),                       
 
 
     # --- Authorization pages ---
