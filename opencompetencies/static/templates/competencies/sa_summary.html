@@ -5,13 +5,12 @@
 {% block content %}
 
 	 <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a></h2>
-	 <p>This page shows a summary of the graduation standards and performance indicators for a single subject area.</p>
 
 	 <h2>{{ subject_area }}</h2>
 
 	 <div class="row row-eq-height">
-		<div class="span4 lead summary_box grad_std_col">Graduation Standards</div>
-		<div class="span7 lead summary_box pi_col">Performance Indicators</div>
+		<div class="span4 lead summary_box grad_std_col"><strong>Graduation Standards</strong></div>
+		<div class="span7 lead summary_box pi_col"><strong>Performance Indicators</strong></div>
 	 </div>
 
 	 {% for ca, eus in ca_eus.items %}
@@ -21,11 +20,11 @@
 			 <p>{{ ca.competency_area }}</p>
 		  </div>
 		  <div class="span7 summary_box pi_col">
-			 <ol>
+			 <ul>
 				{% for eu in eus %}
 				  <li>{{ eu.essential_understanding }}</li>
 				{% endfor %}
-			 </ol>
+			 </ul>
 		  </div>
 		</div>
 	 {% endfor %}
