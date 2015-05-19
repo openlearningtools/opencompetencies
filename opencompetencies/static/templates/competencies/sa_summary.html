@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title_extension %} - {{ school }}{% endblock %}
+
+{% block content %}
+
+	 <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a></h2>
+	 <p>This page shows a summary of the graduation standards and performance indicators for a single subject area.</p>
+
+	 <h2>{{ subject_area }}</h2>
+
+	 <div class="row">
+		<div class="span4">Graduation Standards</div>
+		<div class="span8">Performance Indicators</div>
+	 </div>
+
+	 {% for ca, eus in ca_eus.items %}
+	   <div class="row">
+		  <div class="span4">
+			 <p>{{ ca.phrase }}</p>
+			 <p>{{ ca.competency_area }}</p>
+		  </div>
+		  <div class="span8">
+			 <ul>
+				{% for eu in eus %}
+				  <li>{{ eu.essential_understanding }}</li>
+				{% endfor %}
+		  </div>
+		</div>
+	 {% endfor %}
+
+
+{% endblock %}
