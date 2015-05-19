@@ -61,6 +61,7 @@ class CompetencyArea(models.Model):
     student_friendly = models.TextField(blank=True)
     description = models.TextField(blank=True)
     alias = models.CharField(max_length=500, default="Graduation Standard")
+    phrase = models.CharField(max_length=500, blank=True)
 
     def __str__(self):
         return self.competency_area
