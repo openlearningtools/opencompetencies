@@ -77,9 +77,15 @@ div.feature_box {
 }
 
 /* GSP-style pages */
+.gsp_grid {
+	 display: table;
+}
+
 .summary_box {
 	 margin-bottom: 5px;
 	 padding: 10px;
+	 float: none;
+	 display: table-cell;
 }
 
 .grad_std_col {

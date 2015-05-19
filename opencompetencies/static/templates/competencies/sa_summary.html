@@ -9,14 +9,14 @@
 
 	 <h2>{{ subject_area }}</h2>
 
-	 <div class="row">
+	 <div class="row gsp_grid">
 		<div class="span4 lead summary_box grad_std_col">Graduation Standards</div>
-		<div class="span7 lead summary_box pi_col">Performance Indicators</div>
+		<div class="span7 lead summary_box pi_col">Performance Indicators<p>blah</p></div>
 	 </div>
 
+	 <!--
 	 {% for ca, eus in ca_eus.items %}
-	   <!-- new row! -->
-	   <div class="row">
+	   <div class="row boody">
 		  <div class="span4 summary_box grad_std_col">
 			 <p class="lead">{{ ca.phrase }}</p>
 			 <p>{{ ca.competency_area }}</p>
@@ -30,6 +30,7 @@
 		  </div>
 		</div>
 	 {% endfor %}
+	 -->
 
 
 {% endblock %}
