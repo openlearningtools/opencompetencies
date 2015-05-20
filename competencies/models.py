@@ -184,7 +184,7 @@ class CompetencyAreaForm(ModelForm):
         model = CompetencyArea
         fields = ('competency_area', 'student_friendly', 'description', 'phrase')
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
-        widgets = {'competency_area': Textarea(attrs={'rows': 5, 'class': 'span8'}),
+        widgets = {'competency_area': Textarea(attrs={'rows': 5, 'class': 'span4'}),
                    'student_friendly': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    'description': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    }
@@ -194,7 +194,7 @@ class EssentialUnderstandingForm(ModelForm):
         model = EssentialUnderstanding
         fields = ('essential_understanding', 'student_friendly', 'description')
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
-        widgets = {'essential_understanding': Textarea(attrs={'rows': 5, 'class': 'span8'}),
+        widgets = {'essential_understanding': Textarea(attrs={'rows': 5, 'class': 'span7'}),
                    'student_friendly': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    'description': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    }
