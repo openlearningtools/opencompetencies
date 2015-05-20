@@ -141,9 +141,27 @@ def edit_sa_summary(request, sa_id):
         ca_eus[ca] = eus
 
     if request.method == 'POST':
-        sa_form = SubjectAreaForm(request.POST)
-        if sa_form.is_valid():
-            print('sa_form is valid')
+        print('\nrp:')
+        for item in request.POST:
+            print('item:', item)
+
+        print('\nrp:')
+        print(request.POST)
+
+        print('\nrp:')
+        for k, v in request.POST.items():
+            print('key:', k)
+            print('value', v)
+
+        # sa_form = SubjectAreaForm(request.POST)
+        # ca_form = CompetencyAreaForm(request.POST)
+        # if sa_form.is_valid():
+        #     print('\nsa_form is valid')
+        # if ca_form.is_valid():
+        #     print('\nca_form is valid')
+        #     print('\nca_form:', ca_form)
+        #     ca = ca_form.save(commit=False)
+        #     print('\nca:', ca.competency_area)
 
     # Build forms.
     sa_form = SubjectAreaForm(initial={'subject_area': subject_area})
