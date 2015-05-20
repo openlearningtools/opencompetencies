@@ -134,19 +134,25 @@ def edit_sa_summary(request, sa_id):
     # Get competencies for the general subject area (no associated sda):
     sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
     
+    # Work with individual forms.
+    num_cas = len(sa_general_competency_areas)
+
     # Get eus for each competency area.
     ca_eus = {}
+    num_eus = 0
     for ca in sa_general_competency_areas:
         eus = ca.essentialunderstanding_set.filter(**kwargs)
         ca_eus[ca] = eus
+        num_eus += len(eus)
+    print('\nnum_cas, num_eus:', num_cas, num_eus)
 
     if request.method == 'POST':
         print('\nrp:')
         for item in request.POST:
             print('item:', item)
 
-        print('\nrp:')
-        print(request.POST)
+        # print('\nrp:')
+        # print(request.POST)
 
         print('\nrp:')
         for k, v in request.POST.items():
@@ -166,13 +172,22 @@ def edit_sa_summary(request, sa_id):
     # Build forms.
     sa_form = SubjectAreaForm(initial={'subject_area': subject_area})
     ca_eu_forms = {}
+    ca_form_num, eu_form_num = 0, 0
     for ca, eus in ca_eus.items():
-        ca_form = CompetencyAreaForm(initial={'competency_area': ca.competency_area,
+        ca_form_prefix = 'ca_form_' + str(ca_form_num)
+        ca_form = CompetencyAreaForm(prefix=ca_form_prefix,
+                                     initial={'competency_area': ca.competency_area,
                                               'phrase': ca.phrase})
+        ca_form_num += 1
+
         eu_forms = []
         for eu in eus:
-            eu_form = EssentialUnderstandingForm(initial={'essential_understanding': eu.essential_understanding})
+            eu_form_prefix = 'eu_form_' + str(eu_form_num)
+            print('\nefp:', eu_form_prefix)
+            eu_form = EssentialUnderstandingForm(prefix=eu_form_prefix, 
+                                                 initial={'essential_understanding': eu.essential_understanding})
             eu_forms.append(eu_form)
+            eu_form_num += 1
         ca_eu_forms[ca_form] = eu_forms
 
     return render_to_response('competencies/edit_sa_summary.html',
