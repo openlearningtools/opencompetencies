@@ -161,6 +161,17 @@ def edit_sa_summary(request, sa_id):
                                               'phrase': ca.phrase})
         ca_forms.append(ca_form)
 
+    ca_eu_forms = {}
+    for ca, eus in ca_eus.items():
+        ca_form = CompetencyAreaForm(initial={'competency_area': ca.competency_area,
+                                              'phrase': ca.phrase})
+        eu_forms = []
+        for eu in eus:
+            eu_form = EssentialUnderstandingForm(initial={'essential_understanding': eu.essential_understanding})
+            eu_forms.append(eu_form)
+        ca_eu_forms[ca_form] = eu_forms
+
+    print('ca_eu_forms', ca_eu_forms)
 
 
     print(ca_forms)
@@ -172,6 +183,7 @@ def edit_sa_summary(request, sa_id):
                               {'subject_area': subject_area, 'school': school,
                                'ca_eus': ca_eus,
                                'sa_form': sa_form, 'ca_forms': ca_forms,
+                               'ca_eu_forms': ca_eu_forms,
                                },
                               context_instance = RequestContext(request))
 

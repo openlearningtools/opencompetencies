@@ -16,16 +16,16 @@
 	 </div>
 
 
-	 {% for ca_form in ca_forms %}
+	 {% for ca_form, eu_forms in ca_eu_forms.items %}
 	   <div class="row row-eq-height">
 		  <div class="span4 summary_box grad_std_col">
 			 <p class="lead">{{ ca_form.phrase }}</p>
 			 <p>{{ ca_form.competency_area }}</p>
 		  </div>
 		  <div class="span7 summary_box pi_col">
-			 <ul>
-				eu
-			 </ul>
+				{% for eu_form in eu_forms %}
+				  {{ eu_form.essential_understanding }}
+				{% endfor %}
 		  </div>
 		</div>
 	 {% endfor %}
