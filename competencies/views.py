@@ -159,15 +159,38 @@ def edit_sa_summary(request, sa_id):
             print('key:', k)
             print('value', v)
 
-        # sa_form = SubjectAreaForm(request.POST)
-        # ca_form = CompetencyAreaForm(request.POST)
-        # if sa_form.is_valid():
-        #     print('\nsa_form is valid')
-        # if ca_form.is_valid():
-        #     print('\nca_form is valid')
-        #     print('\nca_form:', ca_form)
-        #     ca = ca_form.save(commit=False)
-        #     print('\nca:', ca.competency_area)
+        sa_form = SubjectAreaForm(request.POST)
+        ca_forms = []
+        for form_index in range(num_cas):
+            ca_form_prefix = "ca_form_%d" % form_index
+            ca_form = CompetencyAreaForm(request.POST, prefix=ca_form_prefix)
+            ca_forms.append(ca_form)
+        print('\nca_forms:')
+        print(ca_forms)
+
+        eu_forms = []
+        for form_index in range(num_eus):
+            eu_form_prefix = "eu_form_%d" % form_index
+            eu_form = EssentialUnderstandingForm(request.POST, prefix=eu_form_prefix)
+            eu_forms.append(eu_form)
+        print('\neu_forms:')
+        print(eu_forms)
+
+        if sa_form.is_valid():
+            print('\nsa_form is valid')
+            sa = sa_form.save(commit=False)
+            sa.school = school
+            sa.save()
+        for form in ca_forms:
+            if form.is_valid():
+                print('\nca_form is valid')
+                ca = ca_form.save(commit=False)
+                ca.subject_area = subject_area
+                ca.save()
+        for form in eu_forms:
+            if form.is_valid():
+                print('\neu_form is valid')
+                #eu_form.save()
 
     # Build forms.
     sa_form = SubjectAreaForm(initial={'subject_area': subject_area})
