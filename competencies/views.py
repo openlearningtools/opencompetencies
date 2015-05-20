@@ -130,6 +130,15 @@ def edit_sa_summary(request, sa_id):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
+    # Get competencies for the general subject area (no associated sda):
+    sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None)
+    
+    # Get eus for each competency area.
+    ca_eus = {}
+    for ca in sa_general_competency_areas:
+        eus = ca.essentialunderstanding_set
+        ca_eus[ca] = eus
+
 
     from competencies.models import SubjectAreaSummaryForm as SASF
 
