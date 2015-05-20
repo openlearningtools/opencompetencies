@@ -168,11 +168,6 @@ class SubjectAreaForm(ModelForm):
             }
 
 
-from django.forms import Form, CharField
-class SubjectAreaSummaryForm(Form):
-    """Class for editing an sa_summary."""
-    subject_area = CharField(label='sa', max_length=500)
-
 
 
 class SubdisciplineAreaForm(ModelForm):
@@ -187,7 +182,7 @@ class SubdisciplineAreaForm(ModelForm):
 class CompetencyAreaForm(ModelForm):
     class Meta:
         model = CompetencyArea
-        fields = ('competency_area', 'student_friendly', 'description')
+        fields = ('competency_area', 'student_friendly', 'description', 'phrase')
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
         widgets = {'competency_area': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    'student_friendly': Textarea(attrs={'rows': 5, 'class': 'span8'}),

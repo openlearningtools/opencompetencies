@@ -124,6 +124,7 @@ def edit_sa_summary(request, sa_id):
 
     subject_area = SubjectArea.objects.get(id=sa_id)
     school = subject_area.school
+    kwargs = get_visibility_filter(request.user, school)
 
     # Test if user allowed to edit this school.
     if not has_edit_permission(request.user, school, subject_area):
@@ -131,29 +132,46 @@ def edit_sa_summary(request, sa_id):
         return redirect(redirect_url)
 
     # Get competencies for the general subject area (no associated sda):
-    sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None)
+    sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
     
     # Get eus for each competency area.
     ca_eus = {}
     for ca in sa_general_competency_areas:
-        eus = ca.essentialunderstanding_set
+        eus = ca.essentialunderstanding_set.filter(**kwargs)
         ca_eus[ca] = eus
 
+    for ca, eus in ca_eus.items():
+        print("ca eus:", ca, eus)
 
-    from competencies.models import SubjectAreaSummaryForm as SASF
 
-    # if request.method == 'POST':
-    #     safs = SAFS(request.POST)
-    #     if safs.is_valid():
-    #         print('saving mf!')
-    sasf = SASF(initial={'subject_area': subject_area.subject_area})
+    if request.method == 'POST':
+        sa_form = SubjectAreaForm(request.POST)
+        if sa_form.is_valid():
+            print('sa_form is valid')
 
+    # Build forms.
+    sa_form = SubjectAreaForm(initial={'subject_area': subject_area})
+    
+    # ca forms
+    ca_forms = [CompetencyAreaForm(initial={'competency_area': competency_area})
+                for competency_area in sa_general_competency_areas]
+    ca_forms = []
+    for ca in sa_general_competency_areas:
+        ca_form = CompetencyAreaForm(initial={'competency_area': ca.competency_area,
+                                              'phrase': ca.phrase})
+        ca_forms.append(ca_form)
+
+
+
+    print(ca_forms)
+        
 
 
     
     return render_to_response('competencies/edit_sa_summary.html',
                               {'subject_area': subject_area, 'school': school,
-                               'form': sasf,
+                               'ca_eus': ca_eus,
+                               'sa_form': sa_form, 'ca_forms': ca_forms,
                                },
                               context_instance = RequestContext(request))
 

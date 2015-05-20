@@ -6,14 +6,31 @@
 
 	 <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a></h2>
 
-	 <form action="/edit_sa_summary/" method="post">
+	 <form action="" method="post">
 		{% csrf_token %}
-		{{ form.subject_area }}
+		{{ sa_form.subject_area }}
 
 	 <div class="row row-eq-height">
 		<div class="span4 lead summary_box grad_std_col"><strong>Graduation Standards</strong></div>
 		<div class="span7 lead summary_box pi_col"><strong>Performance Indicators</strong></div>
 	 </div>
+
+
+	 {% for ca_form in ca_forms %}
+	   <div class="row row-eq-height">
+		  <div class="span4 summary_box grad_std_col">
+			 <p class="lead">{{ ca_form.phrase }}</p>
+			 <p>{{ ca_form.competency_area }}</p>
+		  </div>
+		  <div class="span7 summary_box pi_col">
+			 <ul>
+				eu
+			 </ul>
+		  </div>
+		</div>
+	 {% endfor %}
+
+
 
 		<p><input type="submit" value="Submit" class="submit_sa_summary" /></p>
 	 </form>
