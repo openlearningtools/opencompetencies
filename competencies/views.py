@@ -140,10 +140,6 @@ def edit_sa_summary(request, sa_id):
         eus = ca.essentialunderstanding_set.filter(**kwargs)
         ca_eus[ca] = eus
 
-    for ca, eus in ca_eus.items():
-        print("ca eus:", ca, eus)
-
-
     if request.method == 'POST':
         sa_form = SubjectAreaForm(request.POST)
         if sa_form.is_valid():
@@ -151,16 +147,6 @@ def edit_sa_summary(request, sa_id):
 
     # Build forms.
     sa_form = SubjectAreaForm(initial={'subject_area': subject_area})
-    
-    # ca forms
-    ca_forms = [CompetencyAreaForm(initial={'competency_area': competency_area})
-                for competency_area in sa_general_competency_areas]
-    ca_forms = []
-    for ca in sa_general_competency_areas:
-        ca_form = CompetencyAreaForm(initial={'competency_area': ca.competency_area,
-                                              'phrase': ca.phrase})
-        ca_forms.append(ca_form)
-
     ca_eu_forms = {}
     for ca, eus in ca_eus.items():
         ca_form = CompetencyAreaForm(initial={'competency_area': ca.competency_area,
@@ -171,18 +157,10 @@ def edit_sa_summary(request, sa_id):
             eu_forms.append(eu_form)
         ca_eu_forms[ca_form] = eu_forms
 
-    print('ca_eu_forms', ca_eu_forms)
-
-
-    print(ca_forms)
-        
-
-
-    
     return render_to_response('competencies/edit_sa_summary.html',
                               {'subject_area': subject_area, 'school': school,
                                'ca_eus': ca_eus,
-                               'sa_form': sa_form, 'ca_forms': ca_forms,
+                               'sa_form': sa_form,
                                'ca_eu_forms': ca_eu_forms,
                                },
                               context_instance = RequestContext(request))
