@@ -133,14 +133,24 @@ def edit_sa_summary(request, sa_id):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
+    sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
+    num_cas = len(sa_general_competency_areas)
+    ca_form_prefixes = ['ca_form_%d' % i for i in range(num_cas)]
+
     # Respond to submitted data.
     if request.method == 'POST':
         sa_form = SubjectAreaForm(request.POST, instance=subject_area)
-
         if sa_form.is_valid():
             sa = sa_form.save(commit=False)
             sa.school = school
             sa.save()
+
+        for ca_form_prefix, ca in zip(ca_form_prefixes, sa_general_competency_areas):
+            ca_form = CompetencyAreaForm(request.POST, prefix=ca_form_prefix, instance=ca)
+            if ca_form.is_valid():
+                instance = ca_form.save(commit=False)
+                ca.subject_area = subject_area
+                ca.save()
 
     # Get elements, and build forms.
     sa_form = SubjectAreaForm(instance=subject_area)
@@ -148,8 +158,6 @@ def edit_sa_summary(request, sa_id):
     ca_form_num, eu_form_num = 0, 0
     ca_eu_forms = {}
 
-    sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
-    num_cas = len(sa_general_competency_areas)
 
     # Get eus for each competency area.
     num_eus = 0
@@ -170,7 +178,7 @@ def edit_sa_summary(request, sa_id):
 
     return render_to_response('competencies/edit_sa_summary.html',
                               {'subject_area': subject_area, 'school': school,
-                               'ca_eu_forms': ca_eu_forms,
+                               'sa_form': sa_form, 'ca_eu_forms': ca_eu_forms,
                                },
                               context_instance = RequestContext(request))
 
