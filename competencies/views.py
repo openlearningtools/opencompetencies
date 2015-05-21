@@ -133,8 +133,9 @@ def edit_sa_summary(request, sa_id):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
+    # Respond to submitted data.
     if request.method == 'POST':
-        sa_form = SubjectAreaForm(request.POST)
+        sa_form = SubjectAreaForm(request.POST, instance=subject_area)
 
         if sa_form.is_valid():
             sa = sa_form.save(commit=False)
