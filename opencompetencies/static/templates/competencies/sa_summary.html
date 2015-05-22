@@ -29,11 +29,29 @@
 		</div>
 	 {% endfor %}
 
-	 {% for sda in sdas %}
+	 {% for sda, cas in sda_cas.items %}
 		<div class="row row-eq-height">
 		  <div class="span4 lead summary_box sda_col"><strong>{{ sda }}</strong></div>
 		  <div class="span7 lead summary_box sda_col">&nbsp</div>
 		</div>
+		{% for ca in cas %}
+	     <div class="row row-eq-height">
+			 <div class="span4 summary_box grad_std_col">
+				<p class="lead">{{ ca.phrase }}</p>
+				<p>{{ ca.competency_area }}</p>
+			 </div>
+			 <div class="span7 summary_box pi_col">
+				<ul>
+				  &nbsp
+				  <!--
+				  {% for eu in eus %}
+				    <li>{{ eu.essential_understanding }}</li>
+				  {% endfor %}
+				  -->
+				</ul>
+			 </div>
+		  </div>
+		{% endfor %}
 	 {% endfor %}
 
 

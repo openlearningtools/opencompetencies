@@ -95,8 +95,9 @@ def sa_summary(request, sa_id):
 
     # Deal with sdas, competency areas associated with sdas.
     sdas = sa.subdisciplinearea_set.filter(**kwargs)
-
-
+    sda_cas = {}
+    for sda in sdas:
+        sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
 
     # Get competencies for the general subject area (no associated sda):
     sa_general_competency_areas = sa.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
@@ -111,7 +112,7 @@ def sa_summary(request, sa_id):
                               {'subject_area': sa, 'school': school,
                                'sa_general_competency_areas': sa_general_competency_areas,
                                'ca_eus': ca_eus,
-                               'sdas': sdas},
+                               'sda_cas': sda_cas},
                               context_instance = RequestContext(request))
     
 @login_required
