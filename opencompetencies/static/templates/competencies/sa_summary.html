@@ -42,12 +42,13 @@
 			 </div>
 			 <div class="span7 summary_box pi_col">
 				<ul>
-				  &nbsp
-				  <!--
-				  {% for eu in eus %}
-				    <li>{{ eu.essential_understanding }}</li>
+				  {% for cand_ca, eus in sda_ca_eus.items %}
+				    {% if cand_ca == ca %}
+				      {% for eu in eus %}
+				        <li>{{ eu.essential_understanding }}</li>
+						{% endfor %}
+					 {% endif %}
 				  {% endfor %}
-				  -->
 				</ul>
 			 </div>
 		  </div>

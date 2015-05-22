@@ -93,26 +93,29 @@ def sa_summary(request, sa_id):
     school = sa.school
     kwargs = get_visibility_filter(request.user, school)
 
-    # Deal with sdas, competency areas associated with sdas.
-    sdas = sa.subdisciplinearea_set.filter(**kwargs)
-    sda_cas = {}
-    for sda in sdas:
-        sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
-
     # Get competencies for the general subject area (no associated sda):
     sa_general_competency_areas = sa.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
     
     # Get eus for each competency area.
     ca_eus = {}
     for ca in sa_general_competency_areas:
-        eus = ca.essentialunderstanding_set.filter(**kwargs)
-        ca_eus[ca] = eus
+        ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
         
+    # Get sdas, sda cas, sda eus
+    sdas = sa.subdisciplinearea_set.filter(**kwargs)
+    sda_cas = {}
+    for sda in sdas:
+        sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
+    sda_ca_eus = {}
+    for sda in sdas:
+        for ca in sda_cas[sda]:
+            sda_ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
+
     return render_to_response('competencies/sa_summary.html',
                               {'subject_area': sa, 'school': school,
                                'sa_general_competency_areas': sa_general_competency_areas,
                                'ca_eus': ca_eus,
-                               'sda_cas': sda_cas},
+                               'sda_cas': sda_cas, 'sda_ca_eus': sda_ca_eus},
                               context_instance = RequestContext(request))
     
 @login_required
