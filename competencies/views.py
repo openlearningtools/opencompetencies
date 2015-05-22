@@ -89,14 +89,17 @@ def subject_area(request, subject_area_id):
 
 def sa_summary(request, sa_id):
     """Shows a GSP-style summary for a subject area."""
-    subject_area = SubjectArea.objects.get(id=sa_id)
-    school = subject_area.school
+    sa = SubjectArea.objects.get(id=sa_id)
+    school = sa.school
     kwargs = get_visibility_filter(request.user, school)
 
     # Deal with sdas, competency areas associated with sdas.
+    sdas = sa.subdisciplinearea_set.filter(**kwargs)
+
+
 
     # Get competencies for the general subject area (no associated sda):
-    sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
+    sa_general_competency_areas = sa.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
     
     # Get eus for each competency area.
     ca_eus = {}
@@ -105,9 +108,10 @@ def sa_summary(request, sa_id):
         ca_eus[ca] = eus
         
     return render_to_response('competencies/sa_summary.html',
-                              {'subject_area': subject_area, 'school': school,
+                              {'subject_area': sa, 'school': school,
                                'sa_general_competency_areas': sa_general_competency_areas,
-                               'ca_eus': ca_eus},
+                               'ca_eus': ca_eus,
+                               'sdas': sdas},
                               context_instance = RequestContext(request))
     
 @login_required

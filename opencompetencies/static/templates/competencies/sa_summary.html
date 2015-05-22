@@ -29,6 +29,16 @@
 		</div>
 	 {% endfor %}
 
+	 {% for sda in sdas %}
+		<div class="row row-eq-height">
+		  <div class="span4 lead summary_box sda_col"><strong>{{ sda }}</strong></div>
+		  <div class="span7 lead summary_box sda_col">&nbsp</div>
+		</div>
+	 {% endfor %}
+
+
+
+
 	 <p class="edit_view_link">
 		<a href='{% url 'competencies:edit_sa_summary' subject_area.id %}'>edit</a>
 	 </p>
