@@ -164,7 +164,14 @@ def edit_sa_summary(request, sa_id):
 
             # Deal with this ca's eus here?
             eus = ca.essentialunderstanding_set.filter(**kwargs)
-            
+            for eu in eus:
+                eu_form_prefix = 'eu_form_%d' % eu.id
+                eu_form = EssentialUnderstandingForm(request.POST,
+                                                         prefix=eu_form_prefix, instance=eu)
+                if eu_form.is_valid():
+                    instance = eu_form.save(commit=False)
+                    eu.competency_area = ca
+                    eu.save()
 
     # Get elements, and build forms.
     sa_form = SubjectAreaForm(instance=subject_area)
@@ -176,7 +183,7 @@ def edit_sa_summary(request, sa_id):
     # Get eus for each competency area.
     num_eus = 0
     for ca in sa_general_competency_areas:
-        ca_form_prefix = 'ca_form_' + str(ca.id)
+        ca_form_prefix = 'ca_form_%d' % ca.id
         ca_form = CompetencyAreaForm(prefix=ca_form_prefix, instance=ca)
         ca_form_num += 1
 
@@ -184,7 +191,7 @@ def edit_sa_summary(request, sa_id):
         num_eus += len(eus)
         eu_forms = []
         for eu in eus:
-            eu_form_prefix = 'eu_form_' + str(eu_form_num)
+            eu_form_prefix = 'eu_form_%d' % eu.id
             eu_form = EssentialUnderstandingForm(prefix=eu_form_prefix, instance=eu)
             eu_forms.append(eu_form)
             eu_form_num += 1
