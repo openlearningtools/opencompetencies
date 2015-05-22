@@ -114,8 +114,6 @@ def sa_summary(request, sa_id):
                                'ca_eus': ca_eus},
                               context_instance = RequestContext(request))
     
-
-
 @login_required
 def edit_sa_summary(request, sa_id):
     """Edit a GSP-style summary for a subject area."""
@@ -137,15 +135,6 @@ def edit_sa_summary(request, sa_id):
     sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
     # Order is predictable working from the list, not from what was returned.
     ca_form_prefixes = ['ca_form_%d' % ca.id for ca in sa_general_competency_areas]
-
-    # Get eus for each competency area, and build eu prefixes.
-    # num_eus = 0
-    # eus = []
-    # for ca in sa_general_competency_areas:
-    #     eus = ca.essentialunderstanding_set.filter(**kwargs)
-    #     num_eus += len(eus)
-    #     ca_eus[ca] = eus
-    # eu_form_prefixes = ['eu_form_%d' % i for i in range(num_eus)]
 
     # Respond to submitted data.
     if request.method == 'POST':
@@ -176,25 +165,18 @@ def edit_sa_summary(request, sa_id):
     # Get elements, and build forms.
     sa_form = SubjectAreaForm(instance=subject_area)
 
-    ca_form_num, eu_form_num = 0, 0
     ca_eu_forms = {}
-
-
     # Get eus for each competency area.
-    num_eus = 0
     for ca in sa_general_competency_areas:
         ca_form_prefix = 'ca_form_%d' % ca.id
         ca_form = CompetencyAreaForm(prefix=ca_form_prefix, instance=ca)
-        ca_form_num += 1
 
         eus = ca.essentialunderstanding_set.filter(**kwargs)
-        num_eus += len(eus)
         eu_forms = []
         for eu in eus:
             eu_form_prefix = 'eu_form_%d' % eu.id
             eu_form = EssentialUnderstandingForm(prefix=eu_form_prefix, instance=eu)
             eu_forms.append(eu_form)
-            eu_form_num += 1
         ca_eu_forms[ca_form] = eu_forms
 
     return render_to_response('competencies/edit_sa_summary.html',
@@ -202,122 +184,6 @@ def edit_sa_summary(request, sa_id):
                                'sa_form': sa_form, 'ca_eu_forms': ca_eu_forms,
                                },
                               context_instance = RequestContext(request))
-
-
-
-
-
-@login_required
-def edit_sa_summary_ARCH(request, sa_id):
-    """Edit a GSP-style summary for a subject area."""
-    # This should work for a given sa_id, or with no sa_id.
-    # Have an id, edit a subject area.
-    # No id, create a new subject area.
-    # Needs sda elements as well.
-
-    subject_area = SubjectArea.objects.get(id=sa_id)
-    school = subject_area.school
-    kwargs = get_visibility_filter(request.user, school)
-
-    # Test if user allowed to edit this school.
-    if not has_edit_permission(request.user, school, subject_area):
-        redirect_url = '/no_edit_permission/' + str(school.id)
-        return redirect(redirect_url)
-
-    # Get competencies for the general subject area (no associated sda):
-    sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
-    
-    # Work with individual forms.
-    num_cas = len(sa_general_competency_areas)
-
-    # Get eus for each competency area.
-    ca_eus = {}
-    num_eus = 0
-    for ca in sa_general_competency_areas:
-        eus = ca.essentialunderstanding_set.filter(**kwargs)
-        ca_eus[ca] = eus
-        num_eus += len(eus)
-    print('\nnum_cas, num_eus:', num_cas, num_eus)
-
-    if request.method == 'POST':
-        print('\nrp:')
-        for item in request.POST:
-            print('item:', item)
-
-        # print('\nrp:')
-        # print(request.POST)
-
-        print('\nrp:')
-        for k, v in request.POST.items():
-            print('key:', k)
-            print('value', v)
-
-        sa_form = SubjectAreaForm(request.POST)
-        ca_forms = []
-        for form_index in range(num_cas):
-            ca_form_prefix = "ca_form_%d" % form_index
-            ca_form = CompetencyAreaForm(request.POST, prefix=ca_form_prefix)
-            ca_forms.append(ca_form)
-        print('\nca_forms:')
-        print(ca_forms)
-
-        eu_forms = []
-        for form_index in range(num_eus):
-            eu_form_prefix = "eu_form_%d" % form_index
-            eu_form = EssentialUnderstandingForm(request.POST, prefix=eu_form_prefix)
-            eu_forms.append(eu_form)
-        print('\neu_forms:')
-        print(eu_forms)
-
-        if sa_form.is_valid():
-            print('\nsa_form is valid')
-            sa = sa_form.save(commit=False)
-            sa.school = school
-            sa.save()
-        for form in ca_forms:
-            if form.is_valid():
-                print('\nca_form is valid')
-                ca = ca_form.save(commit=False)
-                ca.subject_area = subject_area
-                ca.save()
-        for form in eu_forms:
-            if form.is_valid():
-                print('\neu_form is valid')
-                #eu_form.save()
-
-    # Build forms.
-    sa_form = SubjectAreaForm(initial={'subject_area': subject_area})
-    ca_eu_forms = {}
-    ca_form_num, eu_form_num = 0, 0
-    for ca, eus in ca_eus.items():
-        ca_form_prefix = 'ca_form_' + str(ca_form_num)
-        ca_form = CompetencyAreaForm(prefix=ca_form_prefix,
-                                     initial={'competency_area': ca.competency_area,
-                                              'phrase': ca.phrase})
-        ca_form_num += 1
-
-        eu_forms = []
-        for eu in eus:
-            eu_form_prefix = 'eu_form_' + str(eu_form_num)
-            print('\nefp:', eu_form_prefix)
-            eu_form = EssentialUnderstandingForm(prefix=eu_form_prefix, 
-                                                 initial={'essential_understanding': eu.essential_understanding})
-            eu_forms.append(eu_form)
-            eu_form_num += 1
-        ca_eu_forms[ca_form] = eu_forms
-
-    return render_to_response('competencies/edit_sa_summary.html',
-                              {'subject_area': subject_area, 'school': school,
-                               'ca_eus': ca_eus,
-                               'sa_form': sa_form,
-                               'ca_eu_forms': ca_eu_forms,
-                               },
-                              context_instance = RequestContext(request))
-
-
-
-
-
 
 def subdiscipline_area(request, subdiscipline_area_id):
     """Shows all of the competency areas for a given subdiscipline area."""
