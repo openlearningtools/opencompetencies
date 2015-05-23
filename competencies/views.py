@@ -150,9 +150,7 @@ def edit_sa_summary(request, sa_id):
 
     # Respond to submitted data.
     if request.method == 'POST':
-        sa_form = SubjectAreaForm(request.POST, instance=subject_area)
-        if sa_form.is_valid():
-            sa = sa_form.save()
+        process_form(request, subject_area, 'sa')
 
         for ca in sa_general_competency_areas:
             prefix = 'ca_form_%d' % ca.id
@@ -170,10 +168,7 @@ def edit_sa_summary(request, sa_id):
                     instance = eu_form.save()
         
         for sda, cas in sda_cas.items():
-            prefix = 'sda_form_%d' % sda.id
-            sda_form = SubdisciplineAreaForm(request.POST, prefix=prefix, instance=sda)
-            if sda_form.is_valid():
-                instance = sda_form.save()
+            process_form(request, sda, 'sda')
             for ca in cas:
                 prefix = 'ca_form_%d' % ca.id
                 ca_form = CompetencyAreaForm(request.POST, prefix=prefix, instance=ca)
@@ -217,6 +212,18 @@ def edit_sa_summary(request, sa_id):
                                'ca_eu_forms': ca_eu_forms,
                                },
                               context_instance = RequestContext(request))
+
+def process_form(request, instance, element_type):
+    """Process a form for a single element."""
+    prefix = '%s_form_%d' % (element_type, instance.id)
+
+    if element_type == 'sa':
+        form = SubjectAreaForm(request.POST, instance=instance)
+    elif element_type == 'sda':
+        form = SubdisciplineAreaForm(request.POST, prefix=prefix, instance=instance)
+
+    if form.is_valid():
+        form.save()
 
 def subdiscipline_area(request, subdiscipline_area_id):
     """Shows all of the competency areas for a given subdiscipline area."""
