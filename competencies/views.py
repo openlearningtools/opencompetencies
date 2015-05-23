@@ -142,21 +142,18 @@ def edit_sa_summary(request, sa_id):
 
     # Get sdas.
     sdas = subject_area.subdisciplinearea_set.filter(**kwargs)
+    sda_form_prefixes = ['sda_form_%d' % sda.id for sda in sdas]
 
     # Respond to submitted data.
     if request.method == 'POST':
         sa_form = SubjectAreaForm(request.POST, instance=subject_area)
         if sa_form.is_valid():
-            sa = sa_form.save(commit=False)
-            sa.school = school
-            sa.save()
+            sa = sa_form.save()
 
         for ca_form_prefix, ca in zip(ca_form_prefixes, sa_general_competency_areas):
             ca_form = CompetencyAreaForm(request.POST, prefix=ca_form_prefix, instance=ca)
             if ca_form.is_valid():
-                instance = ca_form.save(commit=False)
-                ca.subject_area = subject_area
-                ca.save()
+                instance = ca_form.save()
 
             # Deal with this ca's eus here?
             eus = ca.essentialunderstanding_set.filter(**kwargs)
@@ -165,9 +162,12 @@ def edit_sa_summary(request, sa_id):
                 eu_form = EssentialUnderstandingForm(request.POST,
                                                          prefix=eu_form_prefix, instance=eu)
                 if eu_form.is_valid():
-                    instance = eu_form.save(commit=False)
-                    eu.competency_area = ca
-                    eu.save()
+                    instance = eu_form.save()
+
+        for sda_form_prefix, sda in zip(sda_form_prefixes, sdas):
+            sda_form = SubdisciplineAreaForm(request.POST, prefix=sda_form_prefix, instance=sda)
+            if sda_form.is_valid():
+                instance = sda_form.save()
 
     # Get elements, and build forms.
     sa_form = SubjectAreaForm(instance=subject_area)
