@@ -138,9 +138,15 @@ def edit_sa_summary(request, sa_id):
     # Get competency areas.
     sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
 
-    # Get sdas.
+    # Get sdas, sda cas, sda eus
     sdas = subject_area.subdisciplinearea_set.filter(**kwargs)
-    sda_form_prefixes = ['sda_form_%d' % sda.id for sda in sdas]
+    sda_cas = {}
+    for sda in sdas:
+        sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
+    sda_ca_eus = {}
+    for sda in sdas:
+        for ca in sda_cas[sda]:
+            sda_ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
 
     # Respond to submitted data.
     if request.method == 'POST':
@@ -169,14 +175,10 @@ def edit_sa_summary(request, sa_id):
             if sda_form.is_valid():
                 instance = sda_form.save()
 
+            
+
     # Get elements, and build forms.
     sa_form = SubjectAreaForm(instance=subject_area)
-
-    sda_forms = []
-    for sda in sdas:
-        sda_form_prefix = 'sda_form_%d' % sda.id
-        sda_form = SubdisciplineAreaForm(prefix=sda_form_prefix, instance=sda)
-        sda_forms.append(sda_form)
 
     ca_eu_forms = {}
     # Get eus for each competency area.
@@ -192,9 +194,22 @@ def edit_sa_summary(request, sa_id):
             eu_forms.append(eu_form)
         ca_eu_forms[ca_form] = eu_forms
 
+    sda_ca_forms = {}
+    for sda in sdas:
+        sda_form_prefix = 'sda_form_%d' % sda.id
+        sda_form = SubdisciplineAreaForm(prefix=sda_form_prefix, instance=sda)
+        ca_forms = []
+        for ca in sda_cas[sda]:
+            ca_form_prefix = 'ca_form_%d' % ca.id
+            ca_form = CompetencyAreaForm(prefix=ca_form_prefix, instance=ca)
+            ca_forms.append(ca_form)
+        sda_ca_forms[sda_form] = ca_forms
+    
+    
+
     return render_to_response('competencies/edit_sa_summary.html',
                               {'subject_area': subject_area, 'school': school,
-                               'sa_form': sa_form, 'sda_forms': sda_forms,
+                               'sa_form': sa_form, 'sda_ca_forms': sda_ca_forms,
                                'ca_eu_forms': ca_eu_forms,
                                },
                               context_instance = RequestContext(request))
