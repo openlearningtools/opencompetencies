@@ -153,27 +153,30 @@ def edit_sa_summary(request, sa_id):
         process_form(request, subject_area, 'sa')
 
         for ca in sa_general_competency_areas:
-            prefix = 'ca_form_%d' % ca.id
-            ca_form = CompetencyAreaForm(request.POST, prefix=prefix, instance=ca)
-            if ca_form.is_valid():
-                instance = ca_form.save()
+            process_form(request, ca, 'ca')
+            # prefix = 'ca_form_%d' % ca.id
+            # ca_form = CompetencyAreaForm(request.POST, prefix=prefix, instance=ca)
+            # if ca_form.is_valid():
+            #     instance = ca_form.save()
 
             # Deal with this ca's eus here?
             eus = ca.essentialunderstanding_set.filter(**kwargs)
             for eu in eus:
-                prefix = 'eu_form_%d' % eu.id
-                eu_form = EssentialUnderstandingForm(request.POST,
-                                                         prefix=prefix, instance=eu)
-                if eu_form.is_valid():
-                    instance = eu_form.save()
+                process_form(request, eu, 'eu')
+                # prefix = 'eu_form_%d' % eu.id
+                # eu_form = EssentialUnderstandingForm(request.POST,
+                #                                          prefix=prefix, instance=eu)
+                # if eu_form.is_valid():
+                #     instance = eu_form.save()
         
         for sda, cas in sda_cas.items():
             process_form(request, sda, 'sda')
             for ca in cas:
-                prefix = 'ca_form_%d' % ca.id
-                ca_form = CompetencyAreaForm(request.POST, prefix=prefix, instance=ca)
-                if ca_form.is_valid():
-                    instance = ca_form.save()
+                process_form(request, ca, 'ca')
+                # prefix = 'ca_form_%d' % ca.id
+                # ca_form = CompetencyAreaForm(request.POST, prefix=prefix, instance=ca)
+                # if ca_form.is_valid():
+                #     instance = ca_form.save()
             
 
     # Get elements, and build forms.
@@ -221,6 +224,10 @@ def process_form(request, instance, element_type):
         form = SubjectAreaForm(request.POST, instance=instance)
     elif element_type == 'sda':
         form = SubdisciplineAreaForm(request.POST, prefix=prefix, instance=instance)
+    elif element_type == 'ca':
+        form = CompetencyAreaForm(request.POST, prefix=prefix, instance=instance)
+    elif element_type == 'eu':
+        form = EssentialUnderstandingForm(request.POST, prefix=prefix, instance=instance)
 
     if form.is_valid():
         form.save()
