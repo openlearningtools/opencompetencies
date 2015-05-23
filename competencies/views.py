@@ -135,10 +135,8 @@ def edit_sa_summary(request, sa_id):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
-    # Get competency areas, and build ca prefixes.
+    # Get competency areas.
     sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
-    # Order is predictable working from the list, not from what was returned.
-    ca_form_prefixes = ['ca_form_%d' % ca.id for ca in sa_general_competency_areas]
 
     # Get sdas.
     sdas = subject_area.subdisciplinearea_set.filter(**kwargs)
@@ -150,22 +148,24 @@ def edit_sa_summary(request, sa_id):
         if sa_form.is_valid():
             sa = sa_form.save()
 
-        for ca_form_prefix, ca in zip(ca_form_prefixes, sa_general_competency_areas):
-            ca_form = CompetencyAreaForm(request.POST, prefix=ca_form_prefix, instance=ca)
+        for ca in sa_general_competency_areas:
+            prefix = 'ca_form_%d' % ca.id
+            ca_form = CompetencyAreaForm(request.POST, prefix=prefix, instance=ca)
             if ca_form.is_valid():
                 instance = ca_form.save()
 
             # Deal with this ca's eus here?
             eus = ca.essentialunderstanding_set.filter(**kwargs)
             for eu in eus:
-                eu_form_prefix = 'eu_form_%d' % eu.id
+                prefix = 'eu_form_%d' % eu.id
                 eu_form = EssentialUnderstandingForm(request.POST,
-                                                         prefix=eu_form_prefix, instance=eu)
+                                                         prefix=prefix, instance=eu)
                 if eu_form.is_valid():
                     instance = eu_form.save()
-
-        for sda_form_prefix, sda in zip(sda_form_prefixes, sdas):
-            sda_form = SubdisciplineAreaForm(request.POST, prefix=sda_form_prefix, instance=sda)
+        
+        for sda in sdas:
+            prefix = 'sda_form_%d' % sda.id
+            sda_form = SubdisciplineAreaForm(request.POST, prefix=prefix, instance=sda)
             if sda_form.is_valid():
                 instance = sda_form.save()
 
