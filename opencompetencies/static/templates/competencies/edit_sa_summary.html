@@ -43,12 +43,13 @@
 				<p>{{ ca_form.competency_area }}</p>
 			 </div>
 			 <div class="span7 summary_box pi_col">
-				&nbsp
-				<!--
-				{% for eu_form in eu_forms %}
-				  {{ eu_form.essential_understanding }}
+				{% for cand_ca_form, eu_forms in sda_eu_forms.items %}
+				  {% if cand_ca_form == ca_form %}
+				    {% for eu_form in eu_forms %}
+				      {{ eu_form.essential_understanding }}
+				    {% endfor %}
+				  {% endif %}
 				{% endfor %}
-				-->
 			 </div>
 		  </div>
 		{% endfor %}

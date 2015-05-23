@@ -163,7 +163,8 @@ def edit_sa_summary(request, sa_id):
             process_form(request, sda, 'sda')
             for ca in cas:
                 process_form(request, ca, 'ca')
-            
+                for eu in sda_ca_eus[ca]:
+                    process_form(request, eu, 'eu')
 
     # Get elements, and build forms.
     sa_form = SubjectAreaForm(instance=subject_area)
@@ -183,6 +184,7 @@ def edit_sa_summary(request, sa_id):
         ca_eu_forms[ca_form] = eu_forms
 
     sda_ca_forms = {}
+    sda_eu_forms = {}
     for sda in sdas:
         sda_form_prefix = 'sda_form_%d' % sda.id
         sda_form = SubdisciplineAreaForm(prefix=sda_form_prefix, instance=sda)
@@ -191,14 +193,18 @@ def edit_sa_summary(request, sa_id):
             ca_form_prefix = 'ca_form_%d' % ca.id
             ca_form = CompetencyAreaForm(prefix=ca_form_prefix, instance=ca)
             ca_forms.append(ca_form)
+            eu_forms = []
+            for eu in sda_ca_eus[ca]:
+                eu_form_prefix = 'eu_form_%d' % eu.id
+                eu_form = EssentialUnderstandingForm(prefix=eu_form_prefix, instance=eu)
+                eu_forms.append(eu_form)
+            sda_eu_forms[ca_form] = (eu_forms)
         sda_ca_forms[sda_form] = ca_forms
-    
-    
 
     return render_to_response('competencies/edit_sa_summary.html',
                               {'subject_area': subject_area, 'school': school,
                                'sa_form': sa_form, 'sda_ca_forms': sda_ca_forms,
-                               'ca_eu_forms': ca_eu_forms,
+                               'ca_eu_forms': ca_eu_forms, 'sda_eu_forms': sda_eu_forms,
                                },
                               context_instance = RequestContext(request))
 
