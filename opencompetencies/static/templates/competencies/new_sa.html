@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title_extension %} - {{ school }}{% endblock %}
+
+{% block content %}
+
+	 <h2><a href='/schools/{{ school.id }}/'>{{ school.name }}</a></h2>
+	 <p>This page allows you to create a new subject area.</p>
+
+	 <form method='post' action=''>
+		  {% csrf_token %}
+		  {{ sa_form.as_p }}
+		  <input type='submit' value='Add new subject area' />
+	 </form>
+
+{% endblock %}

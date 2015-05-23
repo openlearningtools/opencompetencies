@@ -10,6 +10,7 @@
 
 		{% csrf_token %}
 		{{ sa_form.subject_area }}
+		<a href="{% url 'competencies:new_sa' school.id %}">new subject area</a>
 
 	 <div class="row row-eq-height">
 		<div class="span4 lead summary_box grad_std_col"><strong>Graduation Standards</strong></div>

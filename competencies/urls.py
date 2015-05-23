@@ -40,6 +40,9 @@ urlpatterns = patterns('',
     # edit_sa_summary/id: Edit a GSP-style summary for a given subject area.
     url(r'^edit_sa_summary/(?P<sa_id>\d+)/$', views.edit_sa_summary, name='edit_sa_summary'),                       
 
+    # new_sa: Create a new sa, for a specific school.
+    url(r'^new_sa/(?P<school_id>\d+)/$', views.new_sa, name='new_sa'),
+
 
     # --- Authorization pages ---
     # no_edit_permission: Message that user does not have permission required to edit current elements.
