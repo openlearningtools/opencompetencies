@@ -169,12 +169,16 @@ def edit_sa_summary(request, sa_id):
                 if eu_form.is_valid():
                     instance = eu_form.save()
         
-        for sda in sdas:
+        for sda, cas in sda_cas.items():
             prefix = 'sda_form_%d' % sda.id
             sda_form = SubdisciplineAreaForm(request.POST, prefix=prefix, instance=sda)
             if sda_form.is_valid():
                 instance = sda_form.save()
-
+            for ca in cas:
+                prefix = 'ca_form_%d' % ca.id
+                ca_form = CompetencyAreaForm(request.POST, prefix=prefix, instance=ca)
+                if ca_form.is_valid():
+                    instance = ca_form.save()
             
 
     # Get elements, and build forms.
