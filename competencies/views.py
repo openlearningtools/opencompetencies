@@ -166,37 +166,31 @@ def edit_sa_summary(request, sa_id):
                 for eu in sda_ca_eus[ca]:
                     process_form(request, eu, 'eu')
 
-    # Get elements, and build forms.
-    sa_form = SubjectAreaForm(instance=subject_area)
+    # Build forms.
+    sa_form = generate_form(subject_area, 'sa')
 
     ca_eu_forms = {}
-    # Get eus for each competency area.
     for ca in sa_general_competency_areas:
-        ca_form_prefix = 'ca_form_%d' % ca.id
-        ca_form = CompetencyAreaForm(prefix=ca_form_prefix, instance=ca)
+        ca_form = generate_form(ca, 'ca')
 
         eus = ca.essentialunderstanding_set.filter(**kwargs)
         eu_forms = []
         for eu in eus:
-            eu_form_prefix = 'eu_form_%d' % eu.id
-            eu_form = EssentialUnderstandingForm(prefix=eu_form_prefix, instance=eu)
+            eu_form = generate_form(eu, 'eu')
             eu_forms.append(eu_form)
         ca_eu_forms[ca_form] = eu_forms
 
     sda_ca_forms = {}
     sda_eu_forms = {}
     for sda in sdas:
-        sda_form_prefix = 'sda_form_%d' % sda.id
-        sda_form = SubdisciplineAreaForm(prefix=sda_form_prefix, instance=sda)
+        sda_form = generate_form(sda, 'sda')
         ca_forms = []
         for ca in sda_cas[sda]:
-            ca_form_prefix = 'ca_form_%d' % ca.id
-            ca_form = CompetencyAreaForm(prefix=ca_form_prefix, instance=ca)
+            ca_form = generate_form(ca, 'ca')
             ca_forms.append(ca_form)
             eu_forms = []
             for eu in sda_ca_eus[ca]:
-                eu_form_prefix = 'eu_form_%d' % eu.id
-                eu_form = EssentialUnderstandingForm(prefix=eu_form_prefix, instance=eu)
+                eu_form = generate_form(eu, 'eu')
                 eu_forms.append(eu_form)
             sda_eu_forms[ca_form] = (eu_forms)
         sda_ca_forms[sda_form] = ca_forms
@@ -223,6 +217,19 @@ def process_form(request, instance, element_type):
 
     if form.is_valid():
         form.save()
+
+def generate_form(instance, element_type):
+    """Generate a form for a single element."""
+    prefix = '%s_form_%d' % (element_type, instance.id)
+
+    if element_type == 'sa':
+        return SubjectAreaForm(instance=instance)
+    elif element_type == 'sda':
+        return SubdisciplineAreaForm(prefix=prefix, instance=instance)
+    elif element_type == 'ca':
+        return CompetencyAreaForm(prefix=prefix, instance=instance)
+    elif element_type == 'eu':
+        return EssentialUnderstandingForm(prefix=prefix, instance=instance)
 
 def subdiscipline_area(request, subdiscipline_area_id):
     """Shows all of the competency areas for a given subdiscipline area."""
