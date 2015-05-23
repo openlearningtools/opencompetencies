@@ -150,33 +150,19 @@ def edit_sa_summary(request, sa_id):
 
     # Respond to submitted data.
     if request.method == 'POST':
+
         process_form(request, subject_area, 'sa')
 
         for ca in sa_general_competency_areas:
             process_form(request, ca, 'ca')
-            # prefix = 'ca_form_%d' % ca.id
-            # ca_form = CompetencyAreaForm(request.POST, prefix=prefix, instance=ca)
-            # if ca_form.is_valid():
-            #     instance = ca_form.save()
-
-            # Deal with this ca's eus here?
             eus = ca.essentialunderstanding_set.filter(**kwargs)
             for eu in eus:
                 process_form(request, eu, 'eu')
-                # prefix = 'eu_form_%d' % eu.id
-                # eu_form = EssentialUnderstandingForm(request.POST,
-                #                                          prefix=prefix, instance=eu)
-                # if eu_form.is_valid():
-                #     instance = eu_form.save()
         
         for sda, cas in sda_cas.items():
             process_form(request, sda, 'sda')
             for ca in cas:
                 process_form(request, ca, 'ca')
-                # prefix = 'ca_form_%d' % ca.id
-                # ca_form = CompetencyAreaForm(request.POST, prefix=prefix, instance=ca)
-                # if ca_form.is_valid():
-                #     instance = ca_form.save()
             
 
     # Get elements, and build forms.
