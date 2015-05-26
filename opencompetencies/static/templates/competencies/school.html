@@ -16,7 +16,7 @@
 		  {# ---  subject areas --- #}
 	     <ul>
 	     {% for sa, sdas in sa_sdas.items %}
-		      <li><div><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></div>
+		      <li><div><h3><a href='/sa_summary/{{ sa.id }}/'>{{ sa }}</a></h3></div>
 				    {% if sa.description %}
 				        <div class="description_element">Description: {{ sa.description }}</div>
 					 {% endif %}
