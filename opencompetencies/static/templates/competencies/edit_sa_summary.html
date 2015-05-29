@@ -32,6 +32,11 @@
 		</div>
 	 {% endfor %}
 
+	 <div class="row row-eq-height">
+		<div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_gs' subject_area.id %}">new graduation standard</a></div>
+		<div class="span7 lead summary_box pi_col">&nbsp</div>
+	 </div>
+
 	 {% for sda_form, ca_forms in sda_ca_forms.items %}
 		<div class="row row-eq-height">
 		  <div class="span4 lead summary_box sda_col">{{ sda_form.subdiscipline_area }}</div>

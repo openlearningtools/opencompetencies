@@ -253,7 +253,41 @@ def new_sa(request, school_id):
                               {'school': school, 'sa_form': sa_form,},
                               context_instance = RequestContext(request))
 
+def new_gs(request, sa_id):
+    """Create a new grad std for a given general subject area."""
+    sa = SubjectArea.objects.get(id=sa_id)
+    school = sa.school
+    # Test if user allowed to edit this school.
+    if not has_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
 
+    if request.method == 'POST':
+        gs_form = CompetencyAreaForm(request.POST)
+        if gs_form.is_valid():
+            new_gs = gs_form.save(commit=False)
+            new_gs.subject_area = sa
+            new_gs.save()
+            return redirect('/edit_sa_summary/%d' % sa.id)
+
+    gs_form = CompetencyAreaForm()
+
+    return render_to_response('competencies/new_gs.html',
+                              {'school': school, 'sa': sa, 'gs_form': gs_form,},
+                              context_instance = RequestContext(request))
+
+def new_pi(request, ca_id):
+    """Create a new performance indicator (EU) for given grad std (CA)."""
+    ca = CompetencyArea.objects.get(id=ca_id)
+    sa = ca.subject_area
+    school = sa.school
+    # Test if user allowed to edit this school.
+    if not has_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
+    # form
+    
 
 def subdiscipline_area(request, subdiscipline_area_id):
     """Shows all of the competency areas for a given subdiscipline area."""

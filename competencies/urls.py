@@ -43,7 +43,9 @@ urlpatterns = patterns('',
     # new_sa: Create a new sa, for a specific school.
     url(r'^new_sa/(?P<school_id>\d+)/$', views.new_sa, name='new_sa'),
 
-
+    # new_gs: Create a new grad std, for a specific general subject area.
+    url(r'^new_gs/(?P<sa_id>\d+)/$', views.new_gs, name='new_gs'),
+                       
     # --- Authorization pages ---
     # no_edit_permission: Message that user does not have permission required to edit current elements.
     url(r'^no_edit_permission/(?P<school_id>\d+)/$', views.no_edit_permission, name='no_edit_permission'),

@@ -183,6 +183,7 @@ class CompetencyAreaForm(ModelForm):
     class Meta:
         model = CompetencyArea
         fields = ('competency_area', 'student_friendly', 'description', 'phrase')
+        labels = {'competency_area': 'Graduation Standard'}
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
         widgets = {'competency_area': Textarea(attrs={'rows': 5, 'class': 'span4'}),
                    'student_friendly': Textarea(attrs={'rows': 5, 'class': 'span8'}),
