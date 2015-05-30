@@ -4,8 +4,9 @@ from django.forms.models import modelform_factory, modelformset_factory, inlinef
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.db.models.loading import get_model
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.views import password_change
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 
 from copy import copy
@@ -42,6 +43,34 @@ def password_change_successful(request):
     return render_to_response('registration/password_change_successful.html',
                               {},
                               context_instance = RequestContext(request))
+
+def register(request):
+    """Register a new user."""
+    if request.method == 'POST':
+        # Process completed form.
+        form = RegisterUserForm(data=request.POST)
+        
+        if form.is_valid():
+            user = form.save()
+            # Create user profile, and connect to user.
+            new_userprofile = UserProfile()
+            new_userprofile.user = user
+            new_userprofile.save()
+            
+            # Log the user in, and then redirect to home page.
+            user = authenticate(username=user,
+                password=request.POST['password1'])
+            login(request, user)
+            return HttpResponseRedirect(reverse('competencies:index'))
+    else:
+        # Display blank registration form.        
+        form = RegisterUserForm()
+        
+    context = {'form': form}
+    return render_to_response('competencies/register.html',
+                              context,
+                              context_instance=RequestContext(request))
+
 
 # --- Authorization views ---
 def no_edit_permission(request, school_id):
@@ -97,16 +126,16 @@ def sa_summary(request, sa_id):
     sa_general_competency_areas = sa.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
     
     # Get eus for each competency area.
-    ca_eus = {}
+    ca_eus = OrderedDict()
     for ca in sa_general_competency_areas:
         ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
         
     # Get sdas, sda cas, sda eus
     sdas = sa.subdisciplinearea_set.filter(**kwargs)
-    sda_cas = {}
+    sda_cas = OrderedDict()
     for sda in sdas:
         sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
-    sda_ca_eus = {}
+    sda_ca_eus = OrderedDict()
     for sda in sdas:
         for ca in sda_cas[sda]:
             sda_ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
@@ -140,10 +169,10 @@ def edit_sa_summary(request, sa_id):
 
     # Get sdas, sda cas, sda eus
     sdas = subject_area.subdisciplinearea_set.filter(**kwargs)
-    sda_cas = {}
+    sda_cas = OrderedDict()
     for sda in sdas:
         sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
-    sda_ca_eus = {}
+    sda_ca_eus = OrderedDict()
     for sda in sdas:
         for ca in sda_cas[sda]:
             sda_ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
@@ -169,7 +198,7 @@ def edit_sa_summary(request, sa_id):
     # Build forms.
     sa_form = generate_form(subject_area, 'sa')
 
-    ca_eu_forms = {}
+    ca_eu_forms = OrderedDict()
     for ca in sa_general_competency_areas:
         ca_form = generate_form(ca, 'ca')
         ca_form.my_id = ca.id
@@ -180,8 +209,8 @@ def edit_sa_summary(request, sa_id):
             eu_forms.append(eu_form)
         ca_eu_forms[ca_form] = eu_forms
 
-    sda_ca_forms = {}
-    sda_eu_forms = {}
+    sda_ca_forms = OrderedDict()
+    sda_eu_forms = OrderedDict()
     for sda in sdas:
         sda_form = generate_form(sda, 'sda')
         # add the id manually here???

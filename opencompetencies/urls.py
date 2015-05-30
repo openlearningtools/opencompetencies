@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     url(r'^profile/', 'competencies.views.profile', name='profile'),
     url(r'^password_change/', 'competencies.views.password_change_form', name='password_change_form'),
     url(r'^password_change_successful/', 'competencies.views.password_change_successful', name='password_change_successful'),
+    url(r'^register/', 'competencies.views.register', name='register'),                       
 )
 
 

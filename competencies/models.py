@@ -1,7 +1,8 @@
 from django.db import models
 from django.forms import ModelForm, TextInput, Textarea, SelectMultiple, CheckboxSelectMultiple
-from django.forms import HiddenInput
+from django.forms import EmailField
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 
 # --- Competency System Hierarchy ---
 
@@ -176,11 +177,10 @@ class SubdisciplineAreaForm(ModelForm):
     my_id = None
     class Meta:
         model = SubdisciplineArea
-        fields = ('subdiscipline_area', 'description', 'id')
+        fields = ('subdiscipline_area', 'description')
         widgets = {
             'subdiscipline_area': TextInput(attrs={'class': 'span4'}),
             'description': Textarea(attrs={'rows': 5, 'class': 'span8'}),
-            'id': HiddenInput(),
             }
 
 class CompetencyAreaForm(ModelForm):
@@ -223,3 +223,25 @@ class LearningTargetForm(ModelForm):
                    'student_friendly': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    'description': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    }
+
+
+class RegisterUserForm(UserCreationForm):
+    #email = EmailField(required=False, label='Email (optional)')
+    
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
+        labels = {'email': 'Email (optional)'}
+
+        widgets = {
+            'username': TextInput(attrs={'class': 'span5'}),
+            'email': TextInput(attrs={'class': 'span5'}),
+            }
+
+    def save(self, commit=True):
+        user = super(RegisterUserForm, self).save(commit=False)
+        if self.cleaned_data["email"]:
+            user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+        return user
