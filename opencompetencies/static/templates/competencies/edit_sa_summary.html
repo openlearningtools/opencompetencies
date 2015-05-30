@@ -28,6 +28,7 @@
 				{% for eu_form in eu_forms %}
 				  {{ eu_form.essential_understanding }}
 				{% endfor %}
+				<a href="{% url 'competencies:new_pi' ca_form.my_id %}">new performance indicator</a>
 		  </div>
 		</div>
 	 {% endfor %}
@@ -54,6 +55,7 @@
 				    {% for eu_form in eu_forms %}
 				      {{ eu_form.essential_understanding }}
 				    {% endfor %}
+				    <a href="{% url 'competencies:new_pi' ca_form.my_id %}">new performance indicator</a>
 				  {% endif %}
 				{% endfor %}
 			 </div>

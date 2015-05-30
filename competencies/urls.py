@@ -49,8 +49,10 @@ urlpatterns = patterns('',
     # new_sda_gs: Create a new grad std, for a specific subdiscipline area.
     url(r'^new_sda_gs/(?P<sda_id>\d+)/$', views.new_sda_gs, name='new_sda_gs'),
 
+    # new_pi: Create a new perf ind(eu), for a specific grad standard (ca).
+    url(r'^new_pi/(?P<ca_id>\d+)/$', views.new_pi, name='new_pi'),
 
-
+                       
 
 
     # --- Authorization pages ---

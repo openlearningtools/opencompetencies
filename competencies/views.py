@@ -172,7 +172,7 @@ def edit_sa_summary(request, sa_id):
     ca_eu_forms = {}
     for ca in sa_general_competency_areas:
         ca_form = generate_form(ca, 'ca')
-
+        ca_form.my_id = ca.id
         eus = ca.essentialunderstanding_set.filter(**kwargs)
         eu_forms = []
         for eu in eus:
@@ -189,6 +189,7 @@ def edit_sa_summary(request, sa_id):
         ca_forms = []
         for ca in sda_cas[sda]:
             ca_form = generate_form(ca, 'ca')
+            ca_form.my_id = ca.id
             ca_forms.append(ca_form)
             eu_forms = []
             for eu in sda_ca_eus[ca]:
@@ -314,7 +315,22 @@ def new_pi(request, ca_id):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
-    # form
+    if request.method == 'POST':
+        pi_form = EssentialUnderstandingForm(request.POST)
+        if pi_form.is_valid():
+            new_pi = pi_form.save(commit=False)
+            print('ca', ca)
+            new_pi.competency_area = ca
+            new_pi.save()
+            return redirect('/edit_sa_summary/%d' % sa.id)
+
+    pi_form = EssentialUnderstandingForm()
+
+    return render_to_response('competencies/new_pi.html',
+                              {'school': school, 'sa': sa, 'ca': ca,
+                               'pi_form': pi_form,},
+                              context_instance = RequestContext(request))
+    
     
 
 def subdiscipline_area(request, subdiscipline_area_id):

@@ -184,6 +184,8 @@ class SubdisciplineAreaForm(ModelForm):
             }
 
 class CompetencyAreaForm(ModelForm):
+    # Hacky way to get id of instance from a form in a template (edit_sa_summary).
+    my_id = None
     class Meta:
         model = CompetencyArea
         fields = ('competency_area', 'student_friendly', 'description', 'phrase')
@@ -198,6 +200,7 @@ class EssentialUnderstandingForm(ModelForm):
     class Meta:
         model = EssentialUnderstanding
         fields = ('essential_understanding', 'student_friendly', 'description')
+        labels = {'essential_understanding': 'Performance Indicator'}
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
         widgets = {'essential_understanding': Textarea(attrs={'rows': 5, 'class': 'span7'}),
                    'student_friendly': Textarea(attrs={'rows': 5, 'class': 'span8'}),
