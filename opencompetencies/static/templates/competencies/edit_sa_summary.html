@@ -69,6 +69,11 @@
 
 	 {% endfor %}
 
+		<div class="row row-eq-height">
+		  <div class="span4 lead summary_box sda_col"><a href="{% url 'competencies:new_sda' subject_area.id %}">new subdiscipline area</a></div>
+		  <div class="span7 lead summary_box sda_col">&nbsp</div>
+		</div>
+
 
 		<p><input type="submit" value="Save Changes" class="submit_sa_summary btn btn-small btn-info" /></p>
 	 </form>

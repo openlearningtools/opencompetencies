@@ -256,6 +256,31 @@ def new_sa(request, school_id):
                               {'school': school, 'sa_form': sa_form,},
                               context_instance = RequestContext(request))
 
+def new_sda(request, sa_id):
+    """Create a new subdiscipline area for a given subject area."""
+    print('here')
+    sa = SubjectArea.objects.get(id=sa_id)
+    school = sa.school
+    # Test if user allowed to edit this school.
+    if not has_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
+    if request.method == 'POST':
+        sda_form = SubdisciplineAreaForm(request.POST)
+        if sda_form.is_valid():
+            new_sda = sda_form.save(commit=False)
+            new_sda.subject_area = sa
+            new_sda.save()
+            return redirect('/edit_sa_summary/%d' % sa.id)
+
+    sda_form = SubdisciplineAreaForm()
+
+    return render_to_response('competencies/new_sda.html',
+                              {'school': school, 'sa': sa,
+                               'sda_form': sda_form,},
+                              context_instance = RequestContext(request))
+
 def new_gs(request, sa_id):
     """Create a new grad std for a given general subject area."""
     sa = SubjectArea.objects.get(id=sa_id)

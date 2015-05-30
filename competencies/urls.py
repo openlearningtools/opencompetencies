@@ -43,6 +43,9 @@ urlpatterns = patterns('',
     # new_sa: Create a new sa, for a specific school.
     url(r'^new_sa/(?P<school_id>\d+)/$', views.new_sa, name='new_sa'),
 
+    # new_sda: Create a new sda, for a specific subject area.
+    url(r'^new_sda/(?P<sa_id>\d+)/$', views.new_sda, name='new_sda'),
+
     # new_gs: Create a new grad std, for a specific general subject area.
     url(r'^new_gs/(?P<sa_id>\d+)/$', views.new_gs, name='new_gs'),
 
@@ -51,7 +54,6 @@ urlpatterns = patterns('',
 
     # new_pi: Create a new perf ind(eu), for a specific grad standard (ca).
     url(r'^new_pi/(?P<ca_id>\d+)/$', views.new_pi, name='new_pi'),
-
                        
 
 
