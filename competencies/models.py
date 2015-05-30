@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import ModelForm, TextInput, Textarea, SelectMultiple, CheckboxSelectMultiple
+from django.forms import HiddenInput
 from django.contrib.auth.models import User
 
 # --- Competency System Hierarchy ---
@@ -171,12 +172,15 @@ class SubjectAreaForm(ModelForm):
 
 
 class SubdisciplineAreaForm(ModelForm):
+    # Hacky way to get id of instance from a form in a template (edit_sa_summary).
+    my_id = None
     class Meta:
         model = SubdisciplineArea
-        fields = ('subdiscipline_area', 'description')
+        fields = ('subdiscipline_area', 'description', 'id')
         widgets = {
             'subdiscipline_area': TextInput(attrs={'class': 'span4'}),
             'description': Textarea(attrs={'rows': 5, 'class': 'span8'}),
+            'id': HiddenInput(),
             }
 
 class CompetencyAreaForm(ModelForm):

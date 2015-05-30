@@ -184,6 +184,8 @@ def edit_sa_summary(request, sa_id):
     sda_eu_forms = {}
     for sda in sdas:
         sda_form = generate_form(sda, 'sda')
+        # add the id manually here???
+        sda_form.my_id = sda.id
         ca_forms = []
         for ca in sda_cas[sda]:
             ca_form = generate_form(ca, 'ca')
@@ -274,6 +276,32 @@ def new_gs(request, sa_id):
 
     return render_to_response('competencies/new_gs.html',
                               {'school': school, 'sa': sa, 'gs_form': gs_form,},
+                              context_instance = RequestContext(request))
+
+def new_sda_gs(request, sda_id):
+    """Create a new grad std for a given subdiscipline area."""
+    sda = SubdisciplineArea.objects.get(id=sda_id)
+    sa = sda.subject_area
+    school = sa.school
+    # Test if user allowed to edit this school.
+    if not has_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
+    if request.method == 'POST':
+        gs_form = CompetencyAreaForm(request.POST)
+        if gs_form.is_valid():
+            new_gs = gs_form.save(commit=False)
+            new_gs.subject_area = sa
+            new_gs.subdiscipline_area = sda
+            new_gs.save()
+            return redirect('/edit_sa_summary/%d' % sa.id)
+
+    gs_form = CompetencyAreaForm()
+
+    return render_to_response('competencies/new_sda_gs.html',
+                              {'school': school, 'sa': sa, 'sda': sda,
+                               'gs_form': gs_form,},
                               context_instance = RequestContext(request))
 
 def new_pi(request, ca_id):
