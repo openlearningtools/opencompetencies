@@ -2,15 +2,8 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from competencies.models import *
+import testing_utilities as tu
 
-
-def create_school(name):
-    """Creates a school with the given name."""
-    return School.objects.create(name=name)
-
-def create_subject_area(subject_area, school):
-    """Creates a subject_area, with fk to given school."""
-    return SubjectArea.objects.create(subject_area=subject_area, school=school)
 
 class CompetencyViewTests(TestCase):
     """Needed tests:
@@ -30,15 +23,15 @@ class CompetencyViewTests(TestCase):
 
     def test_school_view(self):
         """School page lists subject areas and subdiscipline areas for that school."""
-        django_school = create_school(name="The Django School")
+        django_school = tu.create_school(name="The Django School")
         response = self.client.get(reverse('competencies:school', args=(django_school.id,)))
         self.assertEqual(response.status_code, 200)
 
     def test_subject_area_view(self):
         """Subject area page lists general competencies for a single subject area,
         and competencies for that subject's subdiscipline areas."""
-        django_school = create_school(name="The Django School")
-        science = create_subject_area(subject_area="Science", school=django_school)
+        django_school = tu.create_school(name="The Django School")
+        science = tu.create_subject_area(subject_area="Science", school=django_school)
         response = self.client.get(reverse('competencies:subject_area', args=(science.id,)))
 
     def test_competency_area_view(self):
