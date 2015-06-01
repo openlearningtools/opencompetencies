@@ -1,7 +1,9 @@
 /* Need to override bootstrap; requires very specific selectors. */
 .my_footer {
 	 border-top: 1px solid #aaa;
-	 margin-top: 50px;
+	 border-bottom: 1px solid #aaa;
+	 margin-top: 100px;
+	 margin-bottom: 25px;
 	 padding-top: 10px;
 	 color: #333;
 }
