@@ -136,7 +136,6 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 
     # Utilities/ libraries
-    'south',
     'gunicorn',
 
     # My apps

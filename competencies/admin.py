@@ -10,12 +10,8 @@ class SubjectAreaInline(admin.TabularInline):
     model = SubjectArea
     extra = 1
 
-class PathwayInline(admin.TabularInline):
-    model = Pathway
-    extra = 1
-
 class SchoolAdmin(admin.ModelAdmin):
-    inlines = [SubjectAreaInline, PathwayInline]
+    inlines = [SubjectAreaInline]
 
 # --- Subject Area admin, with subdisciplines inline
 class SubdisciplineAreaInline(admin.TabularInline):
@@ -69,7 +65,6 @@ admin.site.register(SubjectArea, SubjectAreaAdmin)
 admin.site.register(SubdisciplineArea, SubdisciplineAreaAdmin)
 admin.site.register(CompetencyArea, CompetencyAreaAdmin)
 admin.site.register(EssentialUnderstanding, EssentialUnderstandingAdmin)
-admin.site.register(Pathway, PathwayAdmin)
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)

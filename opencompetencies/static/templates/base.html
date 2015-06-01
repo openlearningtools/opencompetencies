@@ -10,7 +10,6 @@
     <!-- Le styles -->
 	 {% load staticfiles %}
 	 <link href='{% static 'css/bootstrap.css' %}'  rel='stylesheet'>
-	 <link href='{% static 'css/site_styles.css' %}' rel='stylesheet'>
 	 
     <style>
       body {
@@ -18,6 +17,8 @@
       }
     </style>
     <link href='{% static 'css/bootstrap-responsive.css' %}' rel="stylesheet">
+
+	 <link href='{% static 'css/site_styles.css' %}' rel='stylesheet'>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -67,6 +68,7 @@
                   <li><a href="{% url 'profile' %}">{{ user.username }}</a></li>
                   <li><a href="{% url 'logout_view' %}">log out</a></li>
 				  {% else %}
+						<li><a href="{% url 'register' %}">register</a></li>
                   <li><a href="{% url 'login' %}">log in</a></li>
 				  {% endif %}
 				  
@@ -103,7 +105,10 @@
     <script src='{% static 'js/bootstrap-typeahead.js' %}'></script>
 
   <div class="container my_footer">
-    <p class="text-center">Hosting generously provided by <a href="http://rackspace.com">Rackspace</a>.</p>
+	 <div class='row'>
+		<div class='span6 text-center'><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title"><a href="http://opencompetencies.org">Open Competencies</a></span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</div>
+		<div class='span6'><p class="text-center">Hosting generously provided by <a href="http://rackspace.com">Rackspace</a>.</p></div>
+	 </div>
   </div>
 
   </body>

@@ -5,19 +5,14 @@
 {% block content %}
 
 	 <h2>{{ school.name }}</h2>
-	 <p>This page shows the subject areas and subdiscipline areas for {{ school }}.</p>
-
-	 <p><a href='/edit_school/{{ school.id }}/'>Edit subject areas</a>
-	    | <a href='{% url 'competencies:entire_system' school.id %}'>View entire system</a>
-		 | <a href='{% url 'competencies:pathways' school.id %}'>View pathways</a>
-	 </p>
+	 <p>Click on a subject area to see the graduation standards and performance indicators for that subject area.</p>
 
 	 {% if subject_areas %}
 
 		  {# ---  subject areas --- #}
 	     <ul>
 	     {% for sa, sdas in sa_sdas.items %}
-		      <li><div><h3><a href='/subject_areas/{{ sa.id }}/'>{{ sa }}</a></h3></div>
+		      <li><div><h3><a href='/sa_summary/{{ sa.id }}/'>{{ sa }}</a></h3></div>
 				    {% if sa.description %}
 				        <div class="description_element">Description: {{ sa.description }}</div>
 					 {% endif %}
@@ -26,7 +21,7 @@
 				{# ---  subdiscipline areas --- #}
 				<ul>
 				{% for sda in sdas %}
-				    <li><div><h4><a href='/subdiscipline_areas/{{ sda.id }}/'>{{ sda }}</a></h4></div>
+				    <li><div><h4>{{ sda }}</h4></div>
 						  {% if sda.description %}
 				            <div class="description_element">Description: {{ sda.description }}</div>
 						  {% endif %}
@@ -37,8 +32,8 @@
 		  {% endfor %}
 		  </ul>
 
-	 {% elif user.is_authenticated and school in user.profile.schools.all %}
-		  <p>This school does not have any subject areas yet. You may want to <a href="/schools/{{ school.id }}/fork">fork</a> another school's competency system instead of starting from scratch.</p>
+	 {% elif user.is_authenticated and school in user.userprofile.schools.all %}
+		  <p>This school does not have any subject areas yet. <a href="{% url 'competencies:new_sa' school.id %}">Create a subject area</a>.</p>
     {% else %}
 		  <p>This school does not have any public subject areas yet.</p>
     {% endif %}

@@ -4,8 +4,9 @@ from django.forms.models import modelform_factory, modelformset_factory, inlinef
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.db.models.loading import get_model
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.views import password_change
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 
 from copy import copy
@@ -15,14 +16,8 @@ from competencies.models import *
 
 
 def index(request):
-    sample_school = School.objects.get(name='Sample High School')
-    pw_min_hs_grad = Pathway.objects.filter(school=sample_school).get(name='Minimum High School Graduation Requirements')
-    pw_physicist = Pathway.objects.filter(school=sample_school).get(name='Physicist')
-
     return render_to_response('competencies/index.html',
-                              {'sample_school': sample_school,
-                               'pw_min_hs_grad': pw_min_hs_grad,
-                               'pw_physicist': pw_physicist},
+                              {},
                               context_instance = RequestContext(request))
 
 # Authentication views
@@ -48,6 +43,34 @@ def password_change_successful(request):
     return render_to_response('registration/password_change_successful.html',
                               {},
                               context_instance = RequestContext(request))
+
+def register(request):
+    """Register a new user."""
+    if request.method == 'POST':
+        # Process completed form.
+        form = RegisterUserForm(data=request.POST)
+        
+        if form.is_valid():
+            user = form.save()
+            # Create user profile, and connect to user.
+            new_userprofile = UserProfile()
+            new_userprofile.user = user
+            new_userprofile.save()
+            
+            # Log the user in, and then redirect to home page.
+            user = authenticate(username=user,
+                password=request.POST['password1'])
+            login(request, user)
+            return HttpResponseRedirect(reverse('competencies:index'))
+    else:
+        # Display blank registration form.        
+        form = RegisterUserForm()
+        
+    context = {'form': form}
+    return render_to_response('competencies/register.html',
+                              context,
+                              context_instance=RequestContext(request))
+
 
 # --- Authorization views ---
 def no_edit_permission(request, school_id):
@@ -92,6 +115,277 @@ def subject_area(request, subject_area_id):
                                'sa_general_competency_areas': sa_general_competency_areas,
                                'sda_competency_areas': sda_competency_areas},
                               context_instance = RequestContext(request))
+
+def sa_summary(request, sa_id):
+    """Shows a GSP-style summary for a subject area."""
+    sa = SubjectArea.objects.get(id=sa_id)
+    school = sa.school
+    kwargs = get_visibility_filter(request.user, school)
+
+    # Get competencies for the general subject area (no associated sda):
+    sa_general_competency_areas = sa.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
+    
+    # Get eus for each competency area.
+    ca_eus = OrderedDict()
+    for ca in sa_general_competency_areas:
+        ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
+        
+    # Get sdas, sda cas, sda eus
+    sdas = sa.subdisciplinearea_set.filter(**kwargs)
+    sda_cas = OrderedDict()
+    for sda in sdas:
+        sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
+    sda_ca_eus = OrderedDict()
+    for sda in sdas:
+        for ca in sda_cas[sda]:
+            sda_ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
+
+    return render_to_response('competencies/sa_summary.html',
+                              {'subject_area': sa, 'school': school,
+                               'sa_general_competency_areas': sa_general_competency_areas,
+                               'ca_eus': ca_eus,
+                               'sda_cas': sda_cas, 'sda_ca_eus': sda_ca_eus},
+                              context_instance = RequestContext(request))
+    
+@login_required
+def edit_sa_summary(request, sa_id):
+    """Edit a GSP-style summary for a subject area."""
+    # This should work for a given sa_id, or with no sa_id.
+    # Have an id, edit a subject area.
+    # No id, create a new subject area.
+    # Needs sda elements as well.
+
+    subject_area = SubjectArea.objects.get(id=sa_id)
+    school = subject_area.school
+    kwargs = get_visibility_filter(request.user, school)
+
+    # Test if user allowed to edit this school.
+    if not has_edit_permission(request.user, school, subject_area):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
+    # Get competency areas.
+    sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
+
+    # Get sdas, sda cas, sda eus
+    sdas = subject_area.subdisciplinearea_set.filter(**kwargs)
+    sda_cas = OrderedDict()
+    for sda in sdas:
+        sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
+    sda_ca_eus = OrderedDict()
+    for sda in sdas:
+        for ca in sda_cas[sda]:
+            sda_ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
+
+    # Respond to submitted data.
+    if request.method == 'POST':
+
+        process_form(request, subject_area, 'sa')
+
+        for ca in sa_general_competency_areas:
+            process_form(request, ca, 'ca')
+            eus = ca.essentialunderstanding_set.filter(**kwargs)
+            for eu in eus:
+                process_form(request, eu, 'eu')
+        
+        for sda, cas in sda_cas.items():
+            process_form(request, sda, 'sda')
+            for ca in cas:
+                process_form(request, ca, 'ca')
+                for eu in sda_ca_eus[ca]:
+                    process_form(request, eu, 'eu')
+
+    # Build forms.
+    sa_form = generate_form(subject_area, 'sa')
+
+    ca_eu_forms = OrderedDict()
+    for ca in sa_general_competency_areas:
+        ca_form = generate_form(ca, 'ca')
+        ca_form.my_id = ca.id
+        eus = ca.essentialunderstanding_set.filter(**kwargs)
+        eu_forms = []
+        for eu in eus:
+            eu_form = generate_form(eu, 'eu')
+            eu_forms.append(eu_form)
+        ca_eu_forms[ca_form] = eu_forms
+
+    sda_ca_forms = OrderedDict()
+    sda_eu_forms = OrderedDict()
+    for sda in sdas:
+        sda_form = generate_form(sda, 'sda')
+        # add the id manually here???
+        sda_form.my_id = sda.id
+        ca_forms = []
+        for ca in sda_cas[sda]:
+            ca_form = generate_form(ca, 'ca')
+            ca_form.my_id = ca.id
+            ca_forms.append(ca_form)
+            eu_forms = []
+            for eu in sda_ca_eus[ca]:
+                eu_form = generate_form(eu, 'eu')
+                eu_forms.append(eu_form)
+            sda_eu_forms[ca_form] = (eu_forms)
+        sda_ca_forms[sda_form] = ca_forms
+
+    return render_to_response('competencies/edit_sa_summary.html',
+                              {'subject_area': subject_area, 'school': school,
+                               'sa_form': sa_form, 'sda_ca_forms': sda_ca_forms,
+                               'ca_eu_forms': ca_eu_forms, 'sda_eu_forms': sda_eu_forms,
+                               },
+                              context_instance = RequestContext(request))
+
+def process_form(request, instance, element_type):
+    """Process a form for a single element."""
+    prefix = '%s_form_%d' % (element_type, instance.id)
+
+    if element_type == 'sa':
+        form = SubjectAreaForm(request.POST, instance=instance)
+    elif element_type == 'sda':
+        form = SubdisciplineAreaForm(request.POST, prefix=prefix, instance=instance)
+    elif element_type == 'ca':
+        form = CompetencyAreaForm(request.POST, prefix=prefix, instance=instance)
+    elif element_type == 'eu':
+        form = EssentialUnderstandingForm(request.POST, prefix=prefix, instance=instance)
+
+    if form.is_valid():
+        form.save()
+
+def generate_form(instance, element_type):
+    """Generate a form for a single element."""
+    prefix = '%s_form_%d' % (element_type, instance.id)
+
+    if element_type == 'sa':
+        return SubjectAreaForm(instance=instance)
+    elif element_type == 'sda':
+        return SubdisciplineAreaForm(prefix=prefix, instance=instance)
+    elif element_type == 'ca':
+        return CompetencyAreaForm(prefix=prefix, instance=instance)
+    elif element_type == 'eu':
+        return EssentialUnderstandingForm(prefix=prefix, instance=instance)
+
+def new_sa(request, school_id):
+    """Create a new subject area for a given school."""
+    school = School.objects.get(id=school_id)
+    # Test if user allowed to edit this school.
+    if not has_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
+    if request.method == 'POST':
+        sa_form = SubjectAreaForm(request.POST)
+        if sa_form.is_valid():
+            new_sa = sa_form.save(commit=False)
+            new_sa.school = school
+            new_sa.save()
+            return redirect('/edit_sa_summary/%d' % new_sa.id)
+
+    sa_form = SubjectAreaForm()
+
+    return render_to_response('competencies/new_sa.html',
+                              {'school': school, 'sa_form': sa_form,},
+                              context_instance = RequestContext(request))
+
+def new_sda(request, sa_id):
+    """Create a new subdiscipline area for a given subject area."""
+    print('here')
+    sa = SubjectArea.objects.get(id=sa_id)
+    school = sa.school
+    # Test if user allowed to edit this school.
+    if not has_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
+    if request.method == 'POST':
+        sda_form = SubdisciplineAreaForm(request.POST)
+        if sda_form.is_valid():
+            new_sda = sda_form.save(commit=False)
+            new_sda.subject_area = sa
+            new_sda.save()
+            return redirect('/edit_sa_summary/%d' % sa.id)
+
+    sda_form = SubdisciplineAreaForm()
+
+    return render_to_response('competencies/new_sda.html',
+                              {'school': school, 'sa': sa,
+                               'sda_form': sda_form,},
+                              context_instance = RequestContext(request))
+
+def new_gs(request, sa_id):
+    """Create a new grad std for a given general subject area."""
+    sa = SubjectArea.objects.get(id=sa_id)
+    school = sa.school
+    # Test if user allowed to edit this school.
+    if not has_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
+    if request.method == 'POST':
+        gs_form = CompetencyAreaForm(request.POST)
+        if gs_form.is_valid():
+            new_gs = gs_form.save(commit=False)
+            new_gs.subject_area = sa
+            new_gs.save()
+            return redirect('/edit_sa_summary/%d' % sa.id)
+
+    gs_form = CompetencyAreaForm()
+
+    return render_to_response('competencies/new_gs.html',
+                              {'school': school, 'sa': sa, 'gs_form': gs_form,},
+                              context_instance = RequestContext(request))
+
+def new_sda_gs(request, sda_id):
+    """Create a new grad std for a given subdiscipline area."""
+    sda = SubdisciplineArea.objects.get(id=sda_id)
+    sa = sda.subject_area
+    school = sa.school
+    # Test if user allowed to edit this school.
+    if not has_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
+    if request.method == 'POST':
+        gs_form = CompetencyAreaForm(request.POST)
+        if gs_form.is_valid():
+            new_gs = gs_form.save(commit=False)
+            new_gs.subject_area = sa
+            new_gs.subdiscipline_area = sda
+            new_gs.save()
+            return redirect('/edit_sa_summary/%d' % sa.id)
+
+    gs_form = CompetencyAreaForm()
+
+    return render_to_response('competencies/new_sda_gs.html',
+                              {'school': school, 'sa': sa, 'sda': sda,
+                               'gs_form': gs_form,},
+                              context_instance = RequestContext(request))
+
+def new_pi(request, ca_id):
+    """Create a new performance indicator (EU) for given grad std (CA)."""
+    ca = CompetencyArea.objects.get(id=ca_id)
+    sa = ca.subject_area
+    school = sa.school
+    # Test if user allowed to edit this school.
+    if not has_edit_permission(request.user, school):
+        redirect_url = '/no_edit_permission/' + str(school.id)
+        return redirect(redirect_url)
+
+    if request.method == 'POST':
+        pi_form = EssentialUnderstandingForm(request.POST)
+        if pi_form.is_valid():
+            new_pi = pi_form.save(commit=False)
+            print('ca', ca)
+            new_pi.competency_area = ca
+            new_pi.save()
+            return redirect('/edit_sa_summary/%d' % sa.id)
+
+    pi_form = EssentialUnderstandingForm()
+
+    return render_to_response('competencies/new_pi.html',
+                              {'school': school, 'sa': sa, 'ca': ca,
+                               'pi_form': pi_form,},
+                              context_instance = RequestContext(request))
+    
+    
 
 def subdiscipline_area(request, subdiscipline_area_id):
     """Shows all of the competency areas for a given subdiscipline area."""
@@ -250,7 +544,6 @@ def get_user_sa_schools(user):
     """
     # This is ugly implementation; should probably be in models.py
     schools = [sa.school for sa in user.userprofile.subject_areas.all()]
-    print schools
     return schools
 
 # --- Edit views, for editing parts of the system ---
@@ -295,7 +588,10 @@ def edit_school(request, school_id):
     #  This allows continuing to add more items after saving.
     sa_formset = SubjectAreaFormSet(queryset=SubjectArea.objects.all().filter(school_id=school_id))
 
-    return render_to_response('competencies/edit_school.html', {'school': school, 'sa_formset': sa_formset},
+    return render_to_response('competencies/edit_school.html', 
+                              {'school': school,
+                               'sa_formset': sa_formset
+                               },
                               context_instance = RequestContext(request))
 
 @login_required
@@ -779,191 +1075,9 @@ def set_parent_order(child_object, order):
     order_method = 'set_' + child_object.__class__.__name__.lower() + '_order'
     getattr(parent_object, order_method)(order)
 
-
-# --- Pathways pages ---
-def pathways(request, school_id):
-    """Lists all pathways for a given school."""
-    school = School.objects.get(id=school_id)
-    kwargs = get_visibility_filter(request.user, school)
-    pathways = school.pathway_set.filter(**kwargs)
-
-    return render_to_response('competencies/pathways.html',
-                              {'school': school, 'pathways': pathways},
-                              context_instance = RequestContext(request))
-
-def pathway(request, pathway_id):
-    """Shows entire school system for a given pathway, with elements of the pathway highlighted."""
-    pathway = Pathway.objects.get(id=pathway_id)
-    school = pathway.school
-
-    # data to render a school's entire system:
-    kwargs = get_visibility_filter(request.user, school)
-    # Get all subject areas for a school
-    sas = get_subjectareas(school, kwargs)
-    # Get all subdiscipline areas for each subject area
-    sa_sdas = get_sa_sdas(sas, kwargs)
-    # Get all general competency areas for a subject
-    sa_cas = get_sa_cas(sas, kwargs)
-    # Get all competency areas for each subdiscipline area
-    sda_cas = get_sda_cas(sas, sa_sdas, kwargs)
-    # Get all essential understandings for each competency area
-    # Get all level descriptions for each competency area
-    ca_eus, ca_levels = get_ca_eus_ca_levels(request, sda_cas, sa_cas, kwargs)
-    # Get all learning targets for each essential understanding
-    eu_lts = get_eu_lts(ca_eus, kwargs)
-
-    return render_to_response('competencies/pathway.html',
-                              {'school': school, 'pathway': pathway, 'subject_areas': sas,
-                               'sa_sdas': sa_sdas, 'sa_cas': sa_cas,
-                               'sda_cas': sda_cas, 'ca_eus': ca_eus,
-                               'ca_levels': ca_levels, 'eu_lts': eu_lts},
-                              context_instance = RequestContext(request))
-
-@login_required
-def create_pathway(request, school_id):
-    """Allows user to create a new pathway.
-    Links to pages that edit the pathway.
-    """
-    school = School.objects.get(id=school_id)
-    # Test if user allowed to edit this school.
-    if not has_edit_permission(request.user, school):
-        # A user who has subject_area-level edit permission can create pathway.
-        #  This pathway will need to be added to their list.
-        if school in get_user_sa_schools(request.user):
-            add_pathway_to_user = True
-        else:
-            redirect_url = '/no_edit_permission/' + str(school.id)
-            return redirect(redirect_url)
-
-    PathwayFormSet = modelformset_factory(Pathway, fields=('name',))
-    saved_msg = ''
-
-    if request.method == 'POST':
-        pw_formset = PathwayFormSet(request.POST)
-        if pw_formset.is_valid():
-            instances = pw_formset.save(commit=False)
-            for instance in instances:
-                instance.school = school
-                instance.save()
-                saved_msg = 'Your changes were saved.'
-                if add_pathway_to_user:
-                    request.user.userprofile.pathways.add(instance)
-
-    pw_formset = PathwayFormSet()
-
-    return render_to_response('competencies/create_pathway.html',
-                              {'school': school,
-                               'pw_formset': pw_formset, 'saved_msg': saved_msg,},
-                              context_instance = RequestContext(request))
-
-@login_required
-def edit_pathway(request, pathway_id):
-    """Allows a user to add or remove elements in a pathway."""
-    pathway = Pathway.objects.get(id=pathway_id)
-    school = pathway.school
-    # Test if user allowed to edit this school.
-    if not has_edit_permission(request.user, school):
-        if not pathway in request.user.userprofile.pathways.all():
-            redirect_url = '/no_edit_permission/' + str(school.id)
-            return redirect(redirect_url)
-
-    saved_msg = ''
-
-    # Only include relevant parts of a pathway
-    #  If empty pathway, only show subject areas
-    #  If subject areas defined, show sdas...
-    PathwayFormSet = modelformset_factory(Pathway, form=PathwayForm, fields=get_fields(pathway), extra=0)
-
-    if request.method == 'POST':
-        pw_formset = PathwayFormSet(request.POST)
-        if pw_formset.is_valid():
-            instances = pw_formset.save(commit=True)
-            saved_msg = 'Your changes were saved.'
-        else:
-            # debugging:
-            pass #saved_msg = 'Invalid form.' + str(pw_formset.errors)
-
-    # Get new formset, based on updated pathway object
-    PathwayFormSet = modelformset_factory(Pathway, form=PathwayForm, fields=get_fields(pathway), extra=0)
-
-    pw_formset = PathwayFormSet(queryset=Pathway.objects.all().filter(id=pathway_id))
-
-    return render_to_response('competencies/edit_pathway.html',
-                              {'school': school,
-                               'pathway': pathway, 'pw_formset': pw_formset,
-                               'saved_msg': saved_msg,
-                               },
-                              context_instance = RequestContext(request))
-
-@login_required
-def edit_pw_visibility(request, school_id):
-    """Allows user to set the visibility of each pathway in the school's system."""
-    school = get_school(school_id)
-    # Test if user allowed to edit this school.
-    if not has_edit_permission(request.user, school):
-        redirect_url = '/no_edit_permission/' + str(school.id)
-        return redirect(redirect_url)
-
-    pathways = school.pathway_set.all()
-
-    return render_to_response('competencies/edit_pw_visibility.html',
-                              {'school': school, 'pathways': pathways},
-                              context_instance = RequestContext(request))
-
-@login_required
-def change_pw_visibility(request, school_id, pathway_pk, visibility_mode):
-    pathway = Pathway.objects.get(pk=pathway_pk)
-    if visibility_mode == 'public':
-        pathway.public = True
-    else:
-        pathway.public = False
-    pathway.save()
-    redirect_url = '/edit_pw_visibility/' + school_id
-    return redirect(redirect_url)
-
-def get_fields(pathway):
-    fields = ['name', 'subject_areas',]
-    if pathway.subject_areas.all():
-        fields.append('subdiscipline_areas',)
-        fields.append('competency_areas',)
-    if pathway.competency_areas.all():
-        fields.append('essential_understandings',)
-    if pathway.essential_understandings.all():
-        fields.append('learning_targets',)
-
-    return tuple(fields)
-
-
-# --- Forking pages: pages related to forking an existing school ---
-@login_required
-def fork(request, school_id):
-    empty_school = School.objects.get(id=school_id)
-    # Test if user allowed to edit this school.
-    if not has_edit_permission(request.user, empty_school):
-        redirect_url = '/no_edit_permission/' + str(school.id)
-        return redirect(redirect_url)
-
-    # Only get schools that have at least one subject area:
-    forkable_schools = [school for school in School.objects.all() if school.subjectarea_set.all()]
-    return render_to_response('competencies/fork.html',
-                              {'empty_school': empty_school, 'forkable_schools': forkable_schools},
-                              context_instance = RequestContext(request))
-
-@login_required
-def confirm_fork(request, forking_school_id, forked_school_id):
-    """Forks the requested school, and confirms success."""
-    forking_school = School.objects.get(id=forking_school_id)
-    forked_school = School.objects.get(id=forked_school_id)
-    fork_school(forking_school, forked_school)
-    return render_to_response('competencies/confirm_fork.html',
-                              {'forking_school': forking_school, 'forked_school': forked_school},
-                              context_instance = RequestContext(request))
-
 @login_required
 def new_school(request):
-    """Creates a new school, then offers link to fork an existing
-    school's competency system.
-    """
+    """Creates a new school."""
     # Will need validation.
     new_school_name = request.POST['new_school_name']
     new_school_created = False
@@ -989,85 +1103,3 @@ def associate_user_school(user, school):
         up.user = user
         up.save()
         up.schools.add(school)
-
-# --- Helper functions ---
-def fork_school(forking_school, forked_school):
-    """Forks a given school's competency system.  Copies all aspects of
-    forked_school's competency system over to forking_school's system.
-    Resets all keys to new school's system, so that forking_school gets
-    an independent, isolated copy of the forked_school's system.
-
-    Clearly, this is a long function that could be refactored.
-
-    Test: Create a school, fork it, compare all hierarchical elements.
-    """
-
-    # Copy all subject areas to new school:
-    sas = forked_school.subjectarea_set.all()
-    for sa in sas:
-        new_sa = copy(sa)
-        new_sa.pk, new_sa.id = None, None
-        new_sa.school = forking_school
-        new_sa.save()
-
-        # Copy all competency areas that are only connected to an sa,
-        #  not sda, here:
-        comps = sa.competencyarea_set.all()
-        for comp in comps:
-            if not comp.subdiscipline_area:
-                new_comp = copy(comp)
-                new_comp.pk, new_comp.id = None, None
-                new_comp.subject_area = new_sa
-                new_comp.save()
-
-                # Copy all essential understandings associated with this competency area
-                eus = comp.essentialunderstanding_set.all()
-                for eu in eus:
-                    new_eu = copy(eu)
-                    new_eu.pk, new_eu.id = None, None
-                    new_eu.competency_area = new_comp
-                    new_eu.save()
-                
-                    # Copy all learning targets associated with
-                    #  this essential understanding:
-                    copy_eu_lts(eu, new_eu)
-
-        # Copy all sdas to new school:
-        sdas = sa.subdisciplinearea_set.all()
-        for sda in sdas:
-            new_sda = copy(sda)
-            new_sda.pk, new_sda.id = None, None
-            new_sda.subject_area = new_sa
-            new_sda.save()
-            
-            # Copy all competency areas connected to current sda here:
-            for comp in comps:
-                if comp.subdiscipline_area and comp.subdiscipline_area.subdiscipline_area == sda.subdiscipline_area:
-                    new_comp = copy(comp)
-                    new_comp.pk, new_comp.id = None, None
-                    new_comp.subject_area = new_sa
-                    new_comp.subdiscipline_area = new_sda
-                    new_comp.save()
-
-                    # Copy all essential understandings associated with this competency area
-                    eus = comp.essentialunderstanding_set.all()
-                    for eu in eus:
-                        new_eu = copy(eu)
-                        new_eu.pk, new_eu.id = None, None
-                        new_eu.competency_area = new_comp
-                        new_eu.save()
-                    
-                        # Copy all learning targets associated with
-                        #  this essential understanding:
-                        copy_eu_lts(eu, new_eu)
-
-def copy_eu_lts(eu, new_eu):
-    """Copies all learning targets associated with existing essential understanding
-    to a new essential understanding.
-    """
-    lts = eu.learningtarget_set.all()
-    for lt in lts:
-        new_lt = copy(lt)
-        new_lt.pk, new_lt.id = None, None
-        new_lt.essential_understanding = new_eu
-        new_lt.save()

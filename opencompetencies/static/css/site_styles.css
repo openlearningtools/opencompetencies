@@ -1,17 +1,9 @@
 /* Need to override bootstrap; requires very specific selectors. */
-a.current_pathway, li.current_pathway, h1.current_pathway, h2.current_pathway,
-h3.current_pathway, h4.current_pathway, h5.current_pathway {
-	 color: green;
-}
-
-a.off_pathway, li.off_pathway, h1.off_pathway, h2.off_pathway,
-h3.off_pathway, h4.off_pathway, h5.off_pathway {
-	 color: #aaa;
-}
-
 .my_footer {
 	 border-top: 1px solid #aaa;
-	 margin-top: 50px;
+	 border-bottom: 1px solid #aaa;
+	 margin-top: 100px;
+	 margin-bottom: 25px;
 	 padding-top: 10px;
 	 color: #333;
 }
@@ -86,3 +78,40 @@ div.feature_box {
 	 color: darkgreen;
 }
 
+/* GSP-style pages */
+.gsp_grid {
+}
+
+.row-eq-height {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display:         flex;
+  margin: 0px;
+}
+
+.summary_box {
+	 margin: 2px;
+	 padding: 10px;
+	 border: 0px solid blue;
+}
+
+.grad_std_col {
+	 background-color: #ccc;
+}
+
+.pi_col {
+	 background-color: #eee;
+}
+
+.sda_col {
+
+}
+
+.edit_view_link {
+	 margin-top: 20px;
+}
+
+.submit_sa_summary {
+	 margin-top: 20px;
+}

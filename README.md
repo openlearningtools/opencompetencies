@@ -95,7 +95,7 @@ A number of decisions need to be made before we write any code, beyond the demo 
 
 <a name="license"></a>License
 ---
-Open Competencies is released under the [AGPLv3](http://www.gnu.org/licenses/agpl.html). If you feel it should be released under a more permissive license, please get in touch and I will reconsider. I want to build a developer community around the project, but I don't want to see this code used in a proprietary ed-tech startup.
+Open Competencies is released under the MIT license.
 
 [top](#top)
 

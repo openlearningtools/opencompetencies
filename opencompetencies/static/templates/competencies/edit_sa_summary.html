@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title_extension %} - {{ school }}{% endblock %}
+
+{% block content %}
+
+	 <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a></h2>
+
+	 <form action="" method="post">
+
+		{% csrf_token %}
+		{{ sa_form.subject_area }}
+		<a href="{% url 'competencies:new_sa' school.id %}">new subject area</a>
+
+	 <div class="row row-eq-height">
+		<div class="span4 lead summary_box grad_std_col"><strong>Graduation Standards</strong></div>
+		<div class="span7 lead summary_box pi_col"><strong>Performance Indicators</strong></div>
+	 </div>
+
+
+	 {% for ca_form, eu_forms in ca_eu_forms.items %}
+	   <div class="row row-eq-height">
+		  <div class="span4 summary_box grad_std_col">
+			 <p class="lead">{{ ca_form.phrase }}</p>
+			 <p>{{ ca_form.competency_area }}</p>
+		  </div>
+		  <div class="span7 summary_box pi_col">
+				{% for eu_form in eu_forms %}
+				  {{ eu_form.essential_understanding }}
+				{% endfor %}
+				<a href="{% url 'competencies:new_pi' ca_form.my_id %}">new performance indicator</a>
+		  </div>
+		</div>
+	 {% endfor %}
+
+	 <div class="row row-eq-height">
+		<div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_gs' subject_area.id %}">new graduation standard</a></div>
+		<div class="span7 lead summary_box pi_col">&nbsp</div>
+	 </div>
+
+	 {% for sda_form, ca_forms in sda_ca_forms.items %}
+		<div class="row row-eq-height">
+		  <div class="span4 lead summary_box sda_col">{{ sda_form.subdiscipline_area }}</div>
+		  <div class="span7 lead summary_box sda_col">&nbsp</div>
+		</div>
+		{% for ca_form in ca_forms %}
+	     <div class="row row-eq-height">
+		    <div class="span4 summary_box grad_std_col">
+				<p class="lead">{{ ca_form.phrase }}</p>
+				<p>{{ ca_form.competency_area }}</p>
+			 </div>
+			 <div class="span7 summary_box pi_col">
+				{% for cand_ca_form, eu_forms in sda_eu_forms.items %}
+				  {% if cand_ca_form == ca_form %}
+				    {% for eu_form in eu_forms %}
+				      {{ eu_form.essential_understanding }}
+				    {% endfor %}
+				    <a href="{% url 'competencies:new_pi' ca_form.my_id %}">new performance indicator</a>
+				  {% endif %}
+				{% endfor %}
+			 </div>
+		  </div>
+		{% endfor %}
+
+		<div class="row row-eq-height">
+		  <div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_sda_gs' sda_form.my_id %}">new graduation standard</a></div>
+		  <div class="span7 lead summary_box pi_col">&nbsp</div>
+		</div>
+
+	 {% endfor %}
+
+		<div class="row row-eq-height">
+		  <div class="span4 lead summary_box sda_col"><a href="{% url 'competencies:new_sda' subject_area.id %}">new subdiscipline area</a></div>
+		  <div class="span7 lead summary_box sda_col">&nbsp</div>
+		</div>
+
+
+		<p><input type="submit" value="Save Changes" class="submit_sa_summary btn btn-small btn-info" /></p>
+	 </form>
+
+
+	 <p class="edit_view_link">
+		<a href='{% url 'competencies:sa_summary' subject_area.id %}'>view</a>
+	 </p>
+
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <p class="lead">Register a new account.</p>
+
+    <form method="post" action="" class="form">
+        {% csrf_token %}
+        
+		  {{ form.as_p }}
+		  <button type="submit" class="btn btn-primary">register</button>
+        <input type="hidden" name="next" value="{% url 'competencies:index' %}" />
+    </form>
+    
+{% endblock content %}
