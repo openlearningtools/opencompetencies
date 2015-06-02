@@ -1,8 +1,9 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 
 from competencies.models import *
-import testing_utilities as tu
+from competencies.tests import testing_utilities as tu
 
 
 class CompetencyViewTests(TestCase):
@@ -51,3 +52,31 @@ class CompetencyViewTests(TestCase):
         on one page.
         """
         pass
+
+class FormTests(TestCase):
+    """Test the custom forms in OC."""
+
+    def test_registeruserform(self):
+        """Test that the registration form works."""
+        form = RegisterUserForm()
+        # finish!
+
+
+class ModelTests(TestCase):
+    """Test aspects of models."""
+
+    def test_userprofile(self):
+        """Test that a userprofile connects properly to a user."""
+        new_user = User()
+        new_user.username = 'new_user'
+        new_user.password = 'new_user_pw'
+        new_user.save()
+
+        new_up = UserProfile()
+        new_up.user = new_user
+        new_up.save()
+
+        self.assertEqual(new_user.userprofile, new_up)
+
+
+        

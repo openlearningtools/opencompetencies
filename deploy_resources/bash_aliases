@@ -1,4 +1,3 @@
 alias act='source venv/bin/activate'
-alias cdphs='cd /srv/projects/phscompetencies'
 alias startgu='gunicorn -w 3 -b 127.0.0.1:8000 opencompetencies.wsgi:application'
 alias gpid='ps -C gunicorn -o pid='
