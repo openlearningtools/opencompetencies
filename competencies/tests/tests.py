@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from competencies.models import *
-import testing_utilities as tu
+from competencies.tests import testing_utilities as tu
 
 
 class CompetencyViewTests(TestCase):

@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from competencies.models import *
-import testing_utilities as tu
+from competencies.tests import testing_utilities as tu
 import competencies.views as views
 
 class TestForkSchools(TestCase):
