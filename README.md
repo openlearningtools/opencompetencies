@@ -49,12 +49,12 @@ Run `migrate`, create a superuser and connect it to a user profile, and start th
 
     (venv)/srv/opencompetencies $ python manage.py migrate
     (venv)/srv/opencompetencies $ python manage.py shell
-	 >>> from competencies.models import UserProfile
+    >>> from competencies.models import UserProfile
     >>> from django.contrib.auth.models import User
-	 >>> su = User.objects.get(id=1)
-	 >>> new_userprofile = UserProfile()
-	 >>> new_userprofile.user = su
-	 >>> new_userprofile.save()
+    >>> su = User.objects.get(id=1)
+    >>> new_userprofile = UserProfile()
+    >>> new_userprofile.user = su
+    >>> new_userprofile.save()
     (venv)/srv/opencompetencies $ python manage.py runserver
 
 Visit [http://localhost:8000](http://localhost:8000), and verify that your local deployment works.
@@ -84,7 +84,7 @@ There's a brief [glossary](https://github.com/openlearningtools/opencompetencies
 
 <a name="license"></a>License
 ---
-Open Competencies is released under the MIT license.
+Open Competencies is released under the [MIT license](https://github.com/openlearningtools/opencompetencies/blob/master/LICENSE.txt).
 
 [top](#top)
 
