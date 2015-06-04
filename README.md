@@ -3,19 +3,24 @@
 
 Sections
 ---
+- [Open Competencies](#open_competencies)
 - [Vision](#vision)
 - [Setting up a local development version](#dev_setup)
 - [Glossary](#glossary)
 - [License](#license)
 - [About](#about)
 
-<a name="vision"></a>Vision
--------
+<a name="open_competencies"></a>Open Competencies
+---
 [Open Competencies](http://opencompetencies.org) allows individuals and groups to build their own sets of education standards.
 
+<a name="vision"></a>Vision
+-------
 The full version of Open Competencies will allow educators to fork any existing set of standards, and share sets of standards freely. For example, if you like the standards my school works with, you can fork my school's set of standards and then revise them as you see fit. If your school's science standards are better than mine, I can import your school's science standards and begin working with them immediately. There are many benefits to this approach to building sets of standards.
 
 The full version of Open Competencies will also include an integrated instructional planning tool. There are a number of approaches to building standards-based instructional units, and educators shouldn't have to do this in Word, or in proprietary planning tools.
+
+Most teachers are required to teach to a certain set of standards, and can't arbitrarily choose a different set of standards. To enable more widespread adoption, Open Competencies will need to include a mapping to existing standards bodies. This way, if you're teaching to a set of standards in Open Competencies, you can easily report on the standards you're addressing in a legally required set of standards.
 
 [top](#top)
 
