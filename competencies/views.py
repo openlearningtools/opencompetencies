@@ -106,14 +106,14 @@ def subject_area(request, subject_area_id):
     # Get subdiscipline areas for this subject area:
     sa_subdiscipline_areas = subject_area.subdisciplinearea_set.filter(**kwargs)
     # Get competencies for the general subject area (no associated sda):
-    sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
+    sa_general_graduation_standards = subject_area.graduationstandard_set.filter(subdiscipline_area=None).filter(**kwargs)
     # Get competencies for each subdiscipline area:
-    sda_competency_areas = {sda: sda.competencyarea_set.filter(**kwargs) for sda in sa_subdiscipline_areas}
+    sda_graduation_standards = {sda: sda.graduationstandard_set.filter(**kwargs) for sda in sa_subdiscipline_areas}
     return render_to_response('competencies/subject_area.html',
                               {'subject_area': subject_area, 'school': school,
                                'sa_subdiscipline_areas': sa_subdiscipline_areas,
-                               'sa_general_competency_areas': sa_general_competency_areas,
-                               'sda_competency_areas': sda_competency_areas},
+                               'sa_general_graduation_standards': sa_general_graduation_standards,
+                               'sda_graduation_standards': sda_graduation_standards},
                               context_instance = RequestContext(request))
 
 def sa_summary(request, sa_id):
@@ -123,26 +123,26 @@ def sa_summary(request, sa_id):
     kwargs = get_visibility_filter(request.user, school)
 
     # Get competencies for the general subject area (no associated sda):
-    sa_general_competency_areas = sa.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
+    sa_general_graduation_standards = sa.graduationstandard_set.filter(subdiscipline_area=None).filter(**kwargs)
     
     # Get eus for each competency area.
     ca_eus = OrderedDict()
-    for ca in sa_general_competency_areas:
-        ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
+    for ca in sa_general_graduation_standards:
+        ca_eus[ca] = ca.performanceindicator_set.filter(**kwargs)
         
     # Get sdas, sda cas, sda eus
     sdas = sa.subdisciplinearea_set.filter(**kwargs)
     sda_cas = OrderedDict()
     for sda in sdas:
-        sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
+        sda_cas[sda] = sda.graduationstandard_set.filter(**kwargs)
     sda_ca_eus = OrderedDict()
     for sda in sdas:
         for ca in sda_cas[sda]:
-            sda_ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
+            sda_ca_eus[ca] = ca.performanceindicator_set.filter(**kwargs)
 
     return render_to_response('competencies/sa_summary.html',
                               {'subject_area': sa, 'school': school,
-                               'sa_general_competency_areas': sa_general_competency_areas,
+                               'sa_general_graduation_standards': sa_general_graduation_standards,
                                'ca_eus': ca_eus,
                                'sda_cas': sda_cas, 'sda_ca_eus': sda_ca_eus},
                               context_instance = RequestContext(request))
@@ -165,26 +165,26 @@ def edit_sa_summary(request, sa_id):
         return redirect(redirect_url)
 
     # Get competency areas.
-    sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
+    sa_general_graduation_standards = subject_area.graduationstandard_set.filter(subdiscipline_area=None).filter(**kwargs)
 
     # Get sdas, sda cas, sda eus
     sdas = subject_area.subdisciplinearea_set.filter(**kwargs)
     sda_cas = OrderedDict()
     for sda in sdas:
-        sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
+        sda_cas[sda] = sda.graduationstandard_set.filter(**kwargs)
     sda_ca_eus = OrderedDict()
     for sda in sdas:
         for ca in sda_cas[sda]:
-            sda_ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
+            sda_ca_eus[ca] = ca.performanceindicator_set.filter(**kwargs)
 
     # Respond to submitted data.
     if request.method == 'POST':
 
         process_form(request, subject_area, 'sa')
 
-        for ca in sa_general_competency_areas:
+        for ca in sa_general_graduation_standards:
             process_form(request, ca, 'ca')
-            eus = ca.essentialunderstanding_set.filter(**kwargs)
+            eus = ca.performanceindicator_set.filter(**kwargs)
             for eu in eus:
                 process_form(request, eu, 'eu')
         
@@ -199,10 +199,10 @@ def edit_sa_summary(request, sa_id):
     sa_form = generate_form(subject_area, 'sa')
 
     ca_eu_forms = OrderedDict()
-    for ca in sa_general_competency_areas:
+    for ca in sa_general_graduation_standards:
         ca_form = generate_form(ca, 'ca')
         ca_form.my_id = ca.id
-        eus = ca.essentialunderstanding_set.filter(**kwargs)
+        eus = ca.performanceindicator_set.filter(**kwargs)
         eu_forms = []
         for eu in eus:
             eu_form = generate_form(eu, 'eu')
@@ -243,9 +243,9 @@ def process_form(request, instance, element_type):
     elif element_type == 'sda':
         form = SubdisciplineAreaForm(request.POST, prefix=prefix, instance=instance)
     elif element_type == 'ca':
-        form = CompetencyAreaForm(request.POST, prefix=prefix, instance=instance)
+        form = GraduationStandardForm(request.POST, prefix=prefix, instance=instance)
     elif element_type == 'eu':
-        form = EssentialUnderstandingForm(request.POST, prefix=prefix, instance=instance)
+        form = PerformanceIndicatorForm(request.POST, prefix=prefix, instance=instance)
 
     if form.is_valid():
         form.save()
@@ -259,9 +259,9 @@ def generate_form(instance, element_type):
     elif element_type == 'sda':
         return SubdisciplineAreaForm(prefix=prefix, instance=instance)
     elif element_type == 'ca':
-        return CompetencyAreaForm(prefix=prefix, instance=instance)
+        return GraduationStandardForm(prefix=prefix, instance=instance)
     elif element_type == 'eu':
-        return EssentialUnderstandingForm(prefix=prefix, instance=instance)
+        return PerformanceIndicatorForm(prefix=prefix, instance=instance)
 
 def new_sa(request, school_id):
     """Create a new subject area for a given school."""
@@ -320,14 +320,14 @@ def new_gs(request, sa_id):
         return redirect(redirect_url)
 
     if request.method == 'POST':
-        gs_form = CompetencyAreaForm(request.POST)
+        gs_form = GraduationStandardForm(request.POST)
         if gs_form.is_valid():
             new_gs = gs_form.save(commit=False)
             new_gs.subject_area = sa
             new_gs.save()
             return redirect('/edit_sa_summary/%d' % sa.id)
 
-    gs_form = CompetencyAreaForm()
+    gs_form = GraduationStandardForm()
 
     return render_to_response('competencies/new_gs.html',
                               {'school': school, 'sa': sa, 'gs_form': gs_form,},
@@ -344,7 +344,7 @@ def new_sda_gs(request, sda_id):
         return redirect(redirect_url)
 
     if request.method == 'POST':
-        gs_form = CompetencyAreaForm(request.POST)
+        gs_form = GraduationStandardForm(request.POST)
         if gs_form.is_valid():
             new_gs = gs_form.save(commit=False)
             new_gs.subject_area = sa
@@ -352,7 +352,7 @@ def new_sda_gs(request, sda_id):
             new_gs.save()
             return redirect('/edit_sa_summary/%d' % sa.id)
 
-    gs_form = CompetencyAreaForm()
+    gs_form = GraduationStandardForm()
 
     return render_to_response('competencies/new_sda_gs.html',
                               {'school': school, 'sa': sa, 'sda': sda,
@@ -361,7 +361,7 @@ def new_sda_gs(request, sda_id):
 
 def new_pi(request, ca_id):
     """Create a new performance indicator (EU) for given grad std (CA)."""
-    ca = CompetencyArea.objects.get(id=ca_id)
+    ca = GraduationStandard.objects.get(id=ca_id)
     sa = ca.subject_area
     school = sa.school
     # Test if user allowed to edit this school.
@@ -370,15 +370,15 @@ def new_pi(request, ca_id):
         return redirect(redirect_url)
 
     if request.method == 'POST':
-        pi_form = EssentialUnderstandingForm(request.POST)
+        pi_form = PerformanceIndicatorForm(request.POST)
         if pi_form.is_valid():
             new_pi = pi_form.save(commit=False)
             print('ca', ca)
-            new_pi.competency_area = ca
+            new_pi.graduation_standard = ca
             new_pi.save()
             return redirect('/edit_sa_summary/%d' % sa.id)
 
-    pi_form = EssentialUnderstandingForm()
+    pi_form = PerformanceIndicatorForm()
 
     return render_to_response('competencies/new_pi.html',
                               {'school': school, 'sa': sa, 'ca': ca,
@@ -393,42 +393,42 @@ def subdiscipline_area(request, subdiscipline_area_id):
     subject_area = subdiscipline_area.subject_area
     school = subject_area.school
     kwargs = get_visibility_filter(request.user, school)
-    competency_areas = subdiscipline_area.competencyarea_set.filter(**kwargs)
+    graduation_standards = subdiscipline_area.graduationstandard_set.filter(**kwargs)
     ca_levels = {}
-    for ca in competency_areas:
+    for ca in graduation_standards:
         ca_levels[ca] = get_levels(request, ca)
     return render_to_response('competencies/subdiscipline_area.html',
                               {'subdiscipline_area': subdiscipline_area, 'subject_area': subject_area,
-                               'school': school, 'competency_areas': competency_areas,
+                               'school': school, 'graduation_standards': graduation_standards,
                                'ca_levels': ca_levels},
                               context_instance = RequestContext(request))
 
-def competency_area(request, competency_area_id):
+def graduation_standard(request, graduation_standard_id):
     """Shows all of the essential understandings and learning targets for a given competency area."""
-    competency_area = CompetencyArea.objects.get(id=competency_area_id)
-    subject_area = competency_area.subject_area
+    graduation_standard = GraduationStandard.objects.get(id=graduation_standard_id)
+    subject_area = graduation_standard.subject_area
     school = subject_area.school
     kwargs = get_visibility_filter(request.user, school)
-    essential_understandings = competency_area.essentialunderstanding_set.filter(**kwargs)
-    ca_levels = get_levels(request, competency_area)
-    return render_to_response('competencies/competency_area.html',
-                              {'school': school, 'subject_area': subject_area, 'competency_area': competency_area,
-                               'essential_understandings': essential_understandings,
+    performance_indicators = graduation_standard.performanceindicator_set.filter(**kwargs)
+    ca_levels = get_levels(request, graduation_standard)
+    return render_to_response('competencies/graduation_standard.html',
+                              {'school': school, 'subject_area': subject_area, 'graduation_standard': graduation_standard,
+                               'performance_indicators': performance_indicators,
                                'ca_levels': ca_levels},
                               context_instance = RequestContext(request))
 
-def essential_understanding(request, essential_understanding_id):
+def performance_indicator(request, performance_indicator_id):
     """Shows all learning targets for a given essential understanding."""
-    essential_understanding = EssentialUnderstanding.objects.get(id=essential_understanding_id)
-    competency_area = essential_understanding.competency_area
-    ca_levels = get_levels(request, competency_area)
-    subject_area = competency_area.subject_area
+    performance_indicator = PerformanceIndicator.objects.get(id=performance_indicator_id)
+    graduation_standard = performance_indicator.graduation_standard
+    ca_levels = get_levels(request, graduation_standard)
+    subject_area = graduation_standard.subject_area
     school = subject_area.school
     kwargs = get_visibility_filter(request.user, school)
-    learning_targets = essential_understanding.learningtarget_set.filter(**kwargs)
-    return render_to_response('competencies/essential_understanding.html',
-                              {'school': school, 'subject_area': subject_area, 'competency_area': competency_area,
-                               'essential_understanding': essential_understanding, 'learning_targets': learning_targets,
+    learning_objectives = performance_indicator.learningobjective_set.filter(**kwargs)
+    return render_to_response('competencies/performance_indicator.html',
+                              {'school': school, 'subject_area': subject_area, 'graduation_standard': graduation_standard,
+                               'performance_indicator': performance_indicator, 'learning_objectives': learning_objectives,
                                'ca_levels': ca_levels},
                               context_instance = RequestContext(request))
 
@@ -482,7 +482,7 @@ def get_sa_cas(subject_areas, kwargs):
     """
     sa_cas = OrderedDict()
     for sa in subject_areas:
-        sa_cas[sa] = sa.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
+        sa_cas[sa] = sa.graduationstandard_set.filter(subdiscipline_area=None).filter(**kwargs)
     return sa_cas
 
 def get_sda_cas(subject_areas, sa_sdas, kwargs):
@@ -490,7 +490,7 @@ def get_sda_cas(subject_areas, sa_sdas, kwargs):
     sda_cas = {}
     for sa in subject_areas:
         for sda in sa_sdas[sa]:
-            sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
+            sda_cas[sda] = sda.graduationstandard_set.filter(**kwargs)
     return sda_cas
 
 def get_ca_eus_ca_levels(request, sda_cas, sa_cas, kwargs):
@@ -502,18 +502,18 @@ def get_ca_eus_ca_levels(request, sda_cas, sa_cas, kwargs):
     ca_levels = {}
     for cas in sda_cas.values():
         for ca in cas:
-            ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
+            ca_eus[ca] = ca.performanceindicator_set.filter(**kwargs)
             ca_levels[ca] = get_levels(request, ca)
     for cas in sa_cas.values():
         for ca in cas:
-            ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
+            ca_eus[ca] = ca.performanceindicator_set.filter(**kwargs)
             ca_levels[ca] = get_levels(request, ca)
     return (ca_eus, ca_levels)
 
-def get_levels(request, competency_area):
+def get_levels(request, graduation_standard):
     """Returns levels for a given competency area, respecting visibility privileges."""
     levels = []
-    for level_pk in competency_area.get_level_order():
+    for level_pk in graduation_standard.get_level_order():
         level = Level.objects.get(pk=level_pk)
         if request.user.is_authenticated() or level.public:
             levels.append(level)
@@ -524,7 +524,7 @@ def get_eu_lts(ca_eus, kwargs):
     eu_lts = {}
     for eus in ca_eus.values():
         for eu in eus:
-            eu_lts[eu] = eu.learningtarget_set.filter(**kwargs)
+            eu_lts[eu] = eu.learningobjective_set.filter(**kwargs)
     return eu_lts
 
 def get_visibility_filter(user, school):
@@ -624,7 +624,7 @@ def edit_subject_area(request, subject_area_id):
                               context_instance = RequestContext(request))
 
 @login_required
-def edit_sa_competency_areas(request, subject_area_id):
+def edit_sa_graduation_standards(request, subject_area_id):
     """Allows user to edit the competencies for a general subject area."""
     subject_area = SubjectArea.objects.get(id=subject_area_id)
     school = subject_area.school
@@ -633,15 +633,15 @@ def edit_sa_competency_areas(request, subject_area_id):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
-    sa_comps = subject_area.competencyarea_set.all()
+    sa_comps = subject_area.graduationstandard_set.all()
 
     # Build the sa_comp_area formset by using queryset to exclude all
     #  competency areas with a defined sda. Need general ca_formset to do this.
-    CompetencyAreaFormSet = modelformset_factory(CompetencyArea, form=CompetencyAreaForm)
+    GraduationStandardFormSet = modelformset_factory(GraduationStandard, form=GraduationStandardForm)
 
     if request.method == 'POST':
         # Process general sa competency areas:
-        sa_ca_formset = CompetencyAreaFormSet(request.POST)
+        sa_ca_formset = GraduationStandardFormSet(request.POST)
         if sa_ca_formset.is_valid():
             instances = sa_ca_formset.save(commit=False)
             for instance in instances:
@@ -649,14 +649,14 @@ def edit_sa_competency_areas(request, subject_area_id):
                 instance.save()
 
     # Create formsets for unbound and bound forms, to allow editing after saving.
-    sa_ca_formset = CompetencyAreaFormSet(queryset=CompetencyArea.objects.all().filter(subject_area=subject_area).filter(subdiscipline_area=None))
+    sa_ca_formset = GraduationStandardFormSet(queryset=GraduationStandard.objects.all().filter(subject_area=subject_area).filter(subdiscipline_area=None))
 
-    return render_to_response('competencies/edit_sa_competency_areas.html',
+    return render_to_response('competencies/edit_sa_graduation_standards.html',
                               {'school': school, 'subject_area': subject_area, 'sa_ca_formset': sa_ca_formset},
                               context_instance = RequestContext(request))
 
 @login_required
-def edit_sda_competency_areas(request, subdiscipline_area_id):
+def edit_sda_graduation_standards(request, subdiscipline_area_id):
     """Allows user to edit the competencies for a specific subdiscipline area."""
     subdiscipline_area = SubdisciplineArea.objects.get(id=subdiscipline_area_id)
     subject_area = subdiscipline_area.subject_area
@@ -666,14 +666,14 @@ def edit_sda_competency_areas(request, subdiscipline_area_id):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
-    sda_comps = subdiscipline_area.competencyarea_set.all()
+    sda_comps = subdiscipline_area.graduationstandard_set.all()
 
     # Build the sda_comp_area formset by using queryset 
-    CompetencyAreaFormSet = modelformset_factory(CompetencyArea, form=CompetencyAreaForm)
+    GraduationStandardFormSet = modelformset_factory(GraduationStandard, form=GraduationStandardForm)
 
     if request.method == 'POST':
         # Process sda competency areas:
-        sda_ca_formset = CompetencyAreaFormSet(request.POST)
+        sda_ca_formset = GraduationStandardFormSet(request.POST)
         if sda_ca_formset.is_valid():
             instances = sda_ca_formset.save(commit=False)
             for instance in instances:
@@ -682,17 +682,17 @@ def edit_sda_competency_areas(request, subdiscipline_area_id):
                 instance.save()
 
     # Create formsets for unbound and bound forms, to allow editing after saving.
-    sda_ca_formset = CompetencyAreaFormSet(queryset=CompetencyArea.objects.all().filter(subdiscipline_area=subdiscipline_area))
+    sda_ca_formset = GraduationStandardFormSet(queryset=GraduationStandard.objects.all().filter(subdiscipline_area=subdiscipline_area))
 
-    return render_to_response('competencies/edit_sda_competency_areas.html',
+    return render_to_response('competencies/edit_sda_graduation_standards.html',
                               {'school': school, 'subject_area': subject_area,
                                'subdiscipline_area': subdiscipline_area, 'sda_ca_formset': sda_ca_formset},
                               context_instance = RequestContext(request))
 
 @login_required
-def edit_competency_area(request, competency_area_id):
+def edit_graduation_standard(request, graduation_standard_id):
     """Allows user to edit the essential understandings for a given competency area."""
-    ca = CompetencyArea.objects.get(id=competency_area_id)
+    ca = GraduationStandard.objects.get(id=graduation_standard_id)
     sa = ca.subject_area
     sda = ca.subdiscipline_area
     school = sa.school
@@ -701,28 +701,28 @@ def edit_competency_area(request, competency_area_id):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
-    EssentialUnderstandingFormSet = modelformset_factory(EssentialUnderstanding, form=EssentialUnderstandingForm)
+    PerformanceIndicatorFormSet = modelformset_factory(PerformanceIndicator, form=PerformanceIndicatorForm)
 
     if request.method == 'POST':
-        eu_formset = EssentialUnderstandingFormSet(request.POST)
+        eu_formset = PerformanceIndicatorFormSet(request.POST)
         if eu_formset.is_valid():
             instances = eu_formset.save(commit=False)
             for instance in instances:
-                instance.competency_area = ca
+                instance.graduation_standard = ca
                 instance.save()
 
-    eu_formset = EssentialUnderstandingFormSet(queryset=ca.essentialunderstanding_set.all())
+    eu_formset = PerformanceIndicatorFormSet(queryset=ca.performanceindicator_set.all())
 
-    return render_to_response('competencies/edit_competency_area.html',
+    return render_to_response('competencies/edit_graduation_standard.html',
                               {'school': school, 'subject_area': sa,
-                               'subdiscipline_area': sda, 'competency_area': ca,
+                               'subdiscipline_area': sda, 'graduation_standard': ca,
                                'eu_formset': eu_formset},
                               context_instance = RequestContext(request))
 
 @login_required
-def edit_levels(request, competency_area_id):
+def edit_levels(request, graduation_standard_id):
     """Allows user to edit levels for a given competency area."""
-    ca = CompetencyArea.objects.get(id=competency_area_id)
+    ca = GraduationStandard.objects.get(id=graduation_standard_id)
     ca_levels = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
     sa = ca.subject_area
     sda = ca.subdiscipline_area
@@ -740,7 +740,7 @@ def edit_levels(request, competency_area_id):
         if level_formset.is_valid():
             instances = level_formset.save(commit=False)
             for instance in instances:
-                instance.competency_area = ca
+                instance.graduation_standard = ca
                 instance.save()
                 # Ensure that ordering is correct
                 #  (apprentice - technician - master - professional
@@ -748,7 +748,7 @@ def edit_levels(request, competency_area_id):
                 for type in [Level.APPRENTICE, Level.TECHNICIAN,
                              Level.MASTER, Level.PROFESSIONAL]:
                     try:
-                        correct_order.append(Level.objects.get(competency_area=ca, level_type=type).pk)
+                        correct_order.append(Level.objects.get(graduation_standard=ca, level_type=type).pk)
                     except:
                         pass
                 if ca.get_level_order() != correct_order:
@@ -758,16 +758,16 @@ def edit_levels(request, competency_area_id):
 
     return render_to_response('competencies/edit_levels.html',
                               {'school': school, 'subject_area': sa,
-                               'subdiscipline_area': sda, 'competency_area': ca,
+                               'subdiscipline_area': sda, 'graduation_standard': ca,
                                'level_formset': level_formset},
                               context_instance = RequestContext(request))
 
 
 @login_required
-def edit_essential_understanding(request, essential_understanding_id):
+def edit_performance_indicator(request, performance_indicator_id):
     """Allows user to edit the learning targets associated with an essential understanding."""
-    eu = EssentialUnderstanding.objects.get(id=essential_understanding_id)
-    ca = eu.competency_area
+    eu = PerformanceIndicator.objects.get(id=performance_indicator_id)
+    ca = eu.graduation_standard
     sa = ca.subject_area
     sda = ca.subdiscipline_area
     school = sa.school
@@ -776,22 +776,22 @@ def edit_essential_understanding(request, essential_understanding_id):
         redirect_url = '/no_edit_permission/' + str(school.id)
         return redirect(redirect_url)
 
-    LearningTargetFormSet = modelformset_factory(LearningTarget, form=LearningTargetForm, extra=3)
+    LearningObjectiveFormSet = modelformset_factory(LearningObjective, form=LearningObjectiveForm, extra=3)
 
     if request.method == 'POST':
-        lt_formset = LearningTargetFormSet(request.POST)
+        lt_formset = LearningObjectiveFormSet(request.POST)
         if lt_formset.is_valid():
             instances = lt_formset.save(commit=False)
             for instance in instances:
-                instance.essential_understanding = eu
+                instance.performance_indicator = eu
                 instance.save()
 
-    lt_formset = LearningTargetFormSet(queryset=eu.learningtarget_set.all())
+    lt_formset = LearningObjectiveFormSet(queryset=eu.learningobjective_set.all())
 
-    return render_to_response('competencies/edit_essential_understanding.html',
+    return render_to_response('competencies/edit_performance_indicator.html',
                               {'school': school, 'subject_area': sa,
-                               'subdiscipline_area': sda, 'competency_area': ca,
-                               'essential_understanding': eu, 'lt_formset': lt_formset},
+                               'subdiscipline_area': sda, 'graduation_standard': ca,
+                               'performance_indicator': eu, 'lt_formset': lt_formset},
                               context_instance = RequestContext(request))
 
 @login_required
@@ -817,12 +817,12 @@ def edit_order(request, school_id):
     #  need to preserve order for these as well
     sa_cas = OrderedDict()
     for sa in sas:
-        sa_cas[sa] = sa.competencyarea_set.all().filter(subdiscipline_area=None)
+        sa_cas[sa] = sa.graduationstandard_set.all().filter(subdiscipline_area=None)
     # all competency areas for each subdiscipline area
     sda_cas = {}
     for sa in sas:
         for sda in sa_sdas[sa]:
-            sda_cas[sda] = sda.competencyarea_set.all()
+            sda_cas[sda] = sda.graduationstandard_set.all()
     # all essential understandings for each competency area
     #  loop through all sa_cas, sda_cas
     # also grab level descriptions for each competency area
@@ -830,17 +830,17 @@ def edit_order(request, school_id):
     ca_levels = {}
     for cas in sda_cas.values():
         for ca in cas:
-            ca_eus[ca] = ca.essentialunderstanding_set.all()
+            ca_eus[ca] = ca.performanceindicator_set.all()
             ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
     for cas in sa_cas.values():
         for ca in cas:
-            ca_eus[ca] = ca.essentialunderstanding_set.all()
+            ca_eus[ca] = ca.performanceindicator_set.all()
             ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
     # all learning targets for each essential understanding
     eu_lts = {}
     for eus in ca_eus.values():
         for eu in eus:
-            eu_lts[eu] = eu.learningtarget_set.all()
+            eu_lts[eu] = eu.learningobjective_set.all()
 
     return render_to_response('competencies/edit_order.html', 
                               {'school': school, 'subject_areas': sas,
@@ -872,20 +872,20 @@ def change_order(request, school_id, parent_type, parent_id, child_type, child_i
     child_index = order.index(int(child_id))
     set_order_method = 'set_' + child_type + '_order'
     if direction == 'up' and child_index != 0:
-        if child_type == 'competencyarea':
+        if child_type == 'graduationstandard':
             # Need to move before previous ca in given sda, or in general sa
             #  Get pks of all cas in this sda
             #  Get order, find prev element
-            ca = CompetencyArea.objects.get(id=child_id)
+            ca = GraduationStandard.objects.get(id=child_id)
             sda = ca.subdiscipline_area
             if sda:
                 # pks for cas in this sda only
-                ca_sda_pks = [ca.pk for ca in sda.competencyarea_set.all()]
+                ca_sda_pks = [ca.pk for ca in sda.graduationstandard_set.all()]
             else:
                 # sda None, this is a ca for a general sa
                 # pks for cas in this general sa
                 sa = ca.subject_area
-                ca_sda_pks = [ca.pk for ca in sa.competencyarea_set.filter(subdiscipline_area=None)]
+                ca_sda_pks = [ca.pk for ca in sa.graduationstandard_set.filter(subdiscipline_area=None)]
             current_ca_index = ca_sda_pks.index(int(child_id))
             if current_ca_index != 0:
                 # move ca up in the subset
@@ -901,20 +901,20 @@ def change_order(request, school_id, parent_type, parent_id, child_type, child_i
             order[child_index], order[child_index-1] = order[child_index-1], order[child_index]
             getattr(parent_object, set_order_method)(order)
     if direction == 'down' and child_index != (len(order)-1):
-        if child_type == 'competencyarea':
+        if child_type == 'graduationstandard':
             # Need to move after next ca in given sda, or in general sa
             #  Get pks of all cas in this sda
             #  Get order, find next element
-            ca = CompetencyArea.objects.get(id=child_id)
+            ca = GraduationStandard.objects.get(id=child_id)
             sda = ca.subdiscipline_area
             if sda:
                 # pks for cas in this sda only
-                ca_sda_pks = [ca.pk for ca in sda.competencyarea_set.all()]
+                ca_sda_pks = [ca.pk for ca in sda.graduationstandard_set.all()]
             else:
                 # sda None, this is a ca for a general sa
                 # pks for cas in this general sa
                 sa = ca.subject_area
-                ca_sda_pks = [ca.pk for ca in sa.competencyarea_set.filter(subdiscipline_area=None)]
+                ca_sda_pks = [ca.pk for ca in sa.graduationstandard_set.filter(subdiscipline_area=None)]
             current_ca_index = ca_sda_pks.index(int(child_id))
             if current_ca_index != (len(ca_sda_pks)-1):
                 # move ca down in the subset
@@ -942,12 +942,12 @@ def get_subjectarea_from_object(object_in):
         return None
     elif class_name == 'SubjectArea':
         return object_in
-    elif class_name in ['SubdisciplineArea', 'CompetencyArea']:
+    elif class_name in ['SubdisciplineArea', 'GraduationStandard']:
         return object_in.subject_area
-    elif class_name == 'EssentialUnderstanding':
-        return object_in.competency_area.subject_area
-    elif class_name == 'LearningTarget':
-        return object_in.essential_understanding.competency_area.subject_area
+    elif class_name == 'PerformanceIndicator':
+        return object_in.graduation_standard.subject_area
+    elif class_name == 'LearningObjective':
+        return object_in.performance_indicator.graduation_standard.subject_area
 
 @login_required
 def edit_visibility(request, school_id):
@@ -970,12 +970,12 @@ def edit_visibility(request, school_id):
     #  need to preserve order for these as well
     sa_cas = OrderedDict()
     for sa in sas:
-        sa_cas[sa] = sa.competencyarea_set.all().filter(subdiscipline_area=None)
+        sa_cas[sa] = sa.graduationstandard_set.all().filter(subdiscipline_area=None)
     # all competency areas for each subdiscipline area
     sda_cas = {}
     for sa in sas:
         for sda in sa_sdas[sa]:
-            sda_cas[sda] = sda.competencyarea_set.all()
+            sda_cas[sda] = sda.graduationstandard_set.all()
     # all essential understandings for each competency area
     #  loop through all sa_cas, sda_cas
     # also grab level descriptions for each competency area
@@ -983,20 +983,20 @@ def edit_visibility(request, school_id):
     ca_levels = {}
     for cas in sda_cas.values():
         for ca in cas:
-            ca_eus[ca] = ca.essentialunderstanding_set.all()
+            ca_eus[ca] = ca.performanceindicator_set.all()
             ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
     for cas in sa_cas.values():
         for ca in cas:
-            ca_eus[ca] = ca.essentialunderstanding_set.all()
+            ca_eus[ca] = ca.performanceindicator_set.all()
             ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
     # all learning targets for each essential understanding
     eu_lts = {}
     for eus in ca_eus.values():
         for eu in eus:
             if request.user.is_authenticated():
-                eu_lts[eu] = eu.learningtarget_set.all()
+                eu_lts[eu] = eu.learningobjective_set.all()
             else:
-                eu_lts[eu] = eu.learningtarget_set.filter(public=True)
+                eu_lts[eu] = eu.learningobjective_set.filter(public=True)
 
     return render_to_response('competencies/edit_visibility.html', 
                               {'school': school, 'subject_areas': sas,
