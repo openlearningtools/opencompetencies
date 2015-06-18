@@ -28,30 +28,11 @@ class CompetencyViewTests(TestCase):
         response = self.client.get(reverse('competencies:school', args=(django_school.id,)))
         self.assertEqual(response.status_code, 200)
 
-    def test_subject_area_view(self):
-        """Subject area page lists general competencies for a single subject area,
-        and competencies for that subject's subdiscipline areas."""
-        django_school = tu.create_school(name="The Django School")
-        science = tu.create_subject_area(subject_area="Science", school=django_school)
-        response = self.client.get(reverse('competencies:subject_area', args=(science.id,)))
-
-    def test_competency_area_view(self):
-        """Competency area page lists all essential understandings and learning targets
-        associated with a given competency area."""
-        # Need to make functions create_competency_area, create_essential_understanding,
-        #  create_learning_target
-        pass
-
     def test_new_school(self):
         """New school processes form to create a new school.
         """
         pass
 
-    def test_edit_system(self):
-        """Edit system allows user to edit a school's entire competency system
-        on one page.
-        """
-        pass
 
 class FormTests(TestCase):
     """Test the custom forms in OC."""
@@ -77,6 +58,3 @@ class ModelTests(TestCase):
         new_up.save()
 
         self.assertEqual(new_user.userprofile, new_up)
-
-
-        
