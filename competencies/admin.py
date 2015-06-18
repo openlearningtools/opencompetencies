@@ -22,32 +22,32 @@ class SubjectAreaAdmin(admin.ModelAdmin):
     inlines = [SubdisciplineAreaInline]
 
 # --- Subdiscipline Area admin, with competency areas inline
-class CompetencyAreaInline(admin.TabularInline):
-    model = CompetencyArea
+class GraduationStandardInline(admin.TabularInline):
+    model = GraduationStandard
     extra = 1
 
 class SubdisciplineAreaAdmin(admin.ModelAdmin):
-    inlines = [CompetencyAreaInline]
+    inlines = [GraduationStandardInline]
 
-# --- Competency Area admin, with essential understandings inline
-class EssentialUnderstandingInline(admin.TabularInline):
-    model = EssentialUnderstanding
+# --- Competency Area admin, with performance indicators inline
+class PerformanceIndicatorInline(admin.TabularInline):
+    model = PerformanceIndicator
     extra = 1
 
 class LevelInline(admin.TabularInline):
     model = Level
     extra = 1
 
-class CompetencyAreaAdmin(admin.ModelAdmin):
-    inlines = [EssentialUnderstandingInline, LevelInline]
+class GraduationStandardAdmin(admin.ModelAdmin):
+    inlines = [PerformanceIndicatorInline, LevelInline]
 
-# --- Essential Understanding admin, with learning targets inline
-class LearningTargetInline(admin.TabularInline):
-    model = LearningTarget
+# --- Performance Indicator admin, with learning objectives inline
+class LearningObjectiveInline(admin.TabularInline):
+    model = LearningObjective
     extra = 1
 
-class EssentialUnderstandingAdmin(admin.ModelAdmin):
-    inlines = [LearningTargetInline]
+class PerformanceIndicatorAdmin(admin.ModelAdmin):
+    inlines = [LearningObjectiveInline]
 
 # --- Pathway Admin ---
 class PathwayAdmin(admin.ModelAdmin):
@@ -63,8 +63,8 @@ class UserAdmin(UserAdmin):
 admin.site.register(School, SchoolAdmin)
 admin.site.register(SubjectArea, SubjectAreaAdmin)
 admin.site.register(SubdisciplineArea, SubdisciplineAreaAdmin)
-admin.site.register(CompetencyArea, CompetencyAreaAdmin)
-admin.site.register(EssentialUnderstanding, EssentialUnderstandingAdmin)
+admin.site.register(GraduationStandard, GraduationStandardAdmin)
+admin.site.register(PerformanceIndicator, PerformanceIndicatorAdmin)
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)

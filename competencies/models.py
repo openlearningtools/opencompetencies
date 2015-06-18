@@ -55,8 +55,8 @@ class SubdisciplineArea(models.Model):
     def get_parent(self):
         return self.subject_area
 
-class CompetencyArea(models.Model):
-    competency_area = models.CharField(max_length=500)
+class GraduationStandard(models.Model):
+    graduation_standard = models.CharField(max_length=500)
     subject_area = models.ForeignKey(SubjectArea)
     subdiscipline_area = models.ForeignKey(SubdisciplineArea, blank=True, null=True)
     public = models.BooleanField(default=False)
@@ -66,7 +66,7 @@ class CompetencyArea(models.Model):
     phrase = models.CharField(max_length=500, blank=True)
 
     def __str__(self):
-        return self.competency_area
+        return self.graduation_standard
 
     class Meta:
         order_with_respect_to = 'subject_area'
@@ -95,59 +95,59 @@ class Level(models.Model):
                            (MASTER, 'Master'), (PROFESSIONAL, 'Professional') )
     level_type = models.CharField(max_length=500, choices=LEVEL_TYPE_CHOICES)
     level_description = models.CharField(max_length=5000)
-    competency_area = models.ForeignKey(CompetencyArea)
+    graduation_standard = models.ForeignKey(GraduationStandard)
     public = models.BooleanField(default=False)
 
     def __str__(self):
         return self.level_description
 
     class Meta:
-        unique_together = ('competency_area', 'level_type',)
-        order_with_respect_to = 'competency_area'
+        unique_together = ('graduation_standard', 'level_type',)
+        order_with_respect_to = 'graduation_standard'
 
     def is_parent_public(self):
-        return self.competency_area.public
+        return self.graduation_standard.public
 
     def get_parent(self):
-        return self.competency_area
+        return self.graduation_standard
 
-class EssentialUnderstanding(models.Model):
-    essential_understanding = models.CharField(max_length=2000)
-    competency_area = models.ForeignKey(CompetencyArea)
+class PerformanceIndicator(models.Model):
+    performance_indicator = models.CharField(max_length=2000)
+    graduation_standard = models.ForeignKey(GraduationStandard)
     public = models.BooleanField(default=False)
     student_friendly = models.TextField(blank=True)
     description = models.TextField(blank=True)
 
     def __str__(self):
-        return self.essential_understanding
+        return self.performance_indicator
 
     class Meta:
-        order_with_respect_to = 'competency_area'
+        order_with_respect_to = 'graduation_standard'
 
     def is_parent_public(self):
-        return self.competency_area.public
+        return self.graduation_standard.public
 
     def get_parent(self):
-        return self.competency_area
+        return self.graduation_standard
 
-class LearningTarget(models.Model):
-    learning_target = models.CharField(max_length=2000)
-    essential_understanding = models.ForeignKey(EssentialUnderstanding)
+class LearningObjective(models.Model):
+    learning_objective = models.CharField(max_length=2000)
+    performance_indicator = models.ForeignKey(PerformanceIndicator)
     public = models.BooleanField(default=False)
     student_friendly = models.TextField(blank=True)
     description = models.TextField(blank=True)
 
     def __str__(self):
-        return self.learning_target
+        return self.learning_objective
 
     class Meta:
-        order_with_respect_to = 'essential_understanding'
+        order_with_respect_to = 'performance_indicator'
 
     def is_parent_public(self):
-        return self.essential_understanding.public
+        return self.performance_indicator.public
 
     def get_parent(self):
-        return self.essential_understanding
+        return self.performance_indicator
 
 
 # --- User Information ---
@@ -183,26 +183,26 @@ class SubdisciplineAreaForm(ModelForm):
             'description': Textarea(attrs={'rows': 5, 'class': 'span8'}),
             }
 
-class CompetencyAreaForm(ModelForm):
+class GraduationStandardForm(ModelForm):
     # Hacky way to get id of instance from a form in a template (edit_sa_summary).
     my_id = None
     class Meta:
-        model = CompetencyArea
-        fields = ('competency_area', 'student_friendly', 'description', 'phrase')
-        labels = {'competency_area': 'Graduation Standard'}
+        model = GraduationStandard
+        fields = ('graduation_standard', 'student_friendly', 'description', 'phrase')
+        labels = {'graduation_standard': 'Graduation Standard'}
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
-        widgets = {'competency_area': Textarea(attrs={'rows': 5, 'class': 'span4'}),
+        widgets = {'graduation_standard': Textarea(attrs={'rows': 5, 'class': 'span4'}),
                    'student_friendly': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    'description': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    }
 
-class EssentialUnderstandingForm(ModelForm):
+class PerformanceIndicatorForm(ModelForm):
     class Meta:
-        model = EssentialUnderstanding
-        fields = ('essential_understanding', 'student_friendly', 'description')
-        labels = {'essential_understanding': 'Performance Indicator'}
+        model = PerformanceIndicator
+        fields = ('performance_indicator', 'student_friendly', 'description')
+        labels = {'performance_indicator': 'Performance Indicator'}
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
-        widgets = {'essential_understanding': Textarea(attrs={'rows': 5, 'class': 'span7'}),
+        widgets = {'performance_indicator': Textarea(attrs={'rows': 5, 'class': 'span7'}),
                    'student_friendly': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    'description': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    }
@@ -214,12 +214,12 @@ class LevelForm(ModelForm):
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
         widgets = {'level_description': Textarea(attrs={'rows': 5, 'class': 'span8'}) }
 
-class LearningTargetForm(ModelForm):
+class LearningObjectiveForm(ModelForm):
     class Meta:
-        model = LearningTarget
-        fields = ('learning_target', 'student_friendly', 'description')
+        model = LearningObjective
+        fields = ('learning_objective', 'student_friendly', 'description')
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
-        widgets = {'learning_target': Textarea(attrs={'rows': 5, 'class': 'span8'}),
+        widgets = {'learning_objective': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    'student_friendly': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    'description': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    }
