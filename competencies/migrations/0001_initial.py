@@ -13,58 +13,59 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='CompetencyArea',
+            name='GraduationStandard',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('competency_area', models.CharField(max_length=500)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('graduation_standard', models.CharField(max_length=500)),
                 ('public', models.BooleanField(default=False)),
                 ('student_friendly', models.TextField(blank=True)),
                 ('description', models.TextField(blank=True)),
+                ('alias', models.CharField(max_length=500, default='Graduation Standard')),
+                ('phrase', models.CharField(blank=True, max_length=500)),
             ],
         ),
         migrations.CreateModel(
-            name='EssentialUnderstanding',
+            name='LearningObjective',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('essential_understanding', models.CharField(max_length=2000)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('learning_objective', models.CharField(max_length=2000)),
                 ('public', models.BooleanField(default=False)),
                 ('student_friendly', models.TextField(blank=True)),
                 ('description', models.TextField(blank=True)),
-                ('competency_area', models.ForeignKey(to='competencies.CompetencyArea')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='LearningTarget',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('learning_target', models.CharField(max_length=2000)),
-                ('public', models.BooleanField(default=False)),
-                ('student_friendly', models.TextField(blank=True)),
-                ('description', models.TextField(blank=True)),
-                ('essential_understanding', models.ForeignKey(to='competencies.EssentialUnderstanding')),
             ],
         ),
         migrations.CreateModel(
             name='Level',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('level_type', models.CharField(max_length=500, choices=[(b'Apprentice', b'Apprentice'), (b'Technician', b'Technician'), (b'Master', b'Master'), (b'Professional', b'Professional')])),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('level_type', models.CharField(max_length=500, choices=[('Apprentice', 'Apprentice'), ('Technician', 'Technician'), ('Master', 'Master'), ('Professional', 'Professional')])),
                 ('level_description', models.CharField(max_length=5000)),
                 ('public', models.BooleanField(default=False)),
-                ('competency_area', models.ForeignKey(to='competencies.CompetencyArea')),
+                ('graduation_standard', models.ForeignKey(to='competencies.GraduationStandard')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='PerformanceIndicator',
+            fields=[
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('performance_indicator', models.CharField(max_length=2000)),
+                ('public', models.BooleanField(default=False)),
+                ('student_friendly', models.TextField(blank=True)),
+                ('description', models.TextField(blank=True)),
+                ('graduation_standard', models.ForeignKey(to='competencies.GraduationStandard')),
             ],
         ),
         migrations.CreateModel(
             name='School',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
                 ('name', models.CharField(max_length=500)),
             ],
         ),
         migrations.CreateModel(
             name='SubdisciplineArea',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
                 ('subdiscipline_area', models.CharField(max_length=500)),
                 ('public', models.BooleanField(default=False)),
                 ('description', models.TextField(blank=True)),
@@ -73,7 +74,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SubjectArea',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
                 ('subject_area', models.CharField(max_length=500)),
                 ('public', models.BooleanField(default=False)),
                 ('description', models.TextField(blank=True)),
@@ -83,9 +84,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UserProfile',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('schools', models.ManyToManyField(to='competencies.School', blank=True)),
-                ('subject_areas', models.ManyToManyField(to='competencies.SubjectArea', blank=True)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('schools', models.ManyToManyField(blank=True, to='competencies.School')),
+                ('subject_areas', models.ManyToManyField(blank=True, to='competencies.SubjectArea')),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
         ),
@@ -95,12 +96,17 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(to='competencies.SubjectArea'),
         ),
         migrations.AddField(
-            model_name='competencyarea',
-            name='subdiscipline_area',
-            field=models.ForeignKey(blank=True, to='competencies.SubdisciplineArea', null=True),
+            model_name='learningobjective',
+            name='performance_indicator',
+            field=models.ForeignKey(to='competencies.PerformanceIndicator'),
         ),
         migrations.AddField(
-            model_name='competencyarea',
+            model_name='graduationstandard',
+            name='subdiscipline_area',
+            field=models.ForeignKey(to='competencies.SubdisciplineArea', blank=True, null=True),
+        ),
+        migrations.AddField(
+            model_name='graduationstandard',
             name='subject_area',
             field=models.ForeignKey(to='competencies.SubjectArea'),
         ),
@@ -112,24 +118,24 @@ class Migration(migrations.Migration):
             name='subdisciplinearea',
             order_with_respect_to='subject_area',
         ),
+        migrations.AlterOrderWithRespectTo(
+            name='performanceindicator',
+            order_with_respect_to='graduation_standard',
+        ),
         migrations.AlterUniqueTogether(
             name='level',
-            unique_together=set([('competency_area', 'level_type')]),
+            unique_together=set([('graduation_standard', 'level_type')]),
         ),
         migrations.AlterOrderWithRespectTo(
             name='level',
-            order_with_respect_to='competency_area',
+            order_with_respect_to='graduation_standard',
         ),
         migrations.AlterOrderWithRespectTo(
-            name='learningtarget',
-            order_with_respect_to='essential_understanding',
+            name='learningobjective',
+            order_with_respect_to='performance_indicator',
         ),
         migrations.AlterOrderWithRespectTo(
-            name='essentialunderstanding',
-            order_with_respect_to='competency_area',
-        ),
-        migrations.AlterOrderWithRespectTo(
-            name='competencyarea',
+            name='graduationstandard',
             order_with_respect_to='subject_area',
         ),
     ]

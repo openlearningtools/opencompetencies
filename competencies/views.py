@@ -104,9 +104,10 @@ def sa_summary(request, sa_id):
     school = sa.school
     kwargs = get_visibility_filter(request.user, school)
 
+    print('here blah')
     # Get competencies for the general subject area (no associated sda):
     sa_general_graduation_standards = sa.graduationstandard_set.filter(subdiscipline_area=None).filter(**kwargs)
-    
+    print('here', sa_general_graduation_standards)
     # Get eus for each competency area.
     ca_eus = OrderedDict()
     for ca in sa_general_graduation_standards:
@@ -147,6 +148,7 @@ def edit_sa_summary(request, sa_id):
         return redirect(redirect_url)
 
     # Get competency areas.
+    # DEV: CHECK RESULT OF THIS
     sa_general_graduation_standards = subject_area.graduationstandard_set.filter(subdiscipline_area=None).filter(**kwargs)
 
     # Get sdas, sda cas, sda eus
