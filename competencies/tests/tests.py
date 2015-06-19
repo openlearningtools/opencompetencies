@@ -3,7 +3,6 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
 from competencies.models import *
-from competencies.tests import testing_utilities as tu
 
 
 class CompetencyViewTests(TestCase):
@@ -11,6 +10,10 @@ class CompetencyViewTests(TestCase):
     - queryset tests for all pages
     - no-data tests
     """
+
+    def setUp(self):
+        self.test_school = School.objects.create(name="Test School")
+        self.test_sa = SubjectArea.objects.create(subject_area="Science", school=self.test_school)
 
     def test_index_view(self):
         """Index page is a static page for now, so just check status."""
@@ -24,8 +27,7 @@ class CompetencyViewTests(TestCase):
 
     def test_school_view(self):
         """School page lists subject areas and subdiscipline areas for that school."""
-        django_school = tu.create_school(name="The Django School")
-        response = self.client.get(reverse('competencies:school', args=(django_school.id,)))
+        response = self.client.get(reverse('competencies:school', args=(self.test_school.id,)))
         self.assertEqual(response.status_code, 200)
 
     def test_new_school(self):
