@@ -19,11 +19,17 @@ class School(models.Model):
     def __str__(self):
         return self.name
 
-class SubjectArea(models.Model):
+class CoreElement(models.Model):
+    public = models.BooleanField(default=False)
+    student_friendly = models.TextField(blank=True)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        abstract = True
+
+class SubjectArea(CoreElement):
     subject_area = models.CharField(max_length=500)
     school = models.ForeignKey(School)
-    public = models.BooleanField(default=False)
-    description = models.TextField(blank=True)
 
     def __str__(self):
         return self.subject_area
@@ -37,11 +43,9 @@ class SubjectArea(models.Model):
     def get_parent(self):
         return self.school
 
-class SubdisciplineArea(models.Model):
+class SubdisciplineArea(CoreElement):
     subdiscipline_area = models.CharField(max_length=500)
     subject_area = models.ForeignKey(SubjectArea)
-    public = models.BooleanField(default=False)
-    description = models.TextField(blank=True)
 
     def __str__(self):
         return self.subdiscipline_area
@@ -54,14 +58,6 @@ class SubdisciplineArea(models.Model):
 
     def get_parent(self):
         return self.subject_area
-
-class CoreElement(models.Model):
-    public = models.BooleanField(default=False)
-    student_friendly = models.TextField(blank=True)
-    description = models.TextField(blank=True)
-
-    class Meta:
-        abstract = True
 
 class GraduationStandard(CoreElement):
     graduation_standard = models.CharField(max_length=500)
