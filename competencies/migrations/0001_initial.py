@@ -16,11 +16,10 @@ class Migration(migrations.Migration):
             name='GraduationStandard',
             fields=[
                 ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
-                ('graduation_standard', models.CharField(max_length=500)),
                 ('public', models.BooleanField(default=False)),
                 ('student_friendly', models.TextField(blank=True)),
                 ('description', models.TextField(blank=True)),
-                ('alias', models.CharField(max_length=500, default='Graduation Standard')),
+                ('graduation_standard', models.CharField(max_length=500)),
                 ('phrase', models.CharField(blank=True, max_length=500)),
             ],
         ),
@@ -28,30 +27,20 @@ class Migration(migrations.Migration):
             name='LearningObjective',
             fields=[
                 ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
-                ('learning_objective', models.CharField(max_length=2000)),
                 ('public', models.BooleanField(default=False)),
                 ('student_friendly', models.TextField(blank=True)),
                 ('description', models.TextField(blank=True)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Level',
-            fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
-                ('level_type', models.CharField(max_length=500, choices=[('Apprentice', 'Apprentice'), ('Technician', 'Technician'), ('Master', 'Master'), ('Professional', 'Professional')])),
-                ('level_description', models.CharField(max_length=5000)),
-                ('public', models.BooleanField(default=False)),
-                ('graduation_standard', models.ForeignKey(to='competencies.GraduationStandard')),
+                ('learning_objective', models.CharField(max_length=2000)),
             ],
         ),
         migrations.CreateModel(
             name='PerformanceIndicator',
             fields=[
                 ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
-                ('performance_indicator', models.CharField(max_length=2000)),
                 ('public', models.BooleanField(default=False)),
                 ('student_friendly', models.TextField(blank=True)),
                 ('description', models.TextField(blank=True)),
+                ('performance_indicator', models.CharField(max_length=2000)),
                 ('graduation_standard', models.ForeignKey(to='competencies.GraduationStandard')),
             ],
         ),
@@ -85,8 +74,8 @@ class Migration(migrations.Migration):
             name='UserProfile',
             fields=[
                 ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
-                ('schools', models.ManyToManyField(blank=True, to='competencies.School')),
-                ('subject_areas', models.ManyToManyField(blank=True, to='competencies.SubjectArea')),
+                ('schools', models.ManyToManyField(to='competencies.School', blank=True)),
+                ('subject_areas', models.ManyToManyField(to='competencies.SubjectArea', blank=True)),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
         ),
@@ -103,7 +92,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='graduationstandard',
             name='subdiscipline_area',
-            field=models.ForeignKey(to='competencies.SubdisciplineArea', blank=True, null=True),
+            field=models.ForeignKey(to='competencies.SubdisciplineArea', null=True, blank=True),
         ),
         migrations.AddField(
             model_name='graduationstandard',
@@ -120,14 +109,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterOrderWithRespectTo(
             name='performanceindicator',
-            order_with_respect_to='graduation_standard',
-        ),
-        migrations.AlterUniqueTogether(
-            name='level',
-            unique_together=set([('graduation_standard', 'level_type')]),
-        ),
-        migrations.AlterOrderWithRespectTo(
-            name='level',
             order_with_respect_to='graduation_standard',
         ),
         migrations.AlterOrderWithRespectTo(

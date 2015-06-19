@@ -55,13 +55,18 @@ class SubdisciplineArea(models.Model):
     def get_parent(self):
         return self.subject_area
 
-class GraduationStandard(models.Model):
-    graduation_standard = models.CharField(max_length=500)
-    subject_area = models.ForeignKey(SubjectArea)
-    subdiscipline_area = models.ForeignKey(SubdisciplineArea, blank=True, null=True)
+class CoreElement(models.Model):
     public = models.BooleanField(default=False)
     student_friendly = models.TextField(blank=True)
     description = models.TextField(blank=True)
+
+    class Meta:
+        abstract = True
+
+class GraduationStandard(CoreElement):
+    graduation_standard = models.CharField(max_length=500)
+    subject_area = models.ForeignKey(SubjectArea)
+    subdiscipline_area = models.ForeignKey(SubdisciplineArea, blank=True, null=True)
     phrase = models.CharField(max_length=500, blank=True)
 
     def __str__(self):
@@ -85,12 +90,9 @@ class GraduationStandard(models.Model):
     def get_parent(self):
         return self.subject_area
 
-class PerformanceIndicator(models.Model):
+class PerformanceIndicator(CoreElement):
     performance_indicator = models.CharField(max_length=2000)
     graduation_standard = models.ForeignKey(GraduationStandard)
-    public = models.BooleanField(default=False)
-    student_friendly = models.TextField(blank=True)
-    description = models.TextField(blank=True)
 
     def __str__(self):
         return self.performance_indicator
@@ -104,12 +106,9 @@ class PerformanceIndicator(models.Model):
     def get_parent(self):
         return self.graduation_standard
 
-class LearningObjective(models.Model):
+class LearningObjective(CoreElement):
     learning_objective = models.CharField(max_length=2000)
     performance_indicator = models.ForeignKey(PerformanceIndicator)
-    public = models.BooleanField(default=False)
-    student_friendly = models.TextField(blank=True)
-    description = models.TextField(blank=True)
 
     def __str__(self):
         return self.learning_objective
