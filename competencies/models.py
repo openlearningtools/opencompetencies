@@ -62,7 +62,6 @@ class GraduationStandard(models.Model):
     public = models.BooleanField(default=False)
     student_friendly = models.TextField(blank=True)
     description = models.TextField(blank=True)
-    alias = models.CharField(max_length=500, default="Graduation Standard")
     phrase = models.CharField(max_length=500, blank=True)
 
     def __str__(self):
@@ -85,31 +84,6 @@ class GraduationStandard(models.Model):
 
     def get_parent(self):
         return self.subject_area
-
-class Level(models.Model):
-    APPRENTICE = 'Apprentice'
-    TECHNICIAN = 'Technician'
-    MASTER = 'Master'
-    PROFESSIONAL = 'Professional'
-    LEVEL_TYPE_CHOICES = ( (APPRENTICE, 'Apprentice'), (TECHNICIAN, 'Technician'),
-                           (MASTER, 'Master'), (PROFESSIONAL, 'Professional') )
-    level_type = models.CharField(max_length=500, choices=LEVEL_TYPE_CHOICES)
-    level_description = models.CharField(max_length=5000)
-    graduation_standard = models.ForeignKey(GraduationStandard)
-    public = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.level_description
-
-    class Meta:
-        unique_together = ('graduation_standard', 'level_type',)
-        order_with_respect_to = 'graduation_standard'
-
-    def is_parent_public(self):
-        return self.graduation_standard.public
-
-    def get_parent(self):
-        return self.graduation_standard
 
 class PerformanceIndicator(models.Model):
     performance_indicator = models.CharField(max_length=2000)
@@ -207,13 +181,6 @@ class PerformanceIndicatorForm(ModelForm):
                    'description': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    }
 
-class LevelForm(ModelForm):
-    class Meta:
-        model = Level
-        fields = ('level_type', 'level_description',)
-        # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
-        widgets = {'level_description': Textarea(attrs={'rows': 5, 'class': 'span8'}) }
-
 class LearningObjectiveForm(ModelForm):
     class Meta:
         model = LearningObjective
@@ -223,7 +190,6 @@ class LearningObjectiveForm(ModelForm):
                    'student_friendly': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    'description': Textarea(attrs={'rows': 5, 'class': 'span8'}),
                    }
-
 
 class RegisterUserForm(UserCreationForm):
     #email = EmailField(required=False, label='Email (optional)')

@@ -104,10 +104,9 @@ def sa_summary(request, sa_id):
     school = sa.school
     kwargs = get_visibility_filter(request.user, school)
 
-    print('here blah')
     # Get competencies for the general subject area (no associated sda):
     sa_general_graduation_standards = sa.graduationstandard_set.filter(subdiscipline_area=None).filter(**kwargs)
-    print('here', sa_general_graduation_standards)
+
     # Get eus for each competency area.
     ca_eus = OrderedDict()
     for ca in sa_general_graduation_standards:
@@ -148,7 +147,6 @@ def edit_sa_summary(request, sa_id):
         return redirect(redirect_url)
 
     # Get competency areas.
-    # DEV: CHECK RESULT OF THIS
     sa_general_graduation_standards = subject_area.graduationstandard_set.filter(subdiscipline_area=None).filter(**kwargs)
 
     # Get sdas, sda cas, sda eus
@@ -406,32 +404,6 @@ def get_sda_cas(subject_areas, sa_sdas, kwargs):
             sda_cas[sda] = sda.graduationstandard_set.filter(**kwargs)
     return sda_cas
 
-def get_ca_eus_ca_levels(request, sda_cas, sa_cas, kwargs):
-    """Returns all essential understandings for each competency area.
-    Loops through all sa_cas, sda_cas.
-    Also grabs level descriptions for each competency area.
-    """
-    ca_eus = {}
-    ca_levels = {}
-    for cas in sda_cas.values():
-        for ca in cas:
-            ca_eus[ca] = ca.performanceindicator_set.filter(**kwargs)
-            ca_levels[ca] = get_levels(request, ca)
-    for cas in sa_cas.values():
-        for ca in cas:
-            ca_eus[ca] = ca.performanceindicator_set.filter(**kwargs)
-            ca_levels[ca] = get_levels(request, ca)
-    return (ca_eus, ca_levels)
-
-def get_levels(request, graduation_standard):
-    """Returns levels for a given competency area, respecting visibility privileges."""
-    levels = []
-    for level_pk in graduation_standard.get_level_order():
-        level = Level.objects.get(pk=level_pk)
-        if request.user.is_authenticated() or level.public:
-            levels.append(level)
-    return levels
-
 def get_eu_lts(ca_eus, kwargs):
     """Returns all learning targets for each essential understanding."""
     eu_lts = {}
@@ -491,62 +463,6 @@ def get_subjectarea_from_object(object_in):
         return object_in.graduation_standard.subject_area
     elif class_name == 'LearningObjective':
         return object_in.performance_indicator.graduation_standard.subject_area
-
-@login_required
-def edit_visibility(request, school_id):
-    """Allows user to set the visibility of any item in the school's system."""
-    school = School.objects.get(id=school_id)
-    # Test if user allowed to edit this school.
-    if not has_edit_permission(request.user, school):
-        if school not in get_user_sa_schools(request.user):
-            redirect_url = '/no_edit_permission/' + str(school.id)
-            return redirect(redirect_url)
-
-    # all subject areas for a school
-    sas = school.subjectarea_set.all()
-    # all subdiscipline areas for each subject area
-    #  using OrderedDict to preserve order of subject areas
-    sa_sdas = OrderedDict()
-    for sa in sas:
-        sa_sdas[sa] = sa.subdisciplinearea_set.all()
-    # all general competency areas for a subject
-    #  need to preserve order for these as well
-    sa_cas = OrderedDict()
-    for sa in sas:
-        sa_cas[sa] = sa.graduationstandard_set.all().filter(subdiscipline_area=None)
-    # all competency areas for each subdiscipline area
-    sda_cas = {}
-    for sa in sas:
-        for sda in sa_sdas[sa]:
-            sda_cas[sda] = sda.graduationstandard_set.all()
-    # all essential understandings for each competency area
-    #  loop through all sa_cas, sda_cas
-    # also grab level descriptions for each competency area
-    ca_eus = {}
-    ca_levels = {}
-    for cas in sda_cas.values():
-        for ca in cas:
-            ca_eus[ca] = ca.performanceindicator_set.all()
-            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
-    for cas in sa_cas.values():
-        for ca in cas:
-            ca_eus[ca] = ca.performanceindicator_set.all()
-            ca_levels[ca] = [Level.objects.get(pk=level_pk) for level_pk in ca.get_level_order()]
-    # all learning targets for each essential understanding
-    eu_lts = {}
-    for eus in ca_eus.values():
-        for eu in eus:
-            if request.user.is_authenticated():
-                eu_lts[eu] = eu.learningobjective_set.all()
-            else:
-                eu_lts[eu] = eu.learningobjective_set.filter(public=True)
-
-    return render_to_response('competencies/edit_visibility.html', 
-                              {'school': school, 'subject_areas': sas,
-                               'sa_sdas': sa_sdas, 'sa_cas': sa_cas,
-                               'sda_cas': sda_cas, 'ca_eus': ca_eus,
-                               'ca_levels': ca_levels, 'eu_lts': eu_lts},
-                              context_instance = RequestContext(request))
 
 @login_required    
 def change_visibility(request, school_id, object_type, object_pk, visibility_mode):

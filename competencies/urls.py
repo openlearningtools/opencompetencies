@@ -41,15 +41,10 @@ urlpatterns = patterns('',
     url(r'^new_pi/(?P<ca_id>\d+)/$', views.new_pi, name='new_pi'),
                        
 
-
     # --- Authorization pages ---
     # no_edit_permission: Message that user does not have permission required to edit current elements.
     url(r'^no_edit_permission/(?P<school_id>\d+)/$', views.no_edit_permission, name='no_edit_permission'),
 
-
-    ### KEEP?
-    # # edit_visibility: Allows toggling of public/ private mode for all elements.
-    # url(r'^edit_visibility/(?P<school_id>\d+)/$', views.edit_visibility, name='edit_visibility'),
 
     ### KEEP?
     # # change_visibility: No template; changes the visibility of an elment, and redirects to edit_visibility.

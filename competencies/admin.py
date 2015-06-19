@@ -34,12 +34,8 @@ class PerformanceIndicatorInline(admin.TabularInline):
     model = PerformanceIndicator
     extra = 1
 
-class LevelInline(admin.TabularInline):
-    model = Level
-    extra = 1
-
 class GraduationStandardAdmin(admin.ModelAdmin):
-    inlines = [PerformanceIndicatorInline, LevelInline]
+    inlines = [PerformanceIndicatorInline]
 
 # --- Performance Indicator admin, with learning objectives inline
 class LearningObjectiveInline(admin.TabularInline):
