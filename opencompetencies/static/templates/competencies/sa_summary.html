@@ -13,11 +13,11 @@
 		<div class="span7 lead summary_box pi_col"><strong>Performance Indicators</strong></div>
 	 </div>
 
-	 {% for ca, eus in ca_eus.items %}
+	 {% for grad_std, eus in grad_std_eus.items %}
 	   <div class="row row-eq-height">
 		  <div class="span4 summary_box grad_std_col">
-			 <p class="lead">{{ ca.phrase }}</p>
-			 <p>{{ ca.competency_area }}</p>
+			 <p class="lead">{{ grad_std.phrase }}</p>
+			 <p>{{ grad_std.graduation_standard }}</p>
 		  </div>
 		  <div class="span7 summary_box pi_col">
 			 <ul>
@@ -29,21 +29,21 @@
 		</div>
 	 {% endfor %}
 
-	 {% for sda, cas in sda_cas.items %}
+	 {% for sda, grad_stds in sda_grad_stds.items %}
 		<div class="row row-eq-height">
 		  <div class="span4 lead summary_box sda_col"><strong>{{ sda }}</strong></div>
 		  <div class="span7 lead summary_box sda_col">&nbsp</div>
 		</div>
-		{% for ca in cas %}
+		{% for grad_std in grad_stds %}
 	     <div class="row row-eq-height">
 			 <div class="span4 summary_box grad_std_col">
-				<p class="lead">{{ ca.phrase }}</p>
-				<p>{{ ca.competency_area }}</p>
+				<p class="lead">{{ grad_std.phrase }}</p>
+				<p>{{ grad_std.graduation_standard }}</p>
 			 </div>
 			 <div class="span7 summary_box pi_col">
 				<ul>
-				  {% for cand_ca, eus in sda_ca_eus.items %}
-				    {% if cand_ca == ca %}
+				  {% for cand_grad_std, eus in sda_grad_std_eus.items %}
+				    {% if cand_grad_std == grad_std %}
 				      {% for eu in eus %}
 				        <li>{{ eu.essential_understanding }}</li>
 						{% endfor %}

@@ -106,27 +106,26 @@ def sa_summary(request, sa_id):
 
     # Get competencies for the general subject area (no associated sda):
     sa_general_graduation_standards = sa.graduationstandard_set.filter(subdiscipline_area=None).filter(**kwargs)
-
+    print('here', sa_general_graduation_standards)
     # Get eus for each competency area.
-    ca_eus = OrderedDict()
-    for ca in sa_general_graduation_standards:
-        ca_eus[ca] = ca.performanceindicator_set.filter(**kwargs)
+    grad_std_eus = OrderedDict()
+    for grad_std in sa_general_graduation_standards:
+        grad_std_eus[grad_std] = grad_std.performanceindicator_set.filter(**kwargs)
         
-    # Get sdas, sda cas, sda eus
+    # Get sdas, sda grad_stds, sda eus
     sdas = sa.subdisciplinearea_set.filter(**kwargs)
-    sda_cas = OrderedDict()
+    sda_grad_stds = OrderedDict()
     for sda in sdas:
-        sda_cas[sda] = sda.graduationstandard_set.filter(**kwargs)
-    sda_ca_eus = OrderedDict()
+        sda_grad_stds[sda] = sda.graduationstandard_set.filter(**kwargs)
+    sda_grad_std_eus = OrderedDict()
     for sda in sdas:
-        for ca in sda_cas[sda]:
-            sda_ca_eus[ca] = ca.performanceindicator_set.filter(**kwargs)
+        for grad_std in sda_grad_stds[sda]:
+            sda_grad_std_eus[grad_std] = grad_std.performanceindicator_set.filter(**kwargs)
 
     return render_to_response('competencies/sa_summary.html',
                               {'subject_area': sa, 'school': school,
-                               'sa_general_graduation_standards': sa_general_graduation_standards,
-                               'ca_eus': ca_eus,
-                               'sda_cas': sda_cas, 'sda_ca_eus': sda_ca_eus},
+                               'grad_std_eus': grad_std_eus,
+                               'sda_grad_stds': sda_grad_stds, 'sda_grad_std_eus': sda_grad_std_eus},
                               context_instance = RequestContext(request))
     
 @login_required

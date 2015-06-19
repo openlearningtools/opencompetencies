@@ -128,6 +128,7 @@ class UserProfile(models.Model):
     # User is allowed to edit any descendent of any subject_area in this list.
     subject_areas = models.ManyToManyField(SubjectArea, blank=True)
 
+
 # --- ModelForms ---
 class SubjectAreaForm(ModelForm):
     class Meta:
@@ -137,9 +138,6 @@ class SubjectAreaForm(ModelForm):
             'subject_area': TextInput(attrs={'class': 'span4'}),
             'description': Textarea(attrs={'rows': 5, 'class': 'span8'}),
             }
-
-
-
 
 class SubdisciplineAreaForm(ModelForm):
     # Hacky way to get id of instance from a form in a template (edit_sa_summary).
