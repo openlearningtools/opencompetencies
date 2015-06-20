@@ -95,7 +95,7 @@ class CompetencyViewTests(TestCase):
         test_url = reverse('competencies:new_sa', args=(self.test_school.id,))
         self.generic_test_blank_form(test_url)
         
-        # Test user can create a new subject area, and it ends up in the school.
+        # Test user can create a new subject area, and it's stored in db.
         response = self.client.post(test_url, {'subject_area': 'english', 'description': ''})
         self.assertEqual(response.status_code, 302)
         sa_names = [sa.subject_area for sa in self.test_school.subjectarea_set.all()]
@@ -106,14 +106,25 @@ class CompetencyViewTests(TestCase):
         test_url = reverse('competencies:new_sda', args=(self.test_sa.id,))
         self.generic_test_blank_form(test_url)
 
-        # Test user can create a new subdiscipline area, and it ends up in the subject area.
+        # Test user can create a new subdiscipline area, and it's stored in db.
         response = self.client.post(test_url, {'subdiscipline_area': 'life science', 'description': ''})
         self.assertEqual(response.status_code, 302)
         sda_names = [sda.subdiscipline_area for sda in self.test_sa.subdisciplinearea_set.all()]
         self.assertTrue('life science' in sda_names)
 
     def test_new_gs_view(self):
-        pass
+        """Lets user create a new graduation standard for a general subject area."""
+        test_url = reverse('competencies:new_gs', args=(self.test_sa.id,))
+        self.generic_test_blank_form(test_url)
+
+        # Test user can create a new gs, and it's stored in db.
+        data = {'graduation_standard': 'knows science',
+                'student_friendly': '', 'description': '', 'phrase': '',
+                }
+        response = self.client.post(test_url, data)
+        self.assertEqual(response.status_code, 302)
+        gs_titles = [gs.graduation_standard for gs in self.test_sa.graduationstandard_set.all()]
+        self.assertTrue('knows science' in gs_titles)
 
     def generic_test_blank_form(self, test_url):
         """A helper method to test that a form-based page returns a blank form properly."""

@@ -106,7 +106,7 @@ def sa_summary(request, sa_id):
 
     # Get competencies for the general subject area (no associated sda):
     sa_general_graduation_standards = sa.graduationstandard_set.filter(subdiscipline_area=None).filter(**kwargs)
-    print('here', sa_general_graduation_standards)
+
     # Get eus for each competency area.
     grad_std_eus = OrderedDict()
     for grad_std in sa_general_graduation_standards:
@@ -268,7 +268,6 @@ def new_sa(request, school_id):
 
 def new_sda(request, sa_id):
     """Create a new subdiscipline area for a given subject area."""
-    print('here')
     sa = SubjectArea.objects.get(id=sa_id)
     school = sa.school
     # Test if user allowed to edit this school.
