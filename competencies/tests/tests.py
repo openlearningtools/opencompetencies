@@ -83,11 +83,27 @@ class CompetencyViewTests(TestCase):
         #  Working through browser, and looking at output of runserver,
         #   it's a get request to /schools/ and a post request to /new_school/
         #   but /schools/ should call /new_school/.
+        #  Why doesn't it make a 302 redirecting to the action page?
         #  Maybe: make a separate new_school page, like other forms?
         #
         # school_names = [school.name for school in School.objects.all()]
         # print(school_names)
         # self.assertTrue('New Test School' in school_names)
+
+    def test_new_sa_view(self):
+        """Lets user create a new subject area."""
+        # Test user can get a blank form.
+        self.client.login(username='testuser', password='pw')
+        test_url = reverse('competencies:new_sa', args=(self.test_school.id,))
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 200)
+        
+        # Test user can create a new subject area, and it ends up in the school.
+        response = self.client.post(test_url, {'subject_area': 'english', 'description': ''})
+        self.assertEqual(response.status_code, 302)
+        sa_names = [sa.subject_area for sa in self.test_school.subjectarea_set.all()]
+        self.assertTrue('english' in sa_names)
+        
 
 
 class FormTests(TestCase):
