@@ -20,11 +20,8 @@ class CompetencyViewTests(TestCase):
         self.client = Client()
 
         # Create a test user.
-        self.test_user = User.objects.create(username='testuser')
-        self.test_user.set_password('pw')
-        self.test_user.save()
-        new_up = UserProfile()
-        new_up.user = self.test_user
+        self.test_user = User.objects.create_user(username='testuser', password='pw')
+        new_up = UserProfile(user=self.test_user)
         new_up.save()
 
         # Create test school.
@@ -52,11 +49,10 @@ class CompetencyViewTests(TestCase):
         self.assertTrue('schools' in response.context)
         self.assertTrue(self.test_school in response.context['schools'])
 
-    def test_school_view(self):
+    def test_school_view_logged_in(self):
         """School page lists subject areas and subdiscipline areas for that school."""
-        logged_in = self.client.login(username='testuser', password='pw')
-        print('logged in: ', logged_in)
-        
+        # Test that user with full school permission can see sas and sdas for a school.
+        self.client.login(username='testuser', password='pw')
         response = self.client.get(reverse('competencies:school', args=(self.test_school.id,)))
         self.assertEqual(response.status_code, 200)
 
@@ -65,29 +61,33 @@ class CompetencyViewTests(TestCase):
         self.assertTrue('subject_areas' in response.context)
         self.assertTrue('sa_sdas' in response.context)
 
-        #return 'done'
-        # Is this because I'm not logged in?
-        # Yes! Create a user and log in?
-        #  Test logged in, logged out version of page.
-        print(response.context['user'])
-        print(response.context['school'])
-        print(response.context['subject_areas'])
-        print(response.context['sa_sdas'])
-        print(response.context['sa_sdas'].keys())
-        print(response.context.keys())
-        print(reverse('competencies:school', args=(self.test_school.id,)))
-        
-        return 'done'
-
-
         self.assertEqual(self.test_school, response.context['school'])
         self.assertTrue(self.test_sa in response.context['subject_areas'])
-        #self.assertTrue(self.test_sda in response.context['sa_sdas'][self.test_sa])
+        self.assertTrue(self.test_sda in response.context['sa_sdas'][self.test_sa])
 
     def test_new_school(self):
-        """New school processes form to create a new school.
-        """
-        pass
+        """New school processes form to create a new school."""
+        # Make sure test user can get the blank form.
+        # Form is actually on /schools/
+        self.client.login(username='testuser', password='pw')
+        response = self.client.get(reverse('competencies:schools'))
+        self.assertEqual(response.status_code, 200)
+
+        # Test that user can make a new school.
+        response = self.client.get(reverse('competencies:schools'), {'new_school_name': 'New Test School'})
+        self.assertEqual(response.status_code, 200)
+
+        # DEV: This fails.
+        #  I'm not sure how to test a form that processes on a separate page.
+        #  Need to modify the initial request as shown above?
+        #  Working through browser, and looking at output of runserver,
+        #   it's a get request to /schools/ and a post request to /new_school/
+        #   but /schools/ should call /new_school/.
+        #  Maybe: make a separate new_school page, like other forms?
+        #
+        # school_names = [school.name for school in School.objects.all()]
+        # print(school_names)
+        # self.assertTrue('New Test School' in school_names)
 
 
 class FormTests(TestCase):
