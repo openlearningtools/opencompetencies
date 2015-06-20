@@ -104,7 +104,19 @@ class CompetencyViewTests(TestCase):
         sa_names = [sa.subject_area for sa in self.test_school.subjectarea_set.all()]
         self.assertTrue('english' in sa_names)
         
+    def test_new_sda_view(self):
+        """Lets user create a new subdiscipline area."""
+        # Test user can get a blank form.
+        self.client.login(username='testuser', password='pw')
+        test_url = reverse('competencies:new_sda', args=(self.test_sa.id,))
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 200)
 
+        # Test user can create a new subdiscipline area, and it ends up in the subject area.
+        response = self.client.post(test_url, {'subdiscipline_area': 'life science', 'description': ''})
+        self.assertEqual(response.status_code, 302)
+        sda_names = [sda.subdiscipline_area for sda in self.test_sa.subdisciplinearea_set.all()]
+        self.assertTrue('life science' in sda_names)
 
 class FormTests(TestCase):
     """Test the custom forms in OC."""
