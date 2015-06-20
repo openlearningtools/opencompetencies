@@ -92,11 +92,8 @@ class CompetencyViewTests(TestCase):
 
     def test_new_sa_view(self):
         """Lets user create a new subject area."""
-        # Test user can get a blank form.
-        self.client.login(username='testuser', password='pw')
         test_url = reverse('competencies:new_sa', args=(self.test_school.id,))
-        response = self.client.get(test_url)
-        self.assertEqual(response.status_code, 200)
+        self.generic_test_blank_form(test_url)
         
         # Test user can create a new subject area, and it ends up in the school.
         response = self.client.post(test_url, {'subject_area': 'english', 'description': ''})
@@ -106,17 +103,25 @@ class CompetencyViewTests(TestCase):
         
     def test_new_sda_view(self):
         """Lets user create a new subdiscipline area."""
-        # Test user can get a blank form.
-        self.client.login(username='testuser', password='pw')
         test_url = reverse('competencies:new_sda', args=(self.test_sa.id,))
-        response = self.client.get(test_url)
-        self.assertEqual(response.status_code, 200)
+        self.generic_test_blank_form(test_url)
 
         # Test user can create a new subdiscipline area, and it ends up in the subject area.
         response = self.client.post(test_url, {'subdiscipline_area': 'life science', 'description': ''})
         self.assertEqual(response.status_code, 302)
         sda_names = [sda.subdiscipline_area for sda in self.test_sa.subdisciplinearea_set.all()]
         self.assertTrue('life science' in sda_names)
+
+    def test_new_gs_view(self):
+        pass
+
+    def generic_test_blank_form(self, test_url):
+        """A helper method to test that a form-based page returns a blank form properly."""
+        # Test that a logged in user can get a blank form properly.
+        self.client.login(username='testuser', password='pw')
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 200)
+        
 
 class FormTests(TestCase):
     """Test the custom forms in OC."""
