@@ -34,15 +34,6 @@ class CompetencyViewTests(TestCase):
         new_up = UserProfile(user=self.test_user)
         new_up.save()
 
-        # Create test school.
-        self.test_school = School.objects.create(name="Test School")
-        self.test_sa = SubjectArea.objects.create(subject_area="Science", school=self.test_school)
-        self.test_sda = SubdisciplineArea.objects.create(subject_area=self.test_sa,
-                                                         subdiscipline_area="Physical Science")
-
-        # Give test user permissions to work with this school.
-        self.test_user.userprofile.schools.add(self.test_school)
-
         # Build 3 test schools that user is associated with,
         #  3 the user is not associated with.
         self.test_schools, self.test_sas = [], []
@@ -146,18 +137,18 @@ class CompetencyViewTests(TestCase):
         
     def test_new_sda_view(self):
         """Lets user create a new subdiscipline area."""
-        test_url = reverse('competencies:new_sda', args=(self.test_sa.id,))
+        test_url = reverse('competencies:new_sda', args=(self.test_sas[0].id,))
         self.generic_test_blank_form(test_url)
 
         # Test user can create a new subdiscipline area, and it's stored in db.
         response = self.client.post(test_url, {'subdiscipline_area': 'life science', 'description': ''})
         self.assertEqual(response.status_code, 302)
-        sda_names = [sda.subdiscipline_area for sda in self.test_sa.subdisciplinearea_set.all()]
+        sda_names = [sda.subdiscipline_area for sda in self.test_sas[0].subdisciplinearea_set.all()]
         self.assertTrue('life science' in sda_names)
 
     def test_new_gs_view(self):
         """Lets user create a new graduation standard for a general subject area."""
-        test_url = reverse('competencies:new_gs', args=(self.test_sa.id,))
+        test_url = reverse('competencies:new_gs', args=(self.test_sas[0].id,))
         self.generic_test_blank_form(test_url)
 
         # Test user can create a new gs, and it's stored in db.
@@ -166,7 +157,7 @@ class CompetencyViewTests(TestCase):
                 }
         response = self.client.post(test_url, data)
         self.assertEqual(response.status_code, 302)
-        gs_titles = [gs.graduation_standard for gs in self.test_sa.graduationstandard_set.all()]
+        gs_titles = [gs.graduation_standard for gs in self.test_sas[0].graduationstandard_set.all()]
         self.assertTrue('knows science' in gs_titles)
 
     def generic_test_blank_form(self, test_url):
