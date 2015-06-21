@@ -119,6 +119,27 @@ class CompetencyViewTests(TestCase):
             if school.name == 'my new school':
                 self.assertTrue(school.owner, self.test_user_0)
 
+        # Test that user can't create a second school of the same name.
+        # DEV: DB error causes test to fail. How test this properly?
+        #  Start by creating server error page.
+        # response = self.client.post(test_url, {'name': 'my new school'})
+        # self.assertEqual(response.status_code, 500)
+
+        # But another user can create a school of that same name.
+        self.client.login(username='testuser1', password='pw')
+        response = self.client.post(test_url, {'name': 'my new school'})
+        self.assertEqual(response.status_code, 302)
+        school_names = [school.name for school in School.objects.all()]
+        # DEV: Verify name 'my new school' appears twice in list.
+        self.assertTrue('my new school' in school_names)
+
+        owner_correct = False
+        for school in School.objects.all():
+            if school.name == 'my new school' and school.owner == self.test_user_1:
+                owner_correct = True
+        self.assertTrue(owner_correct)
+
+
 
     def test_new_sa_view(self):
         """Lets user create a new subject area."""

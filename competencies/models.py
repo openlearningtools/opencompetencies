@@ -138,6 +138,7 @@ class SchoolForm(ModelForm):
     class Meta:
         model = School
         fields = ('name',)
+        labels = {'name': 'New school name',}
         widgets = {
             'name': TextInput(attrs={'class': 'span4'}),
             }
