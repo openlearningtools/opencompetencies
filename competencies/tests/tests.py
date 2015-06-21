@@ -6,7 +6,16 @@ from django.contrib.auth.models import User
 from competencies.models import *
 from competencies.views import school
 
-import sys
+"""DEV NOTES
+  - when schools in list are built out and used in all tests,
+    delete individual elements.
+  - Maybe instead of using indices to store schools, use separate lists:
+    - test_schools_has_perm
+    - test_schools_no_perm
+    - test_schools_all_private
+    - test_schools_all_public
+
+"""
 
 class CompetencyViewTests(TestCase):
     """Needed tests:
@@ -49,7 +58,11 @@ class CompetencyViewTests(TestCase):
                 sa_name = "Test SA %d-%d" % (school_num, sa_num)
                 new_sa = SubjectArea.objects.create(subject_area=sa_name,
                                                     school=new_school)
-                
+                # Create 3 sdas for each sa.
+                for sda_num in range(3):
+                    sda_name = "Test SDA %d-%d-%d" % (school_num, sa_num, sda_num)
+                    new_sda = SubdisciplineArea.objects.create(subject_area=new_sa,
+                                                               subdiscipline_area=sda_name)
 
 
     def test_index_view(self):
@@ -61,6 +74,7 @@ class CompetencyViewTests(TestCase):
         """Schools page lists all schools, links to detail view of that school."""
         response = self.client.get(reverse('competencies:schools'))
         self.assertEqual(response.status_code, 200)
+
         # Make sure list of schools appears in context, and that test_school
         #  is in that list.
         self.assertTrue('schools' in response.context)
@@ -70,19 +84,28 @@ class CompetencyViewTests(TestCase):
 
     def test_school_view_logged_in(self):
         """School page lists subject areas and subdiscipline areas for that school."""
-        # Test that user with full school permission can see sas and sdas for a school.
         self.client.login(username='testuser', password='pw')
-        response = self.client.get(reverse('competencies:school', args=(self.test_school.id,)))
-        self.assertEqual(response.status_code, 200)
 
-        # Make sure subject and sda appear in context.
-        self.assertTrue('school' in response.context)
-        self.assertTrue('subject_areas' in response.context)
-        self.assertTrue('sa_sdas' in response.context)
+        for school_num, school in enumerate(self.test_schools):
+            test_url = reverse('competencies:school', args=(school.id,))
+            response = self.client.get(test_url)
+            self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(self.test_school, response.context['school'])
-        self.assertTrue(self.test_sa in response.context['subject_areas'])
-        self.assertTrue(self.test_sda in response.context['sa_sdas'][self.test_sa])
+            # For now, all users can see the names of all schools.
+            self.assertEqual(school, response.context['school'])
+
+            if school_num < 3:
+                # User should see sa and sdas for school they have permissions on.
+                for sa in school.subjectarea_set.all():
+                    self.assertTrue(sa in response.context['subject_areas'])
+                    for sda in sa.subdisciplinearea_set.all():
+                        self.assertTrue(sda in response.context['sa_sdas'][sa])
+            else:
+                # All elements are private by default, so user should not see sas
+                #  or sdas for this school.
+                for sa in school.subjectarea_set.all():
+                    self.assertFalse(sa in response.context['subject_areas'])
+                    self.assertFalse(sa in response.context['sa_sdas'].keys())
 
     def test_new_school(self):
         """New school processes form to create a new school."""
