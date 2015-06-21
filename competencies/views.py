@@ -535,21 +535,35 @@ def set_parent_order(child_object, order):
 @login_required
 def new_school(request):
     """Creates a new school."""
-    # Will need validation.
-    new_school_name = request.POST['new_school_name']
-    new_school_created = False
-    new_school = None
-    if new_school_name:
-        # Create new school
-        new_school = School(name=new_school_name)
-        new_school.save()
-        new_school_created = True
-        # Now need to associate current user with this school
-        associate_user_school(request.user, new_school)
+
+    if request.method == 'POST':
+        new_school_form = SchoolForm(request.POST)
+        if new_school_form.is_valid():
+            new_school = new_school_form.save(commit=False)
+            new_school.owner = request.user
+            new_school.save()
+            return redirect(reverse('competencies:schools'))
+
+    new_school_form = SchoolForm()
 
     return render_to_response('competencies/new_school.html',
-                              {'new_school_name': new_school_name, 'new_school_created': new_school_created,
-                               'new_school': new_school }, context_instance=RequestContext(request))
+                              {'new_school_form': new_school_form,},
+                              context_instance = RequestContext(request))
+
+
+    # new_school_created = False
+    # new_school = None
+    # if new_school_name:
+    #     # Create new school
+    #     new_school = School(name=new_school_name)
+    #     new_school.save()
+    #     new_school_created = True
+    #     # Now need to associate current user with this school
+    #     associate_user_school(request.user, new_school)
+
+    # return render_to_response('competencies/new_school.html',
+    #                           {'new_school_name': new_school_name, 'new_school_created': new_school_created,
+    #                            'new_school': new_school }, context_instance=RequestContext(request))
 
 def associate_user_school(user, school):
     # Associates a given school with a given user

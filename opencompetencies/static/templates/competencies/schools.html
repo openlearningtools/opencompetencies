@@ -15,12 +15,6 @@
 		<h3>No schools have been created yet.</h3>
     {% endif %}
 
-	 <h3>You may also create a new school, and start developing your own set of competencies.</h3>
-	 <form action="/new_school/" method="post">
-		  {% csrf_token %}
-		      <p>Name of new school:
-		      <input type="text" name="new_school_name" size="50" /></p>
-				<input type="submit" value="Submit" />
-	 </form>
+	 <p>You may also <a href="{% url 'competencies:new_school' %}">create a new school</a>, and start developing your own set of competencies.</p>
 
 {% endblock %}

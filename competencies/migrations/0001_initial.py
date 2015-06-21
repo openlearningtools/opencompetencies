@@ -49,6 +49,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
                 ('name', models.CharField(max_length=500)),
+                ('owner', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
@@ -94,7 +95,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='graduationstandard',
             name='subdiscipline_area',
-            field=models.ForeignKey(null=True, blank=True, to='competencies.SubdisciplineArea'),
+            field=models.ForeignKey(to='competencies.SubdisciplineArea', null=True, blank=True),
         ),
         migrations.AddField(
             model_name='graduationstandard',

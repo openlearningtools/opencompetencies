@@ -7,8 +7,6 @@ from competencies.models import *
 from competencies.views import school
 
 """DEV NOTES
-  - when schools in list are built out and used in all tests,
-    delete individual elements.
   - Maybe instead of using indices to store schools, use separate lists:
     - test_schools_has_perm
     - test_schools_no_perm
@@ -29,20 +27,27 @@ class CompetencyViewTests(TestCase):
 
         self.client = Client()
 
-        # Create a test user.
+        # Create 2 test users.
         self.test_user = User.objects.create_user(username='testuser', password='pw')
         new_up = UserProfile(user=self.test_user)
         new_up.save()
 
-        # Build 3 test schools that user is associated with,
-        #  3 the user is not associated with.
+        self.test_user_1 = User.objects.create_user(username='testuser1', password='pw')
+        new_up = UserProfile(user=self.test_user_1)
+        new_up.save()
+
+        # Build 3 test schools that user 0 is associated with,
+        #  3 the user 1 is associated with.
         self.test_schools, self.test_sas = [], []
         for school_num in range(6):
             name = "Test School %d" % school_num
-            new_school = School.objects.create(name=name)
-            self.test_schools.append(new_school)
             if school_num < 3:
+                new_school = School.objects.create(name=name, owner=self.test_user)
                 self.test_user.userprofile.schools.add(new_school)
+            else:
+                new_school = School.objects.create(name=name, owner=self.test_user_1)
+                self.test_user_1.userprofile.schools.add(new_school)
+            self.test_schools.append(new_school)
 
             # Create 3 subject areas for each school.
             for sa_num in range(3):
@@ -100,29 +105,20 @@ class CompetencyViewTests(TestCase):
                     self.assertFalse(sa in response.context['sa_sdas'].keys())
 
     def test_new_school(self):
-        """New school processes form to create a new school."""
-        # Make sure test user can get the blank form.
-        # Form is actually on /schools/
-        self.client.login(username='testuser', password='pw')
-        response = self.client.get(reverse('competencies:schools'))
-        self.assertEqual(response.status_code, 200)
+        """New school allows uer to create a new school."""
+        test_url = reverse('competencies:new_school')
+        self.generic_test_blank_form(test_url)
 
-        # Test that user can make a new school.
-        response = self.client.get(reverse('competencies:schools'), {'new_school_name': 'New Test School'})
-        self.assertEqual(response.status_code, 200)
+        # Test user can create a new school, it exists in db, and current user is owner.
+        response = self.client.post(test_url, {'name': 'my new school'})
+        self.assertEqual(response.status_code, 302)
+        school_names = [school.name for school in School.objects.all()]
+        self.assertTrue('my new school' in school_names)
 
-        # DEV: This fails.
-        #  I'm not sure how to test a form that processes on a separate page.
-        #  Need to modify the initial request as shown above?
-        #  Working through browser, and looking at output of runserver,
-        #   it's a get request to /schools/ and a post request to /new_school/
-        #   but /schools/ should call /new_school/.
-        #  Why doesn't it make a 302 redirecting to the action page?
-        #  Maybe: make a separate new_school page, like other forms?
-        #
-        # school_names = [school.name for school in School.objects.all()]
-        # print(school_names)
-        # self.assertTrue('New Test School' in school_names)
+        for school in School.objects.all():
+            if school.name == 'my new school':
+                self.assertTrue(school.owner, self.test_user)
+
 
     def test_new_sa_view(self):
         """Lets user create a new subject area."""

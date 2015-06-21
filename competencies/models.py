@@ -15,6 +15,10 @@ from django.contrib.auth.forms import UserCreationForm
 
 class School(models.Model):
     name = models.CharField(max_length=500)
+    owner = models.ForeignKey(User)
+
+    class Meta:
+        unique_together = ('name', 'owner',)
 
     def __str__(self):
         return self.name
@@ -130,6 +134,14 @@ class UserProfile(models.Model):
 
 
 # --- ModelForms ---
+class SchoolForm(ModelForm):
+    class Meta:
+        model = School
+        fields = ('name',)
+        widgets = {
+            'name': TextInput(attrs={'class': 'span4'}),
+            }
+
 class SubjectAreaForm(ModelForm):
     class Meta:
         model = SubjectArea
