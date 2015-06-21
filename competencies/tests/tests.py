@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from competencies.models import *
 from competencies.views import school
 
+import sys
 
 class CompetencyViewTests(TestCase):
     """Needed tests:
@@ -33,6 +34,22 @@ class CompetencyViewTests(TestCase):
         # Give test user permissions to work with this school.
         self.test_user.userprofile.schools.add(self.test_school)
 
+        # Build 3 test schools that user is associated with,
+        #  3 the user is not associated with.
+        self.test_schools = []
+        for school_num in range(6):
+            name = "Test School %d" % school_num
+            new_school = School.objects.create(name=name)
+            self.test_schools.append(new_school)
+            if school_num < 3:
+                self.test_user.userprofile.schools.add(new_school)
+
+            # Create 3 subject areas for each school.
+            for sa_num in range(3):
+                sa_name = "Test SA %d-%d" % (school_num, sa_num)
+                new_sa = SubjectArea.objects.create(subject_area=sa_name,
+                                                    school=new_school)
+                
 
 
     def test_index_view(self):
@@ -47,7 +64,9 @@ class CompetencyViewTests(TestCase):
         # Make sure list of schools appears in context, and that test_school
         #  is in that list.
         self.assertTrue('schools' in response.context)
-        self.assertTrue(self.test_school in response.context['schools'])
+        for school in self.test_schools:
+            self.assertTrue(school in response.context['schools'])
+
 
     def test_school_view_logged_in(self):
         """School page lists subject areas and subdiscipline areas for that school."""
