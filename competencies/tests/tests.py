@@ -28,8 +28,8 @@ class CompetencyViewTests(TestCase):
         self.client = Client()
 
         # Create 2 test users.
-        self.test_user = User.objects.create_user(username='testuser', password='pw')
-        new_up = UserProfile(user=self.test_user)
+        self.test_user_0 = User.objects.create_user(username='testuser0', password='pw')
+        new_up = UserProfile(user=self.test_user_0)
         new_up.save()
 
         self.test_user_1 = User.objects.create_user(username='testuser1', password='pw')
@@ -42,8 +42,8 @@ class CompetencyViewTests(TestCase):
         for school_num in range(6):
             name = "Test School %d" % school_num
             if school_num < 3:
-                new_school = School.objects.create(name=name, owner=self.test_user)
-                self.test_user.userprofile.schools.add(new_school)
+                new_school = School.objects.create(name=name, owner=self.test_user_0)
+                self.test_user_0.userprofile.schools.add(new_school)
             else:
                 new_school = School.objects.create(name=name, owner=self.test_user_1)
                 self.test_user_1.userprofile.schools.add(new_school)
@@ -81,7 +81,7 @@ class CompetencyViewTests(TestCase):
 
     def test_school_view_logged_in(self):
         """School page lists subject areas and subdiscipline areas for that school."""
-        self.client.login(username='testuser', password='pw')
+        self.client.login(username='testuser0', password='pw')
 
         for school_num, school in enumerate(self.test_schools):
             test_url = reverse('competencies:school', args=(school.id,))
@@ -117,7 +117,7 @@ class CompetencyViewTests(TestCase):
 
         for school in School.objects.all():
             if school.name == 'my new school':
-                self.assertTrue(school.owner, self.test_user)
+                self.assertTrue(school.owner, self.test_user_0)
 
 
     def test_new_sa_view(self):
@@ -159,7 +159,7 @@ class CompetencyViewTests(TestCase):
     def generic_test_blank_form(self, test_url):
         """A helper method to test that a form-based page returns a blank form properly."""
         # Test that a logged in user can get a blank form properly.
-        self.client.login(username='testuser', password='pw')
+        self.client.login(username='testuser0', password='pw')
         response = self.client.get(test_url)
         self.assertEqual(response.status_code, 200)
 
