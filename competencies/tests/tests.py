@@ -109,7 +109,8 @@ class CompetencyViewTests(TestCase):
         test_url = reverse('competencies:new_school')
         self.generic_test_blank_form(test_url)
 
-        # Test user can create a new school, it exists in db, and current user is owner.
+        # Test user can create a new school, current user is owner,
+        #  and user can modify school.
         response = self.client.post(test_url, {'name': 'my new school'})
         self.assertEqual(response.status_code, 302)
         school_names = [school.name for school in School.objects.all()]
@@ -118,6 +119,7 @@ class CompetencyViewTests(TestCase):
         for school in School.objects.all():
             if school.name == 'my new school':
                 self.assertTrue(school.owner, self.test_user_0)
+                self.assertTrue(school in self.test_user_0.userprofile.schools.all())
 
         # Test that user can't create a second school of the same name.
         # DEV: DB error causes test to fail. How test this properly?
