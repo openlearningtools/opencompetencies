@@ -45,7 +45,7 @@ class CompetencyViewTests(TestCase):
 
         # Build 3 test schools that user is associated with,
         #  3 the user is not associated with.
-        self.test_schools = []
+        self.test_schools, self.test_sas = [], []
         for school_num in range(6):
             name = "Test School %d" % school_num
             new_school = School.objects.create(name=name)
@@ -58,6 +58,7 @@ class CompetencyViewTests(TestCase):
                 sa_name = "Test SA %d-%d" % (school_num, sa_num)
                 new_sa = SubjectArea.objects.create(subject_area=sa_name,
                                                     school=new_school)
+                self.test_sas.append(new_sa)
                 # Create 3 sdas for each sa.
                 for sda_num in range(3):
                     sda_name = "Test SDA %d-%d-%d" % (school_num, sa_num, sda_num)
@@ -134,13 +135,13 @@ class CompetencyViewTests(TestCase):
 
     def test_new_sa_view(self):
         """Lets user create a new subject area."""
-        test_url = reverse('competencies:new_sa', args=(self.test_school.id,))
+        test_url = reverse('competencies:new_sa', args=(self.test_schools[0].id,))
         self.generic_test_blank_form(test_url)
         
         # Test user can create a new subject area, and it's stored in db.
         response = self.client.post(test_url, {'subject_area': 'english', 'description': ''})
         self.assertEqual(response.status_code, 302)
-        sa_names = [sa.subject_area for sa in self.test_school.subjectarea_set.all()]
+        sa_names = [sa.subject_area for sa in self.test_schools[0].subjectarea_set.all()]
         self.assertTrue('english' in sa_names)
         
     def test_new_sda_view(self):
@@ -174,7 +175,6 @@ class CompetencyViewTests(TestCase):
         self.client.login(username='testuser', password='pw')
         response = self.client.get(test_url)
         self.assertEqual(response.status_code, 200)
-        
 
 class FormTests(TestCase):
     """Test the custom forms in OC."""
