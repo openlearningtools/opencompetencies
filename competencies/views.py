@@ -353,7 +353,6 @@ def new_pi(request, ca_id):
         pi_form = PerformanceIndicatorForm(request.POST)
         if pi_form.is_valid():
             new_pi = pi_form.save(commit=False)
-            print('ca', ca)
             new_pi.graduation_standard = ca
             new_pi.save()
             return redirect('/edit_sa_summary/%d' % sa.id)
