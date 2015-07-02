@@ -179,6 +179,22 @@ class CompetencyViewTests(TestCase):
         gs_titles = [gs.graduation_standard for gs in self.test_sas[0].graduationstandard_set.all()]
         self.assertTrue('knows science' in gs_titles)
 
+    def test_new_sda_gs_view(self):
+        """Lets user create a new graduation standard for a subdiscipline area."""
+        test_sdas = [sda for sda in self.test_sas[0].subdisciplinearea_set.all()]
+        test_url = reverse('competencies:new_sda_gs', args=(test_sdas[0].id,))
+        self.generic_test_blank_form(test_url)
+
+        # Test user can create a new gs for the sda, and it's stored in db.
+        data = {'graduation_standard': 'knows Newtons Laws',
+                'student_friendly': '', 'description': '', 'phrase': '',
+                }
+        
+        response = self.client.post(test_url, data)
+        self.assertEqual(response.status_code, 302)
+        gs_titles = [gs.graduation_standard for gs in test_sdas[0].graduationstandard_set.all()]
+        self.assertTrue('knows Newtons Laws' in gs_titles)
+
     def generic_test_blank_form(self, test_url):
         """A helper method to test that a form-based page returns a blank form properly."""
         # Test that a logged in user can get a blank form properly.
