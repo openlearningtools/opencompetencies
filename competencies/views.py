@@ -158,6 +158,10 @@ def edit_sa_summary(request, sa_id):
         for ca in sda_cas[sda]:
             sda_ca_eus[ca] = ca.performanceindicator_set.filter(**kwargs)
 
+    for sda, cas in sda_cas.items():
+        print('sda: ', sda)
+        print('cas: ', cas, '\n')
+
     # Respond to submitted data.
     if request.method == 'POST':
 
@@ -198,7 +202,11 @@ def edit_sa_summary(request, sa_id):
         sda_form.my_id = sda.id
         ca_forms = []
         for ca in sda_cas[sda]:
+            print('making ca form for:', ca)
+            # DEV: not setting the instance properly here?
+            #  try adding a grad std to subject area?
             ca_form = generate_form(ca, 'ca')
+            print('ca form:', ca_form)
             ca_form.my_id = ca.id
             ca_forms.append(ca_form)
             eu_forms = []
@@ -207,6 +215,12 @@ def edit_sa_summary(request, sa_id):
                 eu_forms.append(eu_form)
             sda_eu_forms[ca_form] = (eu_forms)
         sda_ca_forms[sda_form] = ca_forms
+
+    # for k, v in sda_ca_forms.items():
+    #     print('key:', k)
+    #     print('value:', v, '\n')
+
+
 
     return render_to_response('competencies/edit_sa_summary.html',
                               {'subject_area': subject_area, 'school': school,
