@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 from competencies.models import *
 from competencies.views import school
+from competencies import my_admin
 
 """DEV NOTES
   - Maybe instead of using indices to store schools, use separate lists:
@@ -321,3 +322,13 @@ class ModelTests(TestCase):
         new_up.save()
 
         self.assertEqual(new_user.userprofile, new_up)
+
+
+class UnitTestsMyAdmin(TestCase):
+    """Test individual functions in my_admin.py."""
+
+    def test_add_userprofile(self):
+        """Make sure new user gets a userprofile."""
+        new_user = User.objects.create_user(username='randy', password='pw')
+        my_admin.add_userprofile(new_user)
+        self.assertTrue(hasattr(new_user, 'userprofile'))
