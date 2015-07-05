@@ -17,10 +17,7 @@ from competencies import my_admin
 """
 
 class CompetencyViewTests(TestCase):
-    """Needed tests:
-    - queryset tests for all pages
-    - no-data tests
-    """
+    """Tests for all views in competencies."""
 
     def setUp(self, num_elements=2):
         # Build a school, down to the performance indicator level.
@@ -310,38 +307,3 @@ class CompetencyViewTests(TestCase):
         self.client.login(username='testuser0', password='pw')
         response = self.client.get(test_url)
         self.assertEqual(response.status_code, 200)
-
-class FormTests(TestCase):
-    """Test the custom forms in OC."""
-
-    def test_registeruserform(self):
-        """Test that the registration form works."""
-        form = RegisterUserForm()
-        # finish!
-
-
-class ModelTests(TestCase):
-    """Test aspects of models."""
-
-    def test_userprofile(self):
-        """Test that a userprofile connects properly to a user."""
-        new_user = User()
-        new_user.username = 'new_user'
-        new_user.password = 'new_user_pw'
-        new_user.save()
-
-        new_up = UserProfile()
-        new_up.user = new_user
-        new_up.save()
-
-        self.assertEqual(new_user.userprofile, new_up)
-
-
-class UnitTestsMyAdmin(TestCase):
-    """Test individual functions in my_admin.py."""
-
-    def test_add_userprofile(self):
-        """Make sure new user gets a userprofile."""
-        new_user = User.objects.create_user(username='randy', password='pw')
-        my_admin.add_userprofile(new_user)
-        self.assertTrue(hasattr(new_user, 'userprofile'))
