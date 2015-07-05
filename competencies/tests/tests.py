@@ -18,6 +18,17 @@ from competencies import my_admin
 
 class CompetencyViewTests(TestCase):
     """Tests for all views in competencies."""
+    # May want to use simpler password hashing in tests.
+    #  https://docs.djangoproject.com/en/1.8/topics/testing/overview/#speeding-up-the-tests
+
+    # Also, any test that doesn't interact with db should inherit from
+    #  unittest.TestCase, not django's TestCase:
+    #  https://docs.djangoproject.com/en/1.8/topics/testing/overview/#writing-tests
+
+    # setUp() should build a school, but then have separate methods to
+    #  build the school out to subject area levels, sda, grad std, or perf indicator.
+    # Then each test method can only call the level it needs. Testing efficiency
+    #  should be greatly improved. Methdods such as build_to_sas(), build_to_eus().
 
     def setUp(self, num_elements=2):
         # Build a school, down to the performance indicator level.
