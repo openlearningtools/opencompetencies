@@ -14,16 +14,20 @@ from competencies import my_admin
     - test_schools_all_private
     - test_schools_all_public
 
+    Any test that doesn't interact with db should inherit from
+     unittest.TestCase, not django's TestCase:
+     https://docs.djangoproject.com/en/1.8/topics/testing/overview/#writing-tests
+
+    Not sure why I need __init__.py.
+     Shouldn't test utility find any class under /tests that inherits from TestCase?
+     Why do the tests in other modules like test_forms.py run?
+
 """
 
 class CompetencyViewTests(TestCase):
     """Tests for all views in competencies."""
     # May want to use simpler password hashing in tests.
     #  https://docs.djangoproject.com/en/1.8/topics/testing/overview/#speeding-up-the-tests
-
-    # Also, any test that doesn't interact with db should inherit from
-    #  unittest.TestCase, not django's TestCase:
-    #  https://docs.djangoproject.com/en/1.8/topics/testing/overview/#writing-tests
 
     # setUp() should build a school, but then have separate methods to
     #  build the school out to subject area levels, sda, grad std, or perf indicator.
