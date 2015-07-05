@@ -22,10 +22,9 @@ class CompetencyViewTests(TestCase):
     - no-data tests
     """
 
-    def setUp(self):
+    def setUp(self, num_elements=2):
         # Build a school, down to the performance indicator level.
-        #  These should be a few loops, making a number of elements at each level.
-
+        self.num_elements = num_elements
         self.client = Client()
 
         # Create 2 test users.
@@ -37,12 +36,12 @@ class CompetencyViewTests(TestCase):
         new_up = UserProfile(user=self.test_user_1)
         new_up.save()
 
-        # Build 3 test schools that user 0 is associated with,
-        #  3 the user 1 is associated with.
+        # Build num_elements test schools that user 0 is associated with,
+        #  num_elements the user 1 is associated with.
         self.test_schools, self.test_sas = [], []
         for school_num in range(6):
             name = "Test School %d" % school_num
-            if school_num < 3:
+            if school_num < num_elements:
                 new_school = School.objects.create(name=name, owner=self.test_user_0)
                 self.test_user_0.userprofile.schools.add(new_school)
             else:
@@ -50,40 +49,40 @@ class CompetencyViewTests(TestCase):
                 self.test_user_1.userprofile.schools.add(new_school)
             self.test_schools.append(new_school)
 
-            # Create 3 subject areas for each school.
-            for sa_num in range(3):
+            # Create num_elements subject areas for each school.
+            for sa_num in range(num_elements):
                 sa_name = "Test SA %d-%d" % (school_num, sa_num)
                 new_sa = SubjectArea.objects.create(subject_area=sa_name,
                                                     school=new_school)
                 self.test_sas.append(new_sa)
 
-                # Create 3 grad standards for each subject area.
-                for gs_num in range(3):
+                # Create num_elements grad standards for each subject area.
+                for gs_num in range(num_elements):
                     gs_body = "Test GS %d-%d-%d" % (school_num, sa_num, gs_num)
                     new_gs = GraduationStandard.objects.create(subject_area=new_sa,
                                                                graduation_standard=gs_body)
 
-                    # Create 3 perf indicators for each grad std.
-                    for pi_num in range(3):
+                    # Create num_elements perf indicators for each grad std.
+                    for pi_num in range(num_elements):
                         pi_body = "Test PI %d-%d-%d-%d" % (school_num, sa_num, gs_num, pi_num)
                         new_pi = PerformanceIndicator.objects.create(performance_indicator=pi_body,
                                                                      graduation_standard=new_gs)
 
-                # Create 3 sdas for each sa.
-                for sda_num in range(3):
+                # Create num_elements sdas for each sa.
+                for sda_num in range(num_elements):
                     sda_name = "Test SDA %d-%d-%d" % (school_num, sa_num, sda_num)
                     new_sda = SubdisciplineArea.objects.create(subject_area=new_sa,
                                                                subdiscipline_area=sda_name)
 
-                    # Create 3 grad standards for each sda.
-                    for gs_num in range(3):
+                    # Create num_elements grad standards for each sda.
+                    for gs_num in range(num_elements):
                         gs_body = "Test GS %d-%d-%d-%d" % (school_num, sa_num, sda_num, gs_num)
                         new_gs = GraduationStandard.objects.create(subject_area=new_sa,
                                                                    subdiscipline_area=new_sda,
                                                                    graduation_standard=gs_body)
 
-                        # Create 3 perf indicators for each grad std.
-                        for pi_num in range(3):
+                        # Create num_elements perf indicators for each grad std.
+                        for pi_num in range(num_elements):
                             pi_body = "Test PI %d-%d-%d-%d-%d" % (school_num, sa_num, sda_num, gs_num, pi_num)
                             new_pi = PerformanceIndicator.objects.create(performance_indicator=pi_body,
                                                                          graduation_standard=new_gs)
@@ -118,7 +117,7 @@ class CompetencyViewTests(TestCase):
             # For now, all users can see the names of all schools.
             self.assertEqual(school, response.context['school'])
 
-            if school_num < 3:
+            if school_num < self.num_elements:
                 # User should see sa and sdas for school they have permissions on.
                 for sa in school.subjectarea_set.all():
                     self.assertTrue(sa in response.context['subject_areas'])
