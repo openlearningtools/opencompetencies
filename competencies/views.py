@@ -13,7 +13,7 @@ from copy import copy
 from collections import OrderedDict
 
 from competencies.models import *
-
+from competencies import my_admin
 
 def index(request):
     return render_to_response('competencies/index.html',
@@ -52,10 +52,7 @@ def register(request):
         
         if form.is_valid():
             user = form.save()
-            # Create user profile, and connect to user.
-            new_userprofile = UserProfile()
-            new_userprofile.user = user
-            new_userprofile.save()
+            my_admin.add_userprofile(user)
             
             # Log the user in, and then redirect to home page.
             user = authenticate(username=user,

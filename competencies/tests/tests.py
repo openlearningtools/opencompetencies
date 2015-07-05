@@ -291,6 +291,20 @@ class CompetencyViewTests(TestCase):
         # Bug that page does not display gstds for sdas.
         pass
 
+    def test_register_view(self):
+        """Lets new user register an account."""
+        test_url = reverse('register')
+        self.generic_test_blank_form(test_url)
+
+        # Test new user can be created, and userprofile connected properly.
+        response = self.client.post(test_url, {'username': 'ozzy', 'email': '',
+                                               'password1': 'pw', 'password2': 'pw',
+                                               })
+        self.assertEqual(response.status_code, 302)
+        new_user = User.objects.filter(username='ozzy')[0]
+        self.assertTrue(hasattr(new_user, 'userprofile'))
+
+
     def generic_test_blank_form(self, test_url):
         """A helper method to test that a form-based page returns a blank form properly."""
         # Test that a logged in user can get a blank form properly.
