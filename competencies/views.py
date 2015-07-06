@@ -79,7 +79,7 @@ def no_edit_permission(request, school_id):
 
 # --- Simple views, for exploring system without changing it: ---
 def schools(request):
-    schools = School.objects.all()
+    schools = Organization.objects.all()
     return render_to_response('competencies/schools.html', {'schools': schools}, context_instance=RequestContext(request))
 
 def school(request, school_id):
@@ -98,7 +98,7 @@ def school(request, school_id):
 def sa_summary(request, sa_id):
     """Shows a GSP-style summary for a subject area."""
     sa = SubjectArea.objects.get(id=sa_id)
-    school = sa.school
+    school = sa.organization
     kwargs = get_visibility_filter(request.user, school)
 
     # Get competencies for the general subject area (no associated sda):
@@ -134,7 +134,7 @@ def edit_sa_summary(request, sa_id):
     # Needs sda elements as well.
 
     subject_area = SubjectArea.objects.get(id=sa_id)
-    school = subject_area.school
+    school = subject_area.organization
     kwargs = get_visibility_filter(request.user, school)
 
     # Test if user allowed to edit this school.
@@ -257,7 +257,7 @@ def generate_form(instance, element_type):
 
 def new_sa(request, school_id):
     """Create a new subject area for a given school."""
-    school = School.objects.get(id=school_id)
+    school = Organization.objects.get(id=school_id)
     # Test if user allowed to edit this school.
     if not has_edit_permission(request.user, school):
         redirect_url = '/no_edit_permission/' + str(school.id)
@@ -267,7 +267,7 @@ def new_sa(request, school_id):
         sa_form = SubjectAreaForm(request.POST)
         if sa_form.is_valid():
             new_sa = sa_form.save(commit=False)
-            new_sa.school = school
+            new_sa.organization = school
             new_sa.save()
             return redirect('/edit_sa_summary/%d' % new_sa.id)
 
@@ -280,7 +280,7 @@ def new_sa(request, school_id):
 def new_sda(request, sa_id):
     """Create a new subdiscipline area for a given subject area."""
     sa = SubjectArea.objects.get(id=sa_id)
-    school = sa.school
+    school = sa.organization
     # Test if user allowed to edit this school.
     if not has_edit_permission(request.user, school):
         redirect_url = '/no_edit_permission/' + str(school.id)
@@ -304,7 +304,7 @@ def new_sda(request, sa_id):
 def new_gs(request, sa_id):
     """Create a new grad std for a given general subject area."""
     sa = SubjectArea.objects.get(id=sa_id)
-    school = sa.school
+    school = sa.organization
     # Test if user allowed to edit this school.
     if not has_edit_permission(request.user, school):
         redirect_url = '/no_edit_permission/' + str(school.id)
@@ -328,7 +328,7 @@ def new_sda_gs(request, sda_id):
     """Create a new grad std for a given subdiscipline area."""
     sda = SubdisciplineArea.objects.get(id=sda_id)
     sa = sda.subject_area
-    school = sa.school
+    school = sa.organization
     # Test if user allowed to edit this school.
     if not has_edit_permission(request.user, school):
         redirect_url = '/no_edit_permission/' + str(school.id)
@@ -354,7 +354,7 @@ def new_pi(request, ca_id):
     """Create a new performance indicator (EU) for given grad std (CA)."""
     ca = GraduationStandard.objects.get(id=ca_id)
     sa = ca.subject_area
-    school = sa.school
+    school = sa.organization
     # Test if user allowed to edit this school.
     if not has_edit_permission(request.user, school):
         redirect_url = '/no_edit_permission/' + str(school.id)
@@ -380,7 +380,7 @@ def new_pi(request, ca_id):
 
 def get_school(school_id):
     """Returns school for given id."""
-    return School.objects.get(id=school_id)
+    return Organization.objects.get(id=school_id)
 
 def get_subjectareas(school, kwargs):
     """Returns subject areas for a given school."""
@@ -422,7 +422,7 @@ def get_eu_lts(ca_eus, kwargs):
 
 def get_visibility_filter(user, school):
     # Get filter for visibility, based on logged-in status.
-    if user.is_authenticated() and school in user.userprofile.schools.all():
+    if user.is_authenticated() and school in user.userprofile.organizations.all():
         kwargs = {}
     elif user.is_authenticated() and school in get_user_sa_schools(user):
         kwargs = {}
@@ -436,7 +436,7 @@ def get_user_sa_schools(user):
     to see all elements of that school's system. Can only edit some sa's, but can see everything.
     """
     # This is ugly implementation; should probably be in models.py
-    schools = [sa.school for sa in user.userprofile.subject_areas.all()]
+    schools = [sa.organization for sa in user.userprofile.subject_areas.all()]
     return schools
 
 # --- Edit views, for editing parts of the system ---
@@ -445,7 +445,7 @@ def has_edit_permission(user, school, subject_area=None):
     """
     # Returns True if allowed to edit, False if not allowed to edit
     # If school is in userprofile, user can edit anything
-    if school in user.userprofile.schools.all():
+    if school in user.userprofile.organizations.all():
         return True
     # User can not edit entire school system; check if user has permission to edit this subject area.
     # Will throw error if user has no subject_areas defined? (public, guest)
@@ -461,7 +461,7 @@ def get_subjectarea_from_object(object_in):
     given object is above the level of a subject_area.
     """
     class_name = object_in.__class__.__name__
-    if class_name == 'School':
+    if class_name == 'Organization':
         return None
     elif class_name == 'SubjectArea':
         return object_in
@@ -547,7 +547,7 @@ def new_school(request):
     """Creates a new school."""
 
     if request.method == 'POST':
-        new_school_form = SchoolForm(request.POST)
+        new_school_form = OrganizationForm(request.POST)
         if new_school_form.is_valid():
             new_school = new_school_form.save(commit=False)
             new_school.owner = request.user
@@ -555,7 +555,7 @@ def new_school(request):
             associate_user_school(request.user, new_school)
             return redirect(reverse('competencies:schools'))
 
-    new_school_form = SchoolForm()
+    new_school_form = OrganizationForm()
 
     return render_to_response('competencies/new_school.html',
                               {'new_school_form': new_school_form,},
@@ -564,9 +564,9 @@ def new_school(request):
 def associate_user_school(user, school):
     # Associates a given school with a given user
     try:
-        user.userprofile.schools.add(school)
+        user.userprofile.organizations.add(school)
     except: # User probably does not have a profile yet
         up = UserProfile()
         up.user = user
         up.save()
-        up.schools.add(school)
+        up.organizations.add(school)

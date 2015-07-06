@@ -52,20 +52,20 @@ class CompetencyViewTests(TestCase):
         #  num_elements the user 1 is associated with.
         self.test_schools, self.test_sas = [], []
         for school_num in range(6):
-            name = "Test School %d" % school_num
+            name = "Test Organization %d" % school_num
             if school_num < num_elements:
-                new_school = School.objects.create(name=name, owner=self.test_user_0)
-                self.test_user_0.userprofile.schools.add(new_school)
+                new_school = Organization.objects.create(name=name, owner=self.test_user_0)
+                self.test_user_0.userprofile.organizations.add(new_school)
             else:
-                new_school = School.objects.create(name=name, owner=self.test_user_1)
-                self.test_user_1.userprofile.schools.add(new_school)
+                new_school = Organization.objects.create(name=name, owner=self.test_user_1)
+                self.test_user_1.userprofile.organizations.add(new_school)
             self.test_schools.append(new_school)
 
             # Create num_elements subject areas for each school.
             for sa_num in range(num_elements):
                 sa_name = "Test SA %d-%d" % (school_num, sa_num)
                 new_sa = SubjectArea.objects.create(subject_area=sa_name,
-                                                    school=new_school)
+                                                    organization=new_school)
                 self.test_sas.append(new_sa)
 
                 # Create num_elements grad standards for each subject area.
@@ -151,13 +151,13 @@ class CompetencyViewTests(TestCase):
         #  and user can modify school.
         response = self.client.post(test_url, {'name': 'my new school'})
         self.assertEqual(response.status_code, 302)
-        school_names = [school.name for school in School.objects.all()]
+        school_names = [school.name for school in Organization.objects.all()]
         self.assertTrue('my new school' in school_names)
 
-        for school in School.objects.all():
+        for school in Organization.objects.all():
             if school.name == 'my new school':
                 self.assertTrue(school.owner, self.test_user_0)
-                self.assertTrue(school in self.test_user_0.userprofile.schools.all())
+                self.assertTrue(school in self.test_user_0.userprofile.organizations.all())
 
         # Test that user can't create a second school of the same name.
         # DEV: DB error causes test to fail. How test this properly?
@@ -169,12 +169,12 @@ class CompetencyViewTests(TestCase):
         self.client.login(username='testuser1', password='pw')
         response = self.client.post(test_url, {'name': 'my new school'})
         self.assertEqual(response.status_code, 302)
-        school_names = [school.name for school in School.objects.all()]
+        school_names = [school.name for school in Organization.objects.all()]
         # DEV: Verify name 'my new school' appears twice in list.
         self.assertTrue('my new school' in school_names)
 
         owner_correct = False
-        for school in School.objects.all():
+        for school in Organization.objects.all():
             if school.name == 'my new school' and school.owner == self.test_user_1:
                 owner_correct = True
         self.assertTrue(owner_correct)

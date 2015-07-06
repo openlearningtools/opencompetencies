@@ -13,8 +13,9 @@ from django.contrib.auth.forms import UserCreationForm
 #    which is not very accessible to students. This is a rephrasing of the element in
 #    language that is easier for students to understand.
 
-class School(models.Model):
+class Organization(models.Model):
     name = models.CharField(max_length=500)
+    org_type = models.CharField(max_length=500, default='school')
     owner = models.ForeignKey(User)
 
     class Meta:
@@ -33,19 +34,19 @@ class CoreElement(models.Model):
 
 class SubjectArea(CoreElement):
     subject_area = models.CharField(max_length=500)
-    school = models.ForeignKey(School)
+    organization = models.ForeignKey(Organization)
 
     def __str__(self):
         return self.subject_area
 
     class Meta:
-        order_with_respect_to = 'school'
+        order_with_respect_to = 'organization'
 
     def is_parent_public(self):
         return True
 
     def get_parent(self):
-        return self.school
+        return self.organization
 
 class SubdisciplineArea(CoreElement):
     subdiscipline_area = models.CharField(max_length=500)
@@ -127,18 +128,18 @@ class LearningObjective(CoreElement):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    # User is allowed to edit any aspect of any school in this list.
-    schools = models.ManyToManyField(School, blank=True)
+    # User is allowed to edit any aspect of any organization in this list.
+    organizations = models.ManyToManyField(Organization, blank=True)
     # User is allowed to edit any descendent of any subject_area in this list.
     subject_areas = models.ManyToManyField(SubjectArea, blank=True)
 
 
 # --- ModelForms ---
-class SchoolForm(ModelForm):
+class OrganizationForm(ModelForm):
     class Meta:
-        model = School
+        model = Organization
         fields = ('name',)
-        labels = {'name': 'New school name',}
+        labels = {'name': 'New organization name',}
         widgets = {
             'name': TextInput(attrs={'class': 'span4'}),
             }

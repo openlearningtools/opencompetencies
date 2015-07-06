@@ -15,18 +15,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='GraduationStandard',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
                 ('public', models.BooleanField(default=False)),
                 ('student_friendly', models.TextField(blank=True)),
                 ('description', models.TextField(blank=True)),
                 ('graduation_standard', models.CharField(max_length=500)),
-                ('phrase', models.CharField(max_length=500, blank=True)),
+                ('phrase', models.CharField(blank=True, max_length=500)),
             ],
         ),
         migrations.CreateModel(
             name='LearningObjective',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
                 ('public', models.BooleanField(default=False)),
                 ('student_friendly', models.TextField(blank=True)),
                 ('description', models.TextField(blank=True)),
@@ -34,9 +34,18 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='Organization',
+            fields=[
+                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
+                ('name', models.CharField(max_length=500)),
+                ('org_type', models.CharField(default='school', max_length=500)),
+                ('owner', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.CreateModel(
             name='PerformanceIndicator',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
                 ('public', models.BooleanField(default=False)),
                 ('student_friendly', models.TextField(blank=True)),
                 ('description', models.TextField(blank=True)),
@@ -45,17 +54,9 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='School',
-            fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
-                ('name', models.CharField(max_length=500)),
-                ('owner', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
-            ],
-        ),
-        migrations.CreateModel(
             name='SubdisciplineArea',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
                 ('public', models.BooleanField(default=False)),
                 ('student_friendly', models.TextField(blank=True)),
                 ('description', models.TextField(blank=True)),
@@ -65,19 +66,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SubjectArea',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
                 ('public', models.BooleanField(default=False)),
                 ('student_friendly', models.TextField(blank=True)),
                 ('description', models.TextField(blank=True)),
                 ('subject_area', models.CharField(max_length=500)),
-                ('school', models.ForeignKey(to='competencies.School')),
+                ('organization', models.ForeignKey(to='competencies.Organization')),
             ],
         ),
         migrations.CreateModel(
             name='UserProfile',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
-                ('schools', models.ManyToManyField(blank=True, to='competencies.School')),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
+                ('organizations', models.ManyToManyField(blank=True, to='competencies.Organization')),
                 ('subject_areas', models.ManyToManyField(blank=True, to='competencies.SubjectArea')),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
@@ -95,7 +96,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='graduationstandard',
             name='subdiscipline_area',
-            field=models.ForeignKey(to='competencies.SubdisciplineArea', null=True, blank=True),
+            field=models.ForeignKey(null=True, to='competencies.SubdisciplineArea', blank=True),
         ),
         migrations.AddField(
             model_name='graduationstandard',
@@ -104,7 +105,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterOrderWithRespectTo(
             name='subjectarea',
-            order_with_respect_to='school',
+            order_with_respect_to='organization',
         ),
         migrations.AlterOrderWithRespectTo(
             name='subdisciplinearea',
@@ -113,6 +114,10 @@ class Migration(migrations.Migration):
         migrations.AlterOrderWithRespectTo(
             name='performanceindicator',
             order_with_respect_to='graduation_standard',
+        ),
+        migrations.AlterUniqueTogether(
+            name='organization',
+            unique_together=set([('name', 'owner')]),
         ),
         migrations.AlterOrderWithRespectTo(
             name='learningobjective',

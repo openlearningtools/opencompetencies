@@ -5,12 +5,12 @@ from django.contrib.auth.models import User
 from competencies.models import *
 
 
-# --- School admin, with inline subjects ---
+# --- Organization admin, with inline subjects ---
 class SubjectAreaInline(admin.TabularInline):
     model = SubjectArea
     extra = 1
 
-class SchoolAdmin(admin.ModelAdmin):
+class OrganizationAdmin(admin.ModelAdmin):
     inlines = [SubjectAreaInline]
 
 # --- Subject Area admin, with subdisciplines inline
@@ -56,7 +56,7 @@ class UserProfileInline(admin.StackedInline):
 class UserAdmin(UserAdmin):
     inlines = (UserProfileInline, )
 
-admin.site.register(School, SchoolAdmin)
+admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(SubjectArea, SubjectAreaAdmin)
 admin.site.register(SubdisciplineArea, SubdisciplineAreaAdmin)
 admin.site.register(GraduationStandard, GraduationStandardAdmin)

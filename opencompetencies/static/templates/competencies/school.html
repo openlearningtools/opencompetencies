@@ -32,7 +32,7 @@
 		  {% endfor %}
 		  </ul>
 
-	 {% elif user.is_authenticated and school in user.userprofile.schools.all %}
+	 {% elif user.is_authenticated and school in user.userprofile.organizations.all %}
 		  <p>This school does not have any subject areas yet. <a href="{% url 'competencies:new_sa' school.id %}">Create a subject area</a>.</p>
     {% else %}
 		  <p>This school does not have any public subject areas yet.</p>
