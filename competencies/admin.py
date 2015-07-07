@@ -22,28 +22,28 @@ class SubjectAreaAdmin(admin.ModelAdmin):
     inlines = [SubdisciplineAreaInline]
 
 # --- Subdiscipline Area admin, with competency areas inline
-class GraduationStandardInline(admin.TabularInline):
-    model = GraduationStandard
+class CompetencyAreaInline(admin.TabularInline):
+    model = CompetencyArea
     extra = 1
 
 class SubdisciplineAreaAdmin(admin.ModelAdmin):
-    inlines = [GraduationStandardInline]
+    inlines = [CompetencyAreaInline]
 
 # --- Competency Area admin, with performance indicators inline
-class PerformanceIndicatorInline(admin.TabularInline):
-    model = PerformanceIndicator
+class EssentialUnderstandingInline(admin.TabularInline):
+    model = EssentialUnderstanding
     extra = 1
 
-class GraduationStandardAdmin(admin.ModelAdmin):
-    inlines = [PerformanceIndicatorInline]
+class CompetencyAreaAdmin(admin.ModelAdmin):
+    inlines = [EssentialUnderstandingInline]
 
 # --- Performance Indicator admin, with learning objectives inline
-class LearningObjectiveInline(admin.TabularInline):
-    model = LearningObjective
+class LearningTargetInline(admin.TabularInline):
+    model = LearningTarget
     extra = 1
 
-class PerformanceIndicatorAdmin(admin.ModelAdmin):
-    inlines = [LearningObjectiveInline]
+class EssentialUnderstandingAdmin(admin.ModelAdmin):
+    inlines = [LearningTargetInline]
 
 # --- Pathway Admin ---
 class PathwayAdmin(admin.ModelAdmin):
@@ -59,8 +59,8 @@ class UserAdmin(UserAdmin):
 admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(SubjectArea, SubjectAreaAdmin)
 admin.site.register(SubdisciplineArea, SubdisciplineAreaAdmin)
-admin.site.register(GraduationStandard, GraduationStandardAdmin)
-admin.site.register(PerformanceIndicator, PerformanceIndicatorAdmin)
+admin.site.register(CompetencyArea, CompetencyAreaAdmin)
+admin.site.register(EssentialUnderstanding, EssentialUnderstandingAdmin)
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
