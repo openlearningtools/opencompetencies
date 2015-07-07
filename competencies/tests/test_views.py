@@ -71,14 +71,14 @@ class CompetencyViewTests(TestCase):
                 # Create num_elements grad standards for each subject area.
                 for gs_num in range(num_elements):
                     gs_body = "Test GS %d-%d-%d" % (school_num, sa_num, gs_num)
-                    new_gs = GraduationStandard.objects.create(subject_area=new_sa,
-                                                               graduation_standard=gs_body)
+                    new_gs = CompetencyArea.objects.create(subject_area=new_sa,
+                                                               competency_area=gs_body)
 
                     # Create num_elements perf indicators for each grad std.
                     for pi_num in range(num_elements):
                         pi_body = "Test PI %d-%d-%d-%d" % (school_num, sa_num, gs_num, pi_num)
-                        new_pi = PerformanceIndicator.objects.create(performance_indicator=pi_body,
-                                                                     graduation_standard=new_gs)
+                        new_pi = EssentialUnderstanding.objects.create(essential_understanding=pi_body,
+                                                                     competency_area=new_gs)
 
                 # Create num_elements sdas for each sa.
                 for sda_num in range(num_elements):
@@ -89,15 +89,15 @@ class CompetencyViewTests(TestCase):
                     # Create num_elements grad standards for each sda.
                     for gs_num in range(num_elements):
                         gs_body = "Test GS %d-%d-%d-%d" % (school_num, sa_num, sda_num, gs_num)
-                        new_gs = GraduationStandard.objects.create(subject_area=new_sa,
+                        new_gs = CompetencyArea.objects.create(subject_area=new_sa,
                                                                    subdiscipline_area=new_sda,
-                                                                   graduation_standard=gs_body)
+                                                                   competency_area=gs_body)
 
                         # Create num_elements perf indicators for each grad std.
                         for pi_num in range(num_elements):
                             pi_body = "Test PI %d-%d-%d-%d-%d" % (school_num, sa_num, sda_num, gs_num, pi_num)
-                            new_pi = PerformanceIndicator.objects.create(performance_indicator=pi_body,
-                                                                         graduation_standard=new_gs)
+                            new_pi = EssentialUnderstanding.objects.create(essential_understanding=pi_body,
+                                                                         competency_area=new_gs)
 
 
     def test_index_view(self):
@@ -209,12 +209,12 @@ class CompetencyViewTests(TestCase):
         self.generic_test_blank_form(test_url)
 
         # Test user can create a new gs, and it's stored in db.
-        data = {'graduation_standard': 'knows science',
+        data = {'competency_area': 'knows science',
                 'student_friendly': '', 'description': '', 'phrase': '',
                 }
         response = self.client.post(test_url, data)
         self.assertEqual(response.status_code, 302)
-        gs_titles = [gs.graduation_standard for gs in self.test_sas[0].graduationstandard_set.all()]
+        gs_titles = [gs.competency_area for gs in self.test_sas[0].competencyarea_set.all()]
         self.assertTrue('knows science' in gs_titles)
 
     def test_new_sda_gs_view(self):
@@ -224,27 +224,27 @@ class CompetencyViewTests(TestCase):
         self.generic_test_blank_form(test_url)
 
         # Test user can create a new gs for the sda, and it's stored in db.
-        data = {'graduation_standard': 'knows Newtons Laws',
+        data = {'competency_area': 'knows Newtons Laws',
                 'student_friendly': '', 'description': '', 'phrase': '',
                 }
         response = self.client.post(test_url, data)
         self.assertEqual(response.status_code, 302)
-        gs_titles = [gs.graduation_standard for gs in test_sdas[0].graduationstandard_set.all()]
+        gs_titles = [gs.competency_area for gs in test_sdas[0].competencyarea_set.all()]
         self.assertTrue('knows Newtons Laws' in gs_titles)
 
     def test_new_pi_view(self):
         """Lets user create a new performance indicator for a graduation standard."""
-        test_gstds = GraduationStandard.objects.all()
+        test_gstds = CompetencyArea.objects.all()
         test_url = reverse('competencies:new_pi', args=(test_gstds[0].id,))
         self.generic_test_blank_form(test_url)
 
         # Test user can create a new pi for the gs, and it's stored in db.
-        data = {'performance_indicator': 'can state first law',
+        data = {'essential_understanding': 'can state first law',
                 'student_friendly': '', 'description': '',
                 }
         response = self.client.post(test_url, data)
         self.assertEqual(response.status_code, 302)
-        pi_bodies = [pi.performance_indicator for pi in test_gstds[0].performanceindicator_set.all()]
+        pi_bodies = [pi.essential_understanding for pi in test_gstds[0].essentialunderstanding_set.all()]
         self.assertTrue('can state first law' in pi_bodies)
 
     def test_sa_summary_view(self):
@@ -257,19 +257,19 @@ class CompetencyViewTests(TestCase):
         # Check that grad stds for sa are in context.
         self.assertTrue('grad_std_eus' in response.context)
         grad_std_eus = response.context['grad_std_eus']
-        grad_stds = sa.graduationstandard_set.filter(subdiscipline_area=None)
+        grad_stds = sa.competencyarea_set.filter(subdiscipline_area=None)
         # print(grad_std_eus)
         # print(grad_stds)
         for grad_std in grad_stds:
             # print('ok', grad_std, grad_std_eus.keys())
             self.assertTrue(grad_std in grad_std_eus.keys())
             # Check that pis for each grad std are in context.
-            pis = grad_std.performanceindicator_set.all()
+            pis = grad_std.essentialunderstanding_set.all()
             # print(pis)
             for pi in pis:
                 self.assertTrue(pi in grad_std_eus[grad_std])
                 # Check that pi is on the rendered page.
-                self.assertTrue(pi.performance_indicator in response.content.decode())
+                self.assertTrue(pi.essential_understanding in response.content.decode())
 
 
         # Check that grad stds for sda are in context.
@@ -283,19 +283,19 @@ class CompetencyViewTests(TestCase):
         # print(sda_grad_stds, '\n')
         # print(sda_grad_stds.keys(), '\n')
         
-        grad_stds = sda.graduationstandard_set.all()
+        grad_stds = sda.competencyarea_set.all()
         # print(grad_stds, '\n')
 
         for grad_std in grad_stds:
             # print(grad_std, sda_grad_stds.keys(), '\n\n')
             self.assertTrue(grad_std in sda_grad_stds[sda])
             # Check that pis for each grad std are in context.
-            pis = grad_std.performanceindicator_set.all()
+            pis = grad_std.essentialunderstanding_set.all()
             for pi in pis:
                 self.assertTrue(pi in sda_grad_std_eus[grad_std])
                 # print('--- context ---\n', response.content.decode())
                 # Check that pi is on rendered page.
-                self.assertTrue(pi.performance_indicator in response.content.decode())
+                self.assertTrue(pi.essential_understanding in response.content.decode())
 
     def test_edit_sa_summary_view(self):
         """Lets user edit a subject area and its sdas, gstds, and pis."""

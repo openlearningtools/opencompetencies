@@ -102,22 +102,22 @@ def sa_summary(request, sa_id):
     kwargs = get_visibility_filter(request.user, school)
 
     # Get competencies for the general subject area (no associated sda):
-    sa_general_graduation_standards = sa.graduationstandard_set.filter(subdiscipline_area=None).filter(**kwargs)
+    sa_general_competency_areas = sa.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
 
     # Get eus for each competency area.
     grad_std_eus = OrderedDict()
-    for grad_std in sa_general_graduation_standards:
-        grad_std_eus[grad_std] = grad_std.performanceindicator_set.filter(**kwargs)
+    for grad_std in sa_general_competency_areas:
+        grad_std_eus[grad_std] = grad_std.essentialunderstanding_set.filter(**kwargs)
         
     # Get sdas, sda grad_stds, sda eus
     sdas = sa.subdisciplinearea_set.filter(**kwargs)
     sda_grad_stds = OrderedDict()
     for sda in sdas:
-        sda_grad_stds[sda] = sda.graduationstandard_set.filter(**kwargs)
+        sda_grad_stds[sda] = sda.competencyarea_set.filter(**kwargs)
     sda_grad_std_eus = OrderedDict()
     for sda in sdas:
         for grad_std in sda_grad_stds[sda]:
-            sda_grad_std_eus[grad_std] = grad_std.performanceindicator_set.filter(**kwargs)
+            sda_grad_std_eus[grad_std] = grad_std.essentialunderstanding_set.filter(**kwargs)
 
     return render_to_response('competencies/sa_summary.html',
                               {'subject_area': sa, 'school': school,
@@ -143,17 +143,17 @@ def edit_sa_summary(request, sa_id):
         return redirect(redirect_url)
 
     # Get competency areas.
-    sa_general_graduation_standards = subject_area.graduationstandard_set.filter(subdiscipline_area=None).filter(**kwargs)
+    sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
 
     # Get sdas, sda cas, sda eus
     sdas = subject_area.subdisciplinearea_set.filter(**kwargs)
     sda_cas = OrderedDict()
     for sda in sdas:
-        sda_cas[sda] = sda.graduationstandard_set.filter(**kwargs)
+        sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
     sda_ca_eus = OrderedDict()
     for sda in sdas:
         for ca in sda_cas[sda]:
-            sda_ca_eus[ca] = ca.performanceindicator_set.filter(**kwargs)
+            sda_ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
 
     for sda, cas in sda_cas.items():
         print('sda: ', sda)
@@ -164,9 +164,9 @@ def edit_sa_summary(request, sa_id):
 
         process_form(request, subject_area, 'sa')
 
-        for ca in sa_general_graduation_standards:
+        for ca in sa_general_competency_areas:
             process_form(request, ca, 'ca')
-            eus = ca.performanceindicator_set.filter(**kwargs)
+            eus = ca.essentialunderstanding_set.filter(**kwargs)
             for eu in eus:
                 process_form(request, eu, 'eu')
         
@@ -181,10 +181,10 @@ def edit_sa_summary(request, sa_id):
     sa_form = generate_form(subject_area, 'sa')
 
     ca_eu_forms = OrderedDict()
-    for ca in sa_general_graduation_standards:
+    for ca in sa_general_competency_areas:
         ca_form = generate_form(ca, 'ca')
         ca_form.my_id = ca.id
-        eus = ca.performanceindicator_set.filter(**kwargs)
+        eus = ca.essentialunderstanding_set.filter(**kwargs)
         eu_forms = []
         for eu in eus:
             eu_form = generate_form(eu, 'eu')
@@ -235,9 +235,9 @@ def process_form(request, instance, element_type):
     elif element_type == 'sda':
         form = SubdisciplineAreaForm(request.POST, prefix=prefix, instance=instance)
     elif element_type == 'ca':
-        form = GraduationStandardForm(request.POST, prefix=prefix, instance=instance)
+        form = CompetencyAreaForm(request.POST, prefix=prefix, instance=instance)
     elif element_type == 'eu':
-        form = PerformanceIndicatorForm(request.POST, prefix=prefix, instance=instance)
+        form = EssentialUnderstandingForm(request.POST, prefix=prefix, instance=instance)
 
     if form.is_valid():
         form.save()
@@ -251,9 +251,9 @@ def generate_form(instance, element_type):
     elif element_type == 'sda':
         return SubdisciplineAreaForm(prefix=prefix, instance=instance)
     elif element_type == 'ca':
-        return GraduationStandardForm(prefix=prefix, instance=instance)
+        return CompetencyAreaForm(prefix=prefix, instance=instance)
     elif element_type == 'eu':
-        return PerformanceIndicatorForm(prefix=prefix, instance=instance)
+        return EssentialUnderstandingForm(prefix=prefix, instance=instance)
 
 def new_sa(request, school_id):
     """Create a new subject area for a given school."""
@@ -311,14 +311,14 @@ def new_gs(request, sa_id):
         return redirect(redirect_url)
 
     if request.method == 'POST':
-        gs_form = GraduationStandardForm(request.POST)
+        gs_form = CompetencyAreaForm(request.POST)
         if gs_form.is_valid():
             new_gs = gs_form.save(commit=False)
             new_gs.subject_area = sa
             new_gs.save()
             return redirect('/edit_sa_summary/%d' % sa.id)
 
-    gs_form = GraduationStandardForm()
+    gs_form = CompetencyAreaForm()
 
     return render_to_response('competencies/new_gs.html',
                               {'school': school, 'sa': sa, 'gs_form': gs_form,},
@@ -335,7 +335,7 @@ def new_sda_gs(request, sda_id):
         return redirect(redirect_url)
 
     if request.method == 'POST':
-        gs_form = GraduationStandardForm(request.POST)
+        gs_form = CompetencyAreaForm(request.POST)
         if gs_form.is_valid():
             new_gs = gs_form.save(commit=False)
             new_gs.subject_area = sa
@@ -343,7 +343,7 @@ def new_sda_gs(request, sda_id):
             new_gs.save()
             return redirect('/edit_sa_summary/%d' % sa.id)
 
-    gs_form = GraduationStandardForm()
+    gs_form = CompetencyAreaForm()
 
     return render_to_response('competencies/new_sda_gs.html',
                               {'school': school, 'sa': sa, 'sda': sda,
@@ -352,7 +352,7 @@ def new_sda_gs(request, sda_id):
 
 def new_pi(request, ca_id):
     """Create a new performance indicator (EU) for given grad std (CA)."""
-    ca = GraduationStandard.objects.get(id=ca_id)
+    ca = CompetencyArea.objects.get(id=ca_id)
     sa = ca.subject_area
     school = sa.organization
     # Test if user allowed to edit this school.
@@ -361,14 +361,14 @@ def new_pi(request, ca_id):
         return redirect(redirect_url)
 
     if request.method == 'POST':
-        pi_form = PerformanceIndicatorForm(request.POST)
+        pi_form = EssentialUnderstandingForm(request.POST)
         if pi_form.is_valid():
             new_pi = pi_form.save(commit=False)
-            new_pi.graduation_standard = ca
+            new_pi.competency_area = ca
             new_pi.save()
             return redirect('/edit_sa_summary/%d' % sa.id)
 
-    pi_form = PerformanceIndicatorForm()
+    pi_form = EssentialUnderstandingForm()
 
     return render_to_response('competencies/new_pi.html',
                               {'school': school, 'sa': sa, 'ca': ca,
@@ -401,7 +401,7 @@ def get_sa_cas(subject_areas, kwargs):
     """
     sa_cas = OrderedDict()
     for sa in subject_areas:
-        sa_cas[sa] = sa.graduationstandard_set.filter(subdiscipline_area=None).filter(**kwargs)
+        sa_cas[sa] = sa.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
     return sa_cas
 
 def get_sda_cas(subject_areas, sa_sdas, kwargs):
@@ -409,7 +409,7 @@ def get_sda_cas(subject_areas, sa_sdas, kwargs):
     sda_cas = {}
     for sa in subject_areas:
         for sda in sa_sdas[sa]:
-            sda_cas[sda] = sda.graduationstandard_set.filter(**kwargs)
+            sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
     return sda_cas
 
 def get_eu_lts(ca_eus, kwargs):
@@ -465,12 +465,12 @@ def get_subjectarea_from_object(object_in):
         return None
     elif class_name == 'SubjectArea':
         return object_in
-    elif class_name in ['SubdisciplineArea', 'GraduationStandard']:
+    elif class_name in ['SubdisciplineArea', 'CompetencyArea']:
         return object_in.subject_area
-    elif class_name == 'PerformanceIndicator':
-        return object_in.graduation_standard.subject_area
+    elif class_name == 'EssentialUnderstanding':
+        return object_in.competency_area.subject_area
     elif class_name == 'LearningObjective':
-        return object_in.performance_indicator.graduation_standard.subject_area
+        return object_in.essential_understanding.competency_area.subject_area
 
 @login_required    
 def change_visibility(request, school_id, object_type, object_pk, visibility_mode):

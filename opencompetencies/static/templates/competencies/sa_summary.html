@@ -17,12 +17,12 @@
 	   <div class="row row-eq-height">
 		  <div class="span4 summary_box grad_std_col">
 			 <p class="lead">{{ grad_std.phrase }}</p>
-			 <p>{{ grad_std.graduation_standard }}</p>
+			 <p>{{ grad_std.competency_area }}</p>
 		  </div>
 		  <div class="span7 summary_box pi_col">
 			 <ul>
 				{% for eu in eus %}
-				  <li>{{ eu.performance_indicator }}</li>
+				  <li>{{ eu.essential_understanding }}</li>
 				{% endfor %}
 			 </ul>
 		  </div>
@@ -38,14 +38,14 @@
 	     <div class="row row-eq-height">
 			 <div class="span4 summary_box grad_std_col">
 				<p class="lead">{{ grad_std.phrase }}</p>
-				<p>{{ grad_std.graduation_standard }}</p>
+				<p>{{ grad_std.competency_area }}</p>
 			 </div>
 			 <div class="span7 summary_box pi_col">
 				<ul>
 				  {% for cand_grad_std, eus in sda_grad_std_eus.items %}
 				    {% if cand_grad_std == grad_std %}
 				      {% for eu in eus %}
-				        <li>{{ eu.performance_indicator }}</li>
+				        <li>{{ eu.essential_understanding }}</li>
 						{% endfor %}
 					 {% endif %}
 				  {% endfor %}
