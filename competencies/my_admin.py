@@ -18,45 +18,28 @@ def add_userprofile(user):
 def initialize_data():
     """For use when re-creating the db locally."""
     # To use this, import into django shell and run it.
+    # Should I restructure this to run it directly from cli?
 
     # Create superuser, and regular user.
+    ru_username = os.environ['RU_USERNAME']
+    su_username = os.environ['SU_USERNAME']
+
     try:
-        su = User.objects.create_superuser(username=os.environ['SU_USERNAME'],
+        su = User.objects.create_superuser(username=su_username,
                                            password=os.environ['SU_PASSWORD'],
                                            email='')
         add_userprofile(su)
-        print("Created superuser %s." % os.environ['SU_USERNAME'])
+        print("Created superuser %s." % su_username)
     except IntegrityError:
-        print('The user %s already exists.' % os.environ['SU_USERNAME'])
-        su = User.objects.filter(username=os.environ['SU_USERNAME'])[0]
+        print('The user %s already exists.' % su_username)
+        su = User.objects.filter(username=su_username)[0]
 
     try:
-        ru = User.objects.create_user(username=os.environ['RU_USERNAME'],
+        ru = User.objects.create_user(username=ru_username,
                                       password=os.environ['RU_PASSWORD'])
         add_userprofile(ru)
+        print("Created regular user %s." % ru_username)
     except IntegrityError:
-        print('The user %s already exists.' % os.environ['RU_USERNAME'])
-        ru = User.objects.filter(username=os.environ['RU_USERNAME'])[0]
+        print('The user %s already exists.' % ru_username)
+        ru = User.objects.filter(username=ru_username)[0]
 
-    build_sample_school(ru)
-
-def build_sample_school(owner):
-    """Build the sample school."""
-    # Create school.
-    try:
-        school = Organization.objects.create(name='Sample School', owner=owner)
-        owner.userprofile.organizations.add(school)
-    except IntegrityError:
-        print('Sample School already exists.')
-        school = Organization.objects.filter(name='Sample School', owner=owner)[0]
-
-    # Create subject area.
-    try:
-        sa = SubjectArea.objects.create(subject_area='English Language Arts',
-                                        organization=school)
-    except IntegrityError:
-        print('English Language Arts already exists.')
-        sa = SubjectArea.objects.filter(subject_area='English Language Arts',
-                                        organization=school)[0]
-
-    # Create 
