@@ -302,7 +302,7 @@ def new_sda(request, sa_id):
                               context_instance = RequestContext(request))
 
 def new_ca(request, sa_id):
-    """Create a new grad std for a given general subject area."""
+    """Create a new competency area for a given general subject area."""
     sa = SubjectArea.objects.get(id=sa_id)
     school = sa.organization
     # Test if user allowed to edit this school.
@@ -324,8 +324,8 @@ def new_ca(request, sa_id):
                               {'school': school, 'sa': sa, 'ca_form': ca_form,},
                               context_instance = RequestContext(request))
 
-def new_sda_gs(request, sda_id):
-    """Create a new grad std for a given subdiscipline area."""
+def new_sda_ca(request, sda_id):
+    """Create a new competency area for a given subdiscipline area."""
     sda = SubdisciplineArea.objects.get(id=sda_id)
     sa = sda.subject_area
     school = sa.organization
@@ -335,19 +335,19 @@ def new_sda_gs(request, sda_id):
         return redirect(redirect_url)
 
     if request.method == 'POST':
-        gs_form = CompetencyAreaForm(request.POST)
-        if gs_form.is_valid():
-            new_gs = gs_form.save(commit=False)
-            new_gs.subject_area = sa
-            new_gs.subdiscipline_area = sda
-            new_gs.save()
+        ca_form = CompetencyAreaForm(request.POST)
+        if ca_form.is_valid():
+            new_ca = ca_form.save(commit=False)
+            new_ca.subject_area = sa
+            new_ca.subdiscipline_area = sda
+            new_ca.save()
             return redirect('/edit_sa_summary/%d' % sa.id)
 
-    gs_form = CompetencyAreaForm()
+    ca_form = CompetencyAreaForm()
 
-    return render_to_response('competencies/new_sda_gs.html',
+    return render_to_response('competencies/new_sda_ca.html',
                               {'school': school, 'sa': sa, 'sda': sda,
-                               'gs_form': gs_form,},
+                               'ca_form': ca_form,},
                               context_instance = RequestContext(request))
 
 def new_pi(request, ca_id):

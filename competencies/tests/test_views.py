@@ -204,7 +204,7 @@ class CompetencyViewTests(TestCase):
         self.assertTrue('life science' in sda_names)
 
     def test_new_ca_view(self):
-        """Lets user create a new graduation standard for a general subject area."""
+        """Lets user create a new competency area for a general subject area."""
         test_url = reverse('competencies:new_ca', args=(self.test_sas[0].id,))
         self.generic_test_blank_form(test_url)
 
@@ -217,20 +217,20 @@ class CompetencyViewTests(TestCase):
         ca_titles = [ca.competency_area for ca in self.test_sas[0].competencyarea_set.all()]
         self.assertTrue('knows science' in ca_titles)
 
-    def test_new_sda_gs_view(self):
-        """Lets user create a new graduation standard for a subdiscipline area."""
+    def test_new_sda_ca_view(self):
+        """Lets user create a new competency area for a subdiscipline area."""
         test_sdas = [sda for sda in self.test_sas[0].subdisciplinearea_set.all()]
-        test_url = reverse('competencies:new_sda_gs', args=(test_sdas[0].id,))
+        test_url = reverse('competencies:new_sda_ca', args=(test_sdas[0].id,))
         self.generic_test_blank_form(test_url)
 
-        # Test user can create a new gs for the sda, and it's stored in db.
+        # Test user can create a new ca for the sda, and it's stored in db.
         data = {'competency_area': 'knows Newtons Laws',
                 'student_friendly': '', 'description': '', 'phrase': '',
                 }
         response = self.client.post(test_url, data)
         self.assertEqual(response.status_code, 302)
-        gs_titles = [gs.competency_area for gs in test_sdas[0].competencyarea_set.all()]
-        self.assertTrue('knows Newtons Laws' in gs_titles)
+        ca_titles = [ca.competency_area for ca in test_sdas[0].competencyarea_set.all()]
+        self.assertTrue('knows Newtons Laws' in ca_titles)
 
     def test_new_pi_view(self):
         """Lets user create a new performance indicator for a graduation standard."""
