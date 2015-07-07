@@ -45,8 +45,8 @@ urlpatterns = patterns('',
     # new_sda_ca: Create a new competency area, for a specific subdiscipline area.
     url(r'^new_sda_ca/(?P<sda_id>\d+)/$', views.new_sda_ca, name='new_sda_ca'),
 
-    # new_pi: Create a new perf ind(eu), for a specific grad standard (ca).
-    url(r'^new_pi/(?P<ca_id>\d+)/$', views.new_pi, name='new_pi'),
+    # new_eu: Create a new essential understanding, for a specific ca.
+    url(r'^new_eu/(?P<ca_id>\d+)/$', views.new_eu, name='new_eu'),
                        
 
     # --- Authorization pages ---

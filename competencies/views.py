@@ -350,8 +350,8 @@ def new_sda_ca(request, sda_id):
                                'ca_form': ca_form,},
                               context_instance = RequestContext(request))
 
-def new_pi(request, ca_id):
-    """Create a new performance indicator (EU) for given grad std (CA)."""
+def new_eu(request, ca_id):
+    """Create a new essential understanding for given ca."""
     ca = CompetencyArea.objects.get(id=ca_id)
     sa = ca.subject_area
     school = sa.organization
@@ -361,18 +361,18 @@ def new_pi(request, ca_id):
         return redirect(redirect_url)
 
     if request.method == 'POST':
-        pi_form = EssentialUnderstandingForm(request.POST)
-        if pi_form.is_valid():
-            new_pi = pi_form.save(commit=False)
-            new_pi.competency_area = ca
-            new_pi.save()
+        eu_form = EssentialUnderstandingForm(request.POST)
+        if eu_form.is_valid():
+            new_eu = eu_form.save(commit=False)
+            new_eu.competency_area = ca
+            new_eu.save()
             return redirect('/edit_sa_summary/%d' % sa.id)
 
-    pi_form = EssentialUnderstandingForm()
+    eu_form = EssentialUnderstandingForm()
 
-    return render_to_response('competencies/new_pi.html',
+    return render_to_response('competencies/new_eu.html',
                               {'school': school, 'sa': sa, 'ca': ca,
-                               'pi_form': pi_form,},
+                               'eu_form': eu_form,},
                               context_instance = RequestContext(request))
     
 

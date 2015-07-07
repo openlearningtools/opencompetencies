@@ -232,20 +232,20 @@ class CompetencyViewTests(TestCase):
         ca_titles = [ca.competency_area for ca in test_sdas[0].competencyarea_set.all()]
         self.assertTrue('knows Newtons Laws' in ca_titles)
 
-    def test_new_pi_view(self):
-        """Lets user create a new performance indicator for a graduation standard."""
+    def test_new_eu_view(self):
+        """Lets user create a new essential understanding for a ca."""
         test_gstds = CompetencyArea.objects.all()
-        test_url = reverse('competencies:new_pi', args=(test_gstds[0].id,))
+        test_url = reverse('competencies:new_eu', args=(test_gstds[0].id,))
         self.generic_test_blank_form(test_url)
 
-        # Test user can create a new pi for the gs, and it's stored in db.
+        # Test user can create a new eu for the gs, and it's stored in db.
         data = {'essential_understanding': 'can state first law',
                 'student_friendly': '', 'description': '',
                 }
         response = self.client.post(test_url, data)
         self.assertEqual(response.status_code, 302)
-        pi_bodies = [pi.essential_understanding for pi in test_gstds[0].essentialunderstanding_set.all()]
-        self.assertTrue('can state first law' in pi_bodies)
+        eu_bodies = [eu.essential_understanding for eu in test_gstds[0].essentialunderstanding_set.all()]
+        self.assertTrue('can state first law' in eu_bodies)
 
     def test_sa_summary_view(self):
         sa = self.test_schools[0].subjectarea_set.all()[0]
