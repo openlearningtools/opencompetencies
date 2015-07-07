@@ -82,16 +82,16 @@ def organizations(request):
     organizations = Organization.objects.all()
     return render_to_response('competencies/organizations.html', {'schools': organizations}, context_instance=RequestContext(request))
 
-def school(request, school_id):
-    """Displays subject areas and subdiscipline areas for a given school."""
-    school = get_school(school_id)
-    kwargs = get_visibility_filter(request.user, school)
-    # all subject areas for a school
-    sas = get_subjectareas(school, kwargs)
+def organization(request, organization_id):
+    """Displays subject areas and subdiscipline areas for a given organization."""
+    organization = get_school(organization_id)
+    kwargs = get_visibility_filter(request.user, organization)
+    # all subject areas for an organization
+    sas = get_subjectareas(organization, kwargs)
     # all subdiscipline areas for each subject area
     sa_sdas = get_sa_sdas(sas, kwargs)
-    return render_to_response('competencies/school.html',
-                              {'school': school, 'subject_areas': sas,
+    return render_to_response('competencies/organization.html',
+                              {'school': organization, 'subject_areas': sas,
                                'sa_sdas': sa_sdas},
                               context_instance = RequestContext(request))
 

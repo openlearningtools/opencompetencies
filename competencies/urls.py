@@ -15,8 +15,8 @@ urlpatterns = patterns('',
     # organizations: List of all organizations participating in Open Competencies
     url(r'^organizations/$', views.organizations, name='organizations'),
 
-    # school: Detail view for a school, showing subject areas.
-    url(r'^schools/(?P<school_id>\d+)/$', views.school, name='school'),
+    # organization: Detail view for an organization, showing subject areas.
+    url(r'^organizations/(?P<organization_id>\d+)/$', views.organization, name='organization'),
 
     # sa_summary/id: Show a GSP-style summary for a given subject area.
     url(r'^sa_summary/(?P<sa_id>\d+)/$', views.sa_summary, name='sa_summary'),

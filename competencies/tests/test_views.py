@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
 from competencies.models import *
-from competencies.views import school
+from competencies.views import organization
 from competencies import my_admin
 
 """DEV NOTES
@@ -105,39 +105,39 @@ class CompetencyViewTests(TestCase):
         response = self.client.get(reverse('competencies:index'))
         self.assertEqual(response.status_code, 200)
 
-    def test_schools_view(self):
-        """Schools page lists all schools, links to detail view of that school."""
+    def test_organizations_view(self):
+        """Organizations page lists all organizations, links to detail view of that organization."""
         response = self.client.get(reverse('competencies:organizations'))
         self.assertEqual(response.status_code, 200)
 
-        # Make sure list of schools appears in context, and that test_school
+        # Make sure list of organizations appears in context, and that test_school
         #  is in that list.
         self.assertTrue('schools' in response.context)
         for school in self.test_schools:
             self.assertTrue(school in response.context['schools'])
 
 
-    def test_school_view_logged_in(self):
-        """School page lists subject areas and subdiscipline areas for that school."""
+    def test_organization_view_logged_in(self):
+        """Organization page lists subject areas and subdiscipline areas for that organization."""
         self.client.login(username='testuser0', password='pw')
 
         for school_num, school in enumerate(self.test_schools):
-            test_url = reverse('competencies:school', args=(school.id,))
+            test_url = reverse('competencies:organization', args=(school.id,))
             response = self.client.get(test_url)
             self.assertEqual(response.status_code, 200)
 
-            # For now, all users can see the names of all schools.
+            # For now, all users can see the names of all organizations.
             self.assertEqual(school, response.context['school'])
 
             if school_num < self.num_elements:
-                # User should see sa and sdas for school they have permissions on.
+                # User should see sa and sdas for organization they have permissions on.
                 for sa in school.subjectarea_set.all():
                     self.assertTrue(sa in response.context['subject_areas'])
                     for sda in sa.subdisciplinearea_set.all():
                         self.assertTrue(sda in response.context['sa_sdas'][sa])
             else:
                 # All elements are private by default, so user should not see sas
-                #  or sdas for this school.
+                #  or sdas for this organization.
                 for sa in school.subjectarea_set.all():
                     self.assertFalse(sa in response.context['subject_areas'])
                     self.assertFalse(sa in response.context['sa_sdas'].keys())
