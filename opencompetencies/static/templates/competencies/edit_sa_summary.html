@@ -28,13 +28,13 @@
 				{% for eu_form in eu_forms %}
 				  {{ eu_form.performance_indicator }}
 				{% endfor %}
-				<a href="{% url 'competencies:new_pi' ca_form.my_id %}">new {{ school.alias_eu }}</a>
+				<a href="{% url 'competencies:new_eu' ca_form.my_id %}">new {{ school.alias_eu }}</a>
 		  </div>
 		</div>
 	 {% endfor %}
 
 	 <div class="row row-eq-height">
-		<div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_gs' subject_area.id %}">new {{ school.alias_ca }}</a></div>
+		<div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_ca' subject_area.id %}">new {{ school.alias_ca }}</a></div>
 		<div class="span7 lead summary_box pi_col">&nbsp</div>
 	 </div>
 
@@ -55,7 +55,7 @@
 				    {% for eu_form in eu_forms %}
 				      {{ eu_form.performance_indicator }}
 				    {% endfor %}
-				    <a href="{% url 'competencies:new_pi' ca_form.my_id %}">new {{ school.alias_eu }}</a>
+				    <a href="{% url 'competencies:new_eu' ca_form.my_id %}">new {{ school.alias_eu }}</a>
 				  {% endif %}
 				{% endfor %}
 			 </div>
@@ -63,7 +63,7 @@
 		{% endfor %}
 
 		<div class="row row-eq-height">
-		  <div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_sda_gs' sda_form.my_id %}">new {{ school.alias_ca }}</a></div>
+		  <div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_sda_ca' sda_form.my_id %}">new {{ school.alias_ca }}</a></div>
 		  <div class="span7 lead summary_box pi_col">&nbsp</div>
 		</div>
 
