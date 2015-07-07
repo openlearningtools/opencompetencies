@@ -13,8 +13,8 @@
 		<a href="{% url 'competencies:new_sa' school.id %}">new subject area</a>
 
 	 <div class="row row-eq-height">
-		<div class="span4 lead summary_box grad_std_col"><strong>Graduation Standards</strong></div>
-		<div class="span7 lead summary_box pi_col"><strong>Performance Indicators</strong></div>
+		<div class="span4 lead summary_box grad_std_col"><strong>{{ school.alias_ca|title }}s</strong></div>
+		<div class="span7 lead summary_box pi_col"><strong>{{ school.alias_eu|title }}s</strong></div>
 	 </div>
 
 
@@ -28,13 +28,13 @@
 				{% for eu_form in eu_forms %}
 				  {{ eu_form.performance_indicator }}
 				{% endfor %}
-				<a href="{% url 'competencies:new_pi' ca_form.my_id %}">new performance indicator</a>
+				<a href="{% url 'competencies:new_pi' ca_form.my_id %}">new {{ school.alias_eu }}</a>
 		  </div>
 		</div>
 	 {% endfor %}
 
 	 <div class="row row-eq-height">
-		<div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_gs' subject_area.id %}">new graduation standard</a></div>
+		<div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_gs' subject_area.id %}">new {{ school.alias_ca }}</a></div>
 		<div class="span7 lead summary_box pi_col">&nbsp</div>
 	 </div>
 
@@ -55,7 +55,7 @@
 				    {% for eu_form in eu_forms %}
 				      {{ eu_form.performance_indicator }}
 				    {% endfor %}
-				    <a href="{% url 'competencies:new_pi' ca_form.my_id %}">new performance indicator</a>
+				    <a href="{% url 'competencies:new_pi' ca_form.my_id %}">new {{ school.alias_eu }}</a>
 				  {% endif %}
 				{% endfor %}
 			 </div>
@@ -63,7 +63,7 @@
 		{% endfor %}
 
 		<div class="row row-eq-height">
-		  <div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_sda_gs' sda_form.my_id %}">new graduation standard</a></div>
+		  <div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_sda_gs' sda_form.my_id %}">new {{ school.alias_ca }}</a></div>
 		  <div class="span7 lead summary_box pi_col">&nbsp</div>
 		</div>
 

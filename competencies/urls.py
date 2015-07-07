@@ -39,8 +39,8 @@ urlpatterns = patterns('',
     # new_sda: Create a new sda, for a specific subject area.
     url(r'^new_sda/(?P<sa_id>\d+)/$', views.new_sda, name='new_sda'),
 
-    # new_gs: Create a new grad std, for a specific general subject area.
-    url(r'^new_gs/(?P<sa_id>\d+)/$', views.new_gs, name='new_gs'),
+    # new_ca: Create a new grad std, for a specific general subject area.
+    url(r'^new_ca/(?P<sa_id>\d+)/$', views.new_ca, name='new_ca'),
 
     # new_sda_gs: Create a new grad std, for a specific subdiscipline area.
     url(r'^new_sda_gs/(?P<sda_id>\d+)/$', views.new_sda_gs, name='new_sda_gs'),
