@@ -78,9 +78,9 @@ def no_edit_permission(request, school_id):
                               context_instance = RequestContext(request))
 
 # --- Simple views, for exploring system without changing it: ---
-def schools(request):
-    schools = Organization.objects.all()
-    return render_to_response('competencies/schools.html', {'schools': schools}, context_instance=RequestContext(request))
+def organizations(request):
+    organizations = Organization.objects.all()
+    return render_to_response('competencies/organizations.html', {'schools': organizations}, context_instance=RequestContext(request))
 
 def school(request, school_id):
     """Displays subject areas and subdiscipline areas for a given school."""
@@ -553,7 +553,7 @@ def new_school(request):
             new_school.owner = request.user
             new_school.save()
             associate_user_school(request.user, new_school)
-            return redirect(reverse('competencies:schools'))
+            return redirect(reverse('competencies:organizations'))
 
     new_school_form = OrganizationForm()
 

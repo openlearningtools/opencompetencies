@@ -12,8 +12,8 @@ urlpatterns = patterns('',
 
     # --- Simple views of competency system; no opportunity to modify system ---
 
-    # schools: List of all schools participating in Open Competencies
-    url(r'^schools/$', views.schools, name='schools'),
+    # organizations: List of all organizations participating in Open Competencies
+    url(r'^organizations/$', views.organizations, name='organizations'),
 
     # school: Detail view for a school, showing subject areas.
     url(r'^schools/(?P<school_id>\d+)/$', views.school, name='school'),

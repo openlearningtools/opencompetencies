@@ -107,7 +107,7 @@ class CompetencyViewTests(TestCase):
 
     def test_schools_view(self):
         """Schools page lists all schools, links to detail view of that school."""
-        response = self.client.get(reverse('competencies:schools'))
+        response = self.client.get(reverse('competencies:organizations'))
         self.assertEqual(response.status_code, 200)
 
         # Make sure list of schools appears in context, and that test_school
