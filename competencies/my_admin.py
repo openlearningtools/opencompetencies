@@ -25,6 +25,7 @@ def initialize_data():
                                            password=os.environ['SU_PASSWORD'],
                                            email='')
         add_userprofile(su)
+        print("Created superuser %s." % os.environ['SU_USERNAME'])
     except IntegrityError:
         print('The user %s already exists.' % os.environ['SU_USERNAME'])
         su = User.objects.filter(username=os.environ['SU_USERNAME'])[0]
@@ -41,6 +42,21 @@ def initialize_data():
 
 def build_sample_school(owner):
     """Build the sample school."""
-    school = Organization.objects.create(name='Sample School', owner=owner)
-    owner.userprofile.organizations.add(school)
+    # Create school.
+    try:
+        school = Organization.objects.create(name='Sample School', owner=owner)
+        owner.userprofile.organizations.add(school)
+    except IntegrityError:
+        print('Sample School already exists.')
+        school = Organization.objects.filter(name='Sample School', owner=owner)[0]
 
+    # Create subject area.
+    try:
+        sa = SubjectArea.objects.create(subject_area='English Language Arts',
+                                        organization=school)
+    except IntegrityError:
+        print('English Language Arts already exists.')
+        sa = SubjectArea.objects.filter(subject_area='English Language Arts',
+                                        organization=school)[0]
+
+    # Create 
