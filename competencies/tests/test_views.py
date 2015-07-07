@@ -142,40 +142,40 @@ class CompetencyViewTests(TestCase):
                     self.assertFalse(sa in response.context['subject_areas'])
                     self.assertFalse(sa in response.context['sa_sdas'].keys())
 
-    def test_new_school(self):
-        """New school allows uer to create a new school."""
-        test_url = reverse('competencies:new_school')
+    def test_new_organization(self):
+        """New organization allows uer to create a new organization."""
+        test_url = reverse('competencies:new_organization')
         self.generic_test_blank_form(test_url)
 
-        # Test user can create a new school, current user is owner,
-        #  and user can modify school.
-        response = self.client.post(test_url, {'name': 'my new school'})
+        # Test user can create a new organization, current user is owner,
+        #  and user can modify organization.
+        response = self.client.post(test_url, {'name': 'my new organization'})
         self.assertEqual(response.status_code, 302)
-        school_names = [school.name for school in Organization.objects.all()]
-        self.assertTrue('my new school' in school_names)
+        organization_names = [organization.name for organization in Organization.objects.all()]
+        self.assertTrue('my new organization' in organization_names)
 
-        for school in Organization.objects.all():
-            if school.name == 'my new school':
-                self.assertTrue(school.owner, self.test_user_0)
-                self.assertTrue(school in self.test_user_0.userprofile.organizations.all())
+        for organization in Organization.objects.all():
+            if organization.name == 'my new organization':
+                self.assertTrue(organization.owner, self.test_user_0)
+                self.assertTrue(organization in self.test_user_0.userprofile.organizations.all())
 
-        # Test that user can't create a second school of the same name.
+        # Test that user can't create a second organization of the same name.
         # DEV: DB error causes test to fail. How test this properly?
         #  Start by creating server error page.
-        # response = self.client.post(test_url, {'name': 'my new school'})
+        # response = self.client.post(test_url, {'name': 'my new organization'})
         # self.assertEqual(response.status_code, 500)
 
-        # But another user can create a school of that same name.
+        # But another user can create a organization of that same name.
         self.client.login(username='testuser1', password='pw')
-        response = self.client.post(test_url, {'name': 'my new school'})
+        response = self.client.post(test_url, {'name': 'my new organization'})
         self.assertEqual(response.status_code, 302)
-        school_names = [school.name for school in Organization.objects.all()]
-        # DEV: Verify name 'my new school' appears twice in list.
-        self.assertTrue('my new school' in school_names)
+        organization_names = [organization.name for organization in Organization.objects.all()]
+        # DEV: Verify name 'my new organization' appears twice in list.
+        self.assertTrue('my new organization' in organization_names)
 
         owner_correct = False
-        for school in Organization.objects.all():
-            if school.name == 'my new school' and school.owner == self.test_user_1:
+        for organization in Organization.objects.all():
+            if organization.name == 'my new organization' and organization.owner == self.test_user_1:
                 owner_correct = True
         self.assertTrue(owner_correct)
 

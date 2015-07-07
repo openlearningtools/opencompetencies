@@ -30,8 +30,8 @@ urlpatterns = patterns('',
 
     # --- New element pages ---
 
-    # new_school: Create a new school.
-    url(r'^new_school/$', views.new_school, name='new_school'),
+    # new_organization: Create a new organization.
+    url(r'^new_organization/$', views.new_organization, name='new_organization'),
 
     # new_sa: Create a new sa, for a specific school.
     url(r'^new_sa/(?P<school_id>\d+)/$', views.new_sa, name='new_sa'),

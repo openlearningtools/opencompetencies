@@ -3,6 +3,7 @@ from django.template import RequestContext
 from django.forms.models import modelform_factory, modelformset_factory, inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.loading import get_model
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.views import password_change
@@ -543,30 +544,30 @@ def set_parent_order(child_object, order):
     getattr(parent_object, order_method)(order)
 
 @login_required
-def new_school(request):
-    """Creates a new school."""
+def new_organization(request):
+    """Creates a new organization."""
 
     if request.method == 'POST':
-        new_school_form = OrganizationForm(request.POST)
-        if new_school_form.is_valid():
-            new_school = new_school_form.save(commit=False)
-            new_school.owner = request.user
-            new_school.save()
-            associate_user_school(request.user, new_school)
+        new_organization_form = OrganizationForm(request.POST)
+        if new_organization_form.is_valid():
+            new_organization = new_organization_form.save(commit=False)
+            new_organization.owner = request.user
+            new_organization.save()
+            associate_user_organization(request.user, new_organization)
             return redirect(reverse('competencies:organizations'))
 
-    new_school_form = OrganizationForm()
+    new_organization_form = OrganizationForm()
 
-    return render_to_response('competencies/new_school.html',
-                              {'new_school_form': new_school_form,},
+    return render_to_response('competencies/new_organization.html',
+                              {'new_school_form': new_organization_form,},
                               context_instance = RequestContext(request))
 
-def associate_user_school(user, school):
-    # Associates a given school with a given user
+def associate_user_organization(user, organization):
+    # Associates a given organization with a given user
     try:
-        user.userprofile.organizations.add(school)
-    except: # User probably does not have a profile yet
+        user.userprofile.organizations.add(organization)
+    except ObjectDoesNotExist: # User probably does not have a profile yet
         up = UserProfile()
         up.user = user
         up.save()
-        up.organizations.add(school)
+        up.organizations.add(organization)
