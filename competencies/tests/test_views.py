@@ -307,27 +307,43 @@ class CompetencyViewTests(TestCase):
         sa = self.test_organizations[0].subjectarea_set.all()[0]
 
         # Before submitting blank form, copy current data.
-
+        #  Copy sa.
         original_sa = SubjectArea.objects.get(id=sa.id)
         original_sa.pk = None
         original_sa.id = None
         original_sa.save()
         original_sa.organization = sa.organization
-        # print(sa.pk, sa.id, original_sa.pk, original_sa.id)
-        # print(sa, sa.organization, original_sa, original_sa.organization)
+
+        # Copy sdas.
         original_sdas = SubdisciplineArea.objects.filter(subject_area=sa)
-        # print(original_sdas)
         for original_sda in original_sdas:
             original_sda.pk, original_sda.id = None, None
             original_sda.save()
             original_sda.subject_area = original_sa
-        # for original_sda, sda in zip(original_sdas, SubdisciplineArea.objects.filter(subject_area=sa)):
-        #     print(sda.pk, original_sda.pk)
 
+        # Copy cas (both general and sda cas).
+        original_cas = []
+        for original_ca in sa.competencyarea_set.all():
+            original_ca.pk, original_ca.id = None, None
+            original_ca.subject_area = original_sa
+            original_ca.save()
+            original_cas.append(original_ca)
+            if original_ca.subdiscipline_area:
+                original_sda = SubdisciplineArea.objects.filter(subdiscipline_area=original_ca.subdiscipline_area, subject_area=original_sa)
+                original_ca.subdisciplinearea = original_sda
+        # for ca, original_ca in zip(sa.competencyarea_set.all(), original_cas):
+        #     print(ca.pk, ca, ca.subject_area, ca.subdiscipline_area)
+        #     print('---', original_ca.pk, original_ca, original_ca.subject_area, original_ca.subdiscipline_area)
+
+        # Copy eus.
+        
+
+
+
+        # Test submitting blank form.
         test_url = reverse('competencies:edit_sa_summary', args=(sa.id,))
         self.generic_test_blank_form(test_url)
 
-        # Most involved test so far.
         #   A) Test submitting an unmodified page leaves all elements the same.
         #   B) Test modifying individual elements changes only those elements.
         #   C) Test modying all elements changes all elements.
@@ -344,6 +360,15 @@ class CompetencyViewTests(TestCase):
             # If this fails, verify it's not an ordering issue.
             self.assertTrue(sda.subdiscipline_area == original_sda.subdiscipline_area)
             self.assertTrue(sda.subject_area.subject_area == original_sda.subject_area.subject_area)
+        # Check cas:
+        for ca, original_ca in zip(sa.competencyarea_set.all(), original_cas):
+            self.assertTrue(ca.competency_area == original_ca.competency_area)
+            self.assertTrue(ca.subject_area.subject_area == original_ca.subject_area.subject_area)
+            if ca.subdiscipline_area:
+                self.assertTrue(ca.subdiscipline_area.subdiscipline_area == original_ca.subdiscipline_area.subdiscipline_area)
+            else:
+                self.assertFalse(original_ca.subdiscipline_area)
+
 
 
     def test_register_view(self):
