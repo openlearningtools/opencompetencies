@@ -106,24 +106,24 @@ def sa_summary(request, sa_id):
     sa_general_competency_areas = sa.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
 
     # Get eus for each competency area.
-    grad_std_eus = OrderedDict()
-    for grad_std in sa_general_competency_areas:
-        grad_std_eus[grad_std] = grad_std.essentialunderstanding_set.filter(**kwargs)
+    ca_eus = OrderedDict()
+    for ca in sa_general_competency_areas:
+        ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
         
-    # Get sdas, sda grad_stds, sda eus
+    # Get sdas, sda cas, sda eus
     sdas = sa.subdisciplinearea_set.filter(**kwargs)
-    sda_grad_stds = OrderedDict()
+    sda_cas = OrderedDict()
     for sda in sdas:
-        sda_grad_stds[sda] = sda.competencyarea_set.filter(**kwargs)
-    sda_grad_std_eus = OrderedDict()
+        sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
+    sda_ca_eus = OrderedDict()
     for sda in sdas:
-        for grad_std in sda_grad_stds[sda]:
-            sda_grad_std_eus[grad_std] = grad_std.essentialunderstanding_set.filter(**kwargs)
+        for ca in sda_cas[sda]:
+            sda_ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
 
     return render_to_response('competencies/sa_summary.html',
                               {'subject_area': sa, 'organization': organization,
-                               'grad_std_eus': grad_std_eus,
-                               'sda_grad_stds': sda_grad_stds, 'sda_grad_std_eus': sda_grad_std_eus},
+                               'ca_eus': ca_eus,
+                               'sda_cas': sda_cas, 'sda_ca_eus': sda_ca_eus},
                               context_instance = RequestContext(request))
     
 @login_required

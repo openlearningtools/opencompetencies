@@ -260,47 +260,47 @@ class CompetencyViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Check that grad stds for sa are in context.
-        self.assertTrue('grad_std_eus' in response.context)
-        grad_std_eus = response.context['grad_std_eus']
-        grad_stds = sa.competencyarea_set.filter(subdiscipline_area=None)
-        # print(grad_std_eus)
-        # print(grad_stds)
-        for grad_std in grad_stds:
-            # print('ok', grad_std, grad_std_eus.keys())
-            self.assertTrue(grad_std in grad_std_eus.keys())
-            # Check that pis for each grad std are in context.
-            pis = grad_std.essentialunderstanding_set.all()
-            # print(pis)
-            for pi in pis:
-                self.assertTrue(pi in grad_std_eus[grad_std])
-                # Check that pi is on the rendered page.
-                self.assertTrue(pi.essential_understanding in response.content.decode())
+        self.assertTrue('ca_eus' in response.context)
+        ca_eus = response.context['ca_eus']
+        cas = sa.competencyarea_set.filter(subdiscipline_area=None)
+        # print(ca_eus)
+        # print(cas)
+        for ca in cas:
+            # print('ok', ca, ca_eus.keys())
+            self.assertTrue(ca in ca_eus.keys())
+            # Check that eus for each grad std are in context.
+            eus = ca.essentialunderstanding_set.all()
+            # print(eus)
+            for eu in eus:
+                self.assertTrue(eu in ca_eus[ca])
+                # Check that eu is on the rendered page.
+                self.assertTrue(eu.essential_understanding in response.content.decode())
 
 
         # Check that grad stds for sda are in context.
         sda = sa.subdisciplinearea_set.all()[0]
         # print(sda, '\n')
-        self.assertTrue('sda_grad_stds' in response.context)
+        self.assertTrue('sda_cas' in response.context)
 
-        sda_grad_stds = response.context['sda_grad_stds']
-        sda_grad_std_eus = response.context['sda_grad_std_eus']
-        # print('here', sda_grad_std_eus, '\n')
-        # print(sda_grad_stds, '\n')
-        # print(sda_grad_stds.keys(), '\n')
+        sda_cas = response.context['sda_cas']
+        sda_ca_eus = response.context['sda_ca_eus']
+        # print('here', sda_ca_eus, '\n')
+        # print(sda_cas, '\n')
+        # print(sda_cas.keys(), '\n')
         
-        grad_stds = sda.competencyarea_set.all()
-        # print(grad_stds, '\n')
+        cas = sda.competencyarea_set.all()
+        # print(cas, '\n')
 
-        for grad_std in grad_stds:
-            # print(grad_std, sda_grad_stds.keys(), '\n\n')
-            self.assertTrue(grad_std in sda_grad_stds[sda])
-            # Check that pis for each grad std are in context.
-            pis = grad_std.essentialunderstanding_set.all()
-            for pi in pis:
-                self.assertTrue(pi in sda_grad_std_eus[grad_std])
+        for ca in cas:
+            # print(ca, sda_cas.keys(), '\n\n')
+            self.assertTrue(ca in sda_cas[sda])
+            # Check that eus for each grad std are in context.
+            eus = ca.essentialunderstanding_set.all()
+            for eu in eus:
+                self.assertTrue(eu in sda_ca_eus[ca])
                 # print('--- context ---\n', response.content.decode())
-                # Check that pi is on rendered page.
-                self.assertTrue(pi.essential_understanding in response.content.decode())
+                # Check that eu is on rendered page.
+                self.assertTrue(eu.essential_understanding in response.content.decode())
 
     def test_edit_sa_summary_view(self):
         """Lets user edit a subject area and its sdas, gstds, and pis."""
