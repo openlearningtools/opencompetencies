@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title_extension %} - Create a new school{% endblock %}
+{% block title_extension %} - Create a new school or organization{% endblock %}
 
 {% block content %}
 
@@ -8,7 +8,7 @@
 
 	 <form method='post' action=''>
 		  {% csrf_token %}
-		  {{ new_school_form.as_p }}
+		  {{ new_organization_form.as_p }}
 		  <input type='submit' value='Create new school/ organization' />
 	 </form>
 

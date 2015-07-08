@@ -142,14 +142,15 @@ class CompetencyViewTests(TestCase):
                     self.assertFalse(sa in response.context['subject_areas'])
                     self.assertFalse(sa in response.context['sa_sdas'].keys())
 
-    def test_new_organization(self):
+    def test_new_organization_view(self):
         """New organization allows uer to create a new organization."""
         test_url = reverse('competencies:new_organization')
         self.generic_test_blank_form(test_url)
 
         # Test user can create a new organization, current user is owner,
         #  and user can modify organization.
-        response = self.client.post(test_url, {'name': 'my new organization'})
+        response = self.client.post(test_url, {'name': 'my new organization',
+                                               'org_type': 'school',})
         self.assertEqual(response.status_code, 302)
         organization_names = [organization.name for organization in Organization.objects.all()]
         self.assertTrue('my new organization' in organization_names)
@@ -163,11 +164,15 @@ class CompetencyViewTests(TestCase):
         # DEV: DB error causes test to fail. How test this properly?
         #  Start by creating server error page.
         # response = self.client.post(test_url, {'name': 'my new organization'})
+        # Something like:
+        #   fn = self.client.post(...)
+        #   self.assertRaises(DBError, fn)
         # self.assertEqual(response.status_code, 500)
 
         # But another user can create a organization of that same name.
         self.client.login(username='testuser1', password='pw')
-        response = self.client.post(test_url, {'name': 'my new organization'})
+        response = self.client.post(test_url, {'name': 'my new organization',
+                                               'org_type': 'school',})
         self.assertEqual(response.status_code, 302)
         organization_names = [organization.name for organization in Organization.objects.all()]
         # DEV: Verify name 'my new organization' appears twice in list.

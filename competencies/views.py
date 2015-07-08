@@ -559,7 +559,7 @@ def new_organization(request):
     new_organization_form = OrganizationForm()
 
     return render_to_response('competencies/new_organization.html',
-                              {'new_school_form': new_organization_form,},
+                              {'new_organization_form': new_organization_form,},
                               context_instance = RequestContext(request))
 
 def associate_user_organization(user, organization):
