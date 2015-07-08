@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CompetencyArea',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
                 ('public', models.BooleanField(default=False)),
                 ('student_friendly', models.TextField(blank=True)),
                 ('description', models.TextField(blank=True)),
@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='EssentialUnderstanding',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
                 ('public', models.BooleanField(default=False)),
                 ('student_friendly', models.TextField(blank=True)),
                 ('description', models.TextField(blank=True)),
@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='LearningTarget',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
                 ('public', models.BooleanField(default=False)),
                 ('student_friendly', models.TextField(blank=True)),
                 ('description', models.TextField(blank=True)),
@@ -47,21 +47,21 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Organization',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=500)),
-                ('org_type', models.CharField(default='school', max_length=500)),
-                ('alias_sa', models.CharField(default='subject area', max_length=500)),
-                ('alias_sda', models.CharField(default='subdiscipline area', max_length=500)),
-                ('alias_ca', models.CharField(default='competency area', max_length=500)),
-                ('alias_eu', models.CharField(default='essential understanding', max_length=500)),
-                ('alias_lt', models.CharField(default='learning target', max_length=500)),
+                ('org_type', models.CharField(max_length=500, default='school')),
+                ('alias_sa', models.CharField(max_length=500, default='subject area')),
+                ('alias_sda', models.CharField(max_length=500, default='subdiscipline area')),
+                ('alias_ca', models.CharField(max_length=500, default='competency area')),
+                ('alias_eu', models.CharField(max_length=500, default='essential understanding')),
+                ('alias_lt', models.CharField(max_length=500, default='learning target')),
                 ('owner', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
             name='SubdisciplineArea',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
                 ('public', models.BooleanField(default=False)),
                 ('student_friendly', models.TextField(blank=True)),
                 ('description', models.TextField(blank=True)),
@@ -71,7 +71,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SubjectArea',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
                 ('public', models.BooleanField(default=False)),
                 ('student_friendly', models.TextField(blank=True)),
                 ('description', models.TextField(blank=True)),
@@ -82,7 +82,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UserProfile',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
                 ('organizations', models.ManyToManyField(to='competencies.Organization', blank=True)),
                 ('subject_areas', models.ManyToManyField(to='competencies.SubjectArea', blank=True)),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
@@ -96,7 +96,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='competencyarea',
             name='subdiscipline_area',
-            field=models.ForeignKey(blank=True, null=True, to='competencies.SubdisciplineArea'),
+            field=models.ForeignKey(blank=True, to='competencies.SubdisciplineArea', null=True),
         ),
         migrations.AddField(
             model_name='competencyarea',
