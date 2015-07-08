@@ -112,9 +112,9 @@ class CompetencyViewTests(TestCase):
 
         # Make sure list of organizations appears in context, and that test_school
         #  is in that list.
-        self.assertTrue('schools' in response.context)
+        self.assertTrue('organizations' in response.context)
         for school in self.test_schools:
-            self.assertTrue(school in response.context['schools'])
+            self.assertTrue(school in response.context['organizations'])
 
 
     def test_organization_view_logged_in(self):
@@ -127,7 +127,7 @@ class CompetencyViewTests(TestCase):
             self.assertEqual(response.status_code, 200)
 
             # For now, all users can see the names of all organizations.
-            self.assertEqual(school, response.context['school'])
+            self.assertEqual(school, response.context['organization'])
 
             if school_num < self.num_elements:
                 # User should see sa and sdas for organization they have permissions on.

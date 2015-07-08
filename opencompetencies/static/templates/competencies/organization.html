@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
-{% block title_extension %} - {{ school }}{% endblock %}
+{% block title_extension %} - {{ organization }}{% endblock %}
 
 {% block content %}
 
-	 <h2>{{ school.name }}</h2>
-	 <p>Click on a subject area to see the {{ school.alias_ca }}s and {{ school.alias_eu }}s for that subject area.</p>
+	 <h2>{{ organization.name }}</h2>
+	 <p>Click on a subject area to see the {{ organization.alias_ca }}s and {{ organization.alias_eu }}s for that subject area.</p>
 
 	 {% if subject_areas %}
 
@@ -32,10 +32,10 @@
 		  {% endfor %}
 		  </ul>
 
-	 {% elif user.is_authenticated and school in user.userprofile.organizations.all %}
-		  <p>This school does not have any subject areas yet. <a href="{% url 'competencies:new_sa' school.id %}">Create a subject area</a>.</p>
+	 {% elif user.is_authenticated and organization in user.userprofile.organizations.all %}
+		  <p>This {{ organization.org_type }} does not have any subject areas yet. <a href="{% url 'competencies:new_sa' school.id %}">Create a subject area</a>.</p>
     {% else %}
-		  <p>This school does not have any public subject areas yet.</p>
+		  <p>This {{ organization.org_type }} does not have any public subject areas yet.</p>
     {% endif %}
 
 {% endblock %}

@@ -73,7 +73,7 @@ def register(request):
 # --- Authorization views ---
 def no_edit_permission(request, school_id):
     """Displays message that user does not have permission to make requested edits."""
-    school = get_school(school_id)
+    school = get_organization(school_id)
     return render_to_response('competencies/no_edit_permission.html',
                               {'school': school},
                               context_instance = RequestContext(request))
@@ -85,19 +85,19 @@ def organizations(request):
 
 def organization(request, organization_id):
     """Displays subject areas and subdiscipline areas for a given organization."""
-    organization = get_school(organization_id)
+    organization = get_organization(organization_id)
     kwargs = get_visibility_filter(request.user, organization)
     # all subject areas for an organization
     sas = get_subjectareas(organization, kwargs)
     # all subdiscipline areas for each subject area
     sa_sdas = get_sa_sdas(sas, kwargs)
     return render_to_response('competencies/organization.html',
-                              {'school': organization, 'subject_areas': sas,
+                              {'organization': organization, 'subject_areas': sas,
                                'sa_sdas': sa_sdas},
                               context_instance = RequestContext(request))
 
 def sa_summary(request, sa_id):
-    """Shows a GSP-style summary for a subject area."""
+    """Shows a simple summary for a subject area."""
     sa = SubjectArea.objects.get(id=sa_id)
     school = sa.organization
     kwargs = get_visibility_filter(request.user, school)
@@ -379,7 +379,7 @@ def new_eu(request, ca_id):
 
 # helper methods to get elements of the system.
 
-def get_school(school_id):
+def get_organization(school_id):
     """Returns school for given id."""
     return Organization.objects.get(id=school_id)
 
