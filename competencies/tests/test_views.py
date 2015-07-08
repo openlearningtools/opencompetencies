@@ -259,7 +259,7 @@ class CompetencyViewTests(TestCase):
         response = self.client.get(test_url)
         self.assertEqual(response.status_code, 200)
 
-        # Check that grad stds for sa are in context.
+        # Check that cas for sa are in context.
         self.assertTrue('ca_eus' in response.context)
         ca_eus = response.context['ca_eus']
         cas = sa.competencyarea_set.filter(subdiscipline_area=None)
@@ -268,7 +268,7 @@ class CompetencyViewTests(TestCase):
         for ca in cas:
             # print('ok', ca, ca_eus.keys())
             self.assertTrue(ca in ca_eus.keys())
-            # Check that eus for each grad std are in context.
+            # Check that eus for each ca are in context.
             eus = ca.essentialunderstanding_set.all()
             # print(eus)
             for eu in eus:
@@ -277,7 +277,7 @@ class CompetencyViewTests(TestCase):
                 self.assertTrue(eu.essential_understanding in response.content.decode())
 
 
-        # Check that grad stds for sda are in context.
+        # Check that cas for sda are in context.
         sda = sa.subdisciplinearea_set.all()[0]
         # print(sda, '\n')
         self.assertTrue('sda_cas' in response.context)
@@ -294,7 +294,7 @@ class CompetencyViewTests(TestCase):
         for ca in cas:
             # print(ca, sda_cas.keys(), '\n\n')
             self.assertTrue(ca in sda_cas[sda])
-            # Check that eus for each grad std are in context.
+            # Check that eus for each ca are in context.
             eus = ca.essentialunderstanding_set.all()
             for eu in eus:
                 self.assertTrue(eu in sda_ca_eus[ca])
@@ -304,8 +304,47 @@ class CompetencyViewTests(TestCase):
 
     def test_edit_sa_summary_view(self):
         """Lets user edit a subject area and its sdas, gstds, and pis."""
-        # Bug that page does not display gstds for sdas.
-        pass
+        sa = self.test_organizations[0].subjectarea_set.all()[0]
+
+        # Before submitting blank form, copy current data.
+
+        original_sa = SubjectArea.objects.get(id=sa.id)
+        original_sa.pk = None
+        original_sa.id = None
+        original_sa.save()
+        original_sa.organization = sa.organization
+        # print(sa.pk, sa.id, original_sa.pk, original_sa.id)
+        # print(sa, sa.organization, original_sa, original_sa.organization)
+        original_sdas = SubdisciplineArea.objects.filter(subject_area=sa)
+        # print(original_sdas)
+        for original_sda in original_sdas:
+            original_sda.pk, original_sda.id = None, None
+            original_sda.save()
+            original_sda.subject_area = original_sa
+        # for original_sda, sda in zip(original_sdas, SubdisciplineArea.objects.filter(subject_area=sa)):
+        #     print(sda.pk, original_sda.pk)
+
+        test_url = reverse('competencies:edit_sa_summary', args=(sa.id,))
+        self.generic_test_blank_form(test_url)
+
+        # Most involved test so far.
+        #   A) Test submitting an unmodified page leaves all elements the same.
+        #   B) Test modifying individual elements changes only those elements.
+        #   C) Test modying all elements changes all elements.
+        
+        # A) Test submitting an unmodified page leaves all elements the same.
+        #   Blank form has been submitted above. Verify elements for this sa
+        #   are unchanged.
+        #   Check: sa, sdas, cas, eus
+        # Check sa:
+        self.assertTrue(sa.subject_area == original_sa.subject_area)
+        self.assertTrue(sa.organization.name == original_sa.organization.name)
+        # Check sdas:
+        for original_sda, sda in zip(original_sdas, SubdisciplineArea.objects.filter(subject_area=sa)):
+            # If this fails, verify it's not an ordering issue.
+            self.assertTrue(sda.subdiscipline_area == original_sda.subdiscipline_area)
+            self.assertTrue(sda.subject_area.subject_area == original_sda.subject_area.subject_area)
+
 
     def test_register_view(self):
         """Lets new user register an account."""

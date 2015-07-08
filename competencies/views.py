@@ -128,7 +128,7 @@ def sa_summary(request, sa_id):
     
 @login_required
 def edit_sa_summary(request, sa_id):
-    """Edit a GSP-style summary for a subject area."""
+    """Edit the elements in sa_summary."""
     # This should work for a given sa_id, or with no sa_id.
     # Have an id, edit a subject area.
     # No id, create a new subject area.
@@ -156,9 +156,9 @@ def edit_sa_summary(request, sa_id):
         for ca in sda_cas[sda]:
             sda_ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
 
-    for sda, cas in sda_cas.items():
-        print('sda: ', sda)
-        print('cas: ', cas, '\n')
+    # for sda, cas in sda_cas.items():
+    #     print('sda: ', sda)
+    #     print('cas: ', cas, '\n')
 
     # Respond to submitted data.
     if request.method == 'POST':
@@ -200,11 +200,11 @@ def edit_sa_summary(request, sa_id):
         sda_form.my_id = sda.id
         ca_forms = []
         for ca in sda_cas[sda]:
-            print('making ca form for:', ca)
+            # print('making ca form for:', ca)
             # DEV: not setting the instance properly here?
             #  try adding a grad std to subject area?
             ca_form = generate_form(ca, 'ca')
-            print('ca form:', ca_form)
+            # print('ca form:', ca_form)
             ca_form.my_id = ca.id
             ca_forms.append(ca_form)
             eu_forms = []
