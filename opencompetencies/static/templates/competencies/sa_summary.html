@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 
-{% block title_extension %} - {{ school }}{% endblock %}
+{% block title_extension %} - {{ organization }}{% endblock %}
 
 {% block content %}
 
-	 <h2><a href='{% url 'competencies:organization' school.id %}'>{{ school }}</a></h2>
+	 <h2><a href='{% url 'competencies:organization' organization.id %}'>{{ organization }}</a></h2>
 
 	 <h2>{{ subject_area }}</h2>
 
 	 <div class="row row-eq-height">
-		<div class="span4 lead summary_box grad_std_col"><strong>{{ school.alias_ca|title }}s</strong></div>
-		<div class="span7 lead summary_box pi_col"><strong>{{ school.alias_eu|title }}s</strong></div>
+		<div class="span4 lead summary_box grad_std_col"><strong>{{ organization.alias_ca|title }}s</strong></div>
+		<div class="span7 lead summary_box pi_col"><strong>{{ organization.alias_eu|title }}s</strong></div>
 	 </div>
 
 	 {% for grad_std, eus in grad_std_eus.items %}

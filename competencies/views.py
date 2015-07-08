@@ -99,8 +99,8 @@ def organization(request, organization_id):
 def sa_summary(request, sa_id):
     """Shows a simple summary for a subject area."""
     sa = SubjectArea.objects.get(id=sa_id)
-    school = sa.organization
-    kwargs = get_visibility_filter(request.user, school)
+    organization = sa.organization
+    kwargs = get_visibility_filter(request.user, organization)
 
     # Get competencies for the general subject area (no associated sda):
     sa_general_competency_areas = sa.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
@@ -121,7 +121,7 @@ def sa_summary(request, sa_id):
             sda_grad_std_eus[grad_std] = grad_std.essentialunderstanding_set.filter(**kwargs)
 
     return render_to_response('competencies/sa_summary.html',
-                              {'subject_area': sa, 'school': school,
+                              {'subject_area': sa, 'organization': organization,
                                'grad_std_eus': grad_std_eus,
                                'sda_grad_stds': sda_grad_stds, 'sda_grad_std_eus': sda_grad_std_eus},
                               context_instance = RequestContext(request))
