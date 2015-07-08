@@ -8,11 +8,11 @@ from competencies.views import organization
 from competencies import my_admin
 
 """DEV NOTES
-  - Maybe instead of using indices to store schools, use separate lists:
-    - test_schools_has_perm
-    - test_schools_no_perm
-    - test_schools_all_private
-    - test_schools_all_public
+  - Maybe instead of using indices to store organizations, use separate lists:
+    - test_organizations_has_perm
+    - test_organizations_no_perm
+    - test_organizations_all_private
+    - test_organizations_all_public
 
     Any test that doesn't interact with db should inherit from
      unittest.TestCase, not django's TestCase:
@@ -29,13 +29,13 @@ class CompetencyViewTests(TestCase):
     # May want to use simpler password hashing in tests.
     #  https://docs.djangoproject.com/en/1.8/topics/testing/overview/#speeding-up-the-tests
 
-    # setUp() should build a school, but then have separate methods to
-    #  build the school out to subject area levels, sda, grad std, or perf indicator.
+    # setUp() should build an organization, but then have separate methods to
+    #  build the organization out to subject area levels, sda, grad std, or perf indicator.
     # Then each test method can only call the level it needs. Testing efficiency
     #  should be greatly improved. Methdods such as build_to_sas(), build_to_eus().
 
     def setUp(self, num_elements=2):
-        # Build a school, down to the performance indicator level.
+        # Build an organization, down to the performance indicator level.
         self.num_elements = num_elements
         self.client = Client()
 
@@ -48,54 +48,54 @@ class CompetencyViewTests(TestCase):
         new_up = UserProfile(user=self.test_user_1)
         new_up.save()
 
-        # Build num_elements test schools that user 0 is associated with,
+        # Build num_elements test organizations that user 0 is associated with,
         #  num_elements the user 1 is associated with.
-        self.test_schools, self.test_sas = [], []
-        for school_num in range(6):
-            name = "Test Organization %d" % school_num
-            if school_num < num_elements:
-                new_school = Organization.objects.create(name=name, owner=self.test_user_0)
-                self.test_user_0.userprofile.organizations.add(new_school)
+        self.test_organizations, self.test_sas = [], []
+        for organization_num in range(6):
+            name = "Test Organization %d" % organization_num
+            if organization_num < num_elements:
+                new_organization = Organization.objects.create(name=name, owner=self.test_user_0)
+                self.test_user_0.userprofile.organizations.add(new_organization)
             else:
-                new_school = Organization.objects.create(name=name, owner=self.test_user_1)
-                self.test_user_1.userprofile.organizations.add(new_school)
-            self.test_schools.append(new_school)
+                new_organization = Organization.objects.create(name=name, owner=self.test_user_1)
+                self.test_user_1.userprofile.organizations.add(new_organization)
+            self.test_organizations.append(new_organization)
 
-            # Create num_elements subject areas for each school.
+            # Create num_elements subject areas for each organization.
             for sa_num in range(num_elements):
-                sa_name = "Test SA %d-%d" % (school_num, sa_num)
+                sa_name = "Test SA %d-%d" % (organization_num, sa_num)
                 new_sa = SubjectArea.objects.create(subject_area=sa_name,
-                                                    organization=new_school)
+                                                    organization=new_organization)
                 self.test_sas.append(new_sa)
 
                 # Create num_elements grad standards for each subject area.
                 for gs_num in range(num_elements):
-                    gs_body = "Test GS %d-%d-%d" % (school_num, sa_num, gs_num)
+                    gs_body = "Test GS %d-%d-%d" % (organization_num, sa_num, gs_num)
                     new_gs = CompetencyArea.objects.create(subject_area=new_sa,
                                                                competency_area=gs_body)
 
                     # Create num_elements perf indicators for each grad std.
                     for pi_num in range(num_elements):
-                        pi_body = "Test PI %d-%d-%d-%d" % (school_num, sa_num, gs_num, pi_num)
+                        pi_body = "Test PI %d-%d-%d-%d" % (organization_num, sa_num, gs_num, pi_num)
                         new_pi = EssentialUnderstanding.objects.create(essential_understanding=pi_body,
                                                                      competency_area=new_gs)
 
                 # Create num_elements sdas for each sa.
                 for sda_num in range(num_elements):
-                    sda_name = "Test SDA %d-%d-%d" % (school_num, sa_num, sda_num)
+                    sda_name = "Test SDA %d-%d-%d" % (organization_num, sa_num, sda_num)
                     new_sda = SubdisciplineArea.objects.create(subject_area=new_sa,
                                                                subdiscipline_area=sda_name)
 
                     # Create num_elements grad standards for each sda.
                     for gs_num in range(num_elements):
-                        gs_body = "Test GS %d-%d-%d-%d" % (school_num, sa_num, sda_num, gs_num)
+                        gs_body = "Test GS %d-%d-%d-%d" % (organization_num, sa_num, sda_num, gs_num)
                         new_gs = CompetencyArea.objects.create(subject_area=new_sa,
                                                                    subdiscipline_area=new_sda,
                                                                    competency_area=gs_body)
 
                         # Create num_elements perf indicators for each grad std.
                         for pi_num in range(num_elements):
-                            pi_body = "Test PI %d-%d-%d-%d-%d" % (school_num, sa_num, sda_num, gs_num, pi_num)
+                            pi_body = "Test PI %d-%d-%d-%d-%d" % (organization_num, sa_num, sda_num, gs_num, pi_num)
                             new_pi = EssentialUnderstanding.objects.create(essential_understanding=pi_body,
                                                                          competency_area=new_gs)
 
@@ -110,35 +110,35 @@ class CompetencyViewTests(TestCase):
         response = self.client.get(reverse('competencies:organizations'))
         self.assertEqual(response.status_code, 200)
 
-        # Make sure list of organizations appears in context, and that test_school
+        # Make sure list of organizations appears in context, and that test_organization
         #  is in that list.
         self.assertTrue('organizations' in response.context)
-        for school in self.test_schools:
-            self.assertTrue(school in response.context['organizations'])
+        for organization in self.test_organizations:
+            self.assertTrue(organization in response.context['organizations'])
 
 
     def test_organization_view_logged_in(self):
         """Organization page lists subject areas and subdiscipline areas for that organization."""
         self.client.login(username='testuser0', password='pw')
 
-        for school_num, school in enumerate(self.test_schools):
-            test_url = reverse('competencies:organization', args=(school.id,))
+        for organization_num, organization in enumerate(self.test_organizations):
+            test_url = reverse('competencies:organization', args=(organization.id,))
             response = self.client.get(test_url)
             self.assertEqual(response.status_code, 200)
 
             # For now, all users can see the names of all organizations.
-            self.assertEqual(school, response.context['organization'])
+            self.assertEqual(organization, response.context['organization'])
 
-            if school_num < self.num_elements:
+            if organization_num < self.num_elements:
                 # User should see sa and sdas for organization they have permissions on.
-                for sa in school.subjectarea_set.all():
+                for sa in organization.subjectarea_set.all():
                     self.assertTrue(sa in response.context['subject_areas'])
                     for sda in sa.subdisciplinearea_set.all():
                         self.assertTrue(sda in response.context['sa_sdas'][sa])
             else:
                 # All elements are private by default, so user should not see sas
                 #  or sdas for this organization.
-                for sa in school.subjectarea_set.all():
+                for sa in organization.subjectarea_set.all():
                     self.assertFalse(sa in response.context['subject_areas'])
                     self.assertFalse(sa in response.context['sa_sdas'].keys())
 
@@ -169,7 +169,7 @@ class CompetencyViewTests(TestCase):
         #   self.assertRaises(DBError, fn)
         # self.assertEqual(response.status_code, 500)
 
-        # But another user can create a organization of that same name.
+        # But another user can create an organization of that same name.
         self.client.login(username='testuser1', password='pw')
         response = self.client.post(test_url, {'name': 'my new organization',
                                                'org_type': 'school',})
@@ -188,13 +188,13 @@ class CompetencyViewTests(TestCase):
 
     def test_new_sa_view(self):
         """Lets user create a new subject area."""
-        test_url = reverse('competencies:new_sa', args=(self.test_schools[0].id,))
+        test_url = reverse('competencies:new_sa', args=(self.test_organizations[0].id,))
         self.generic_test_blank_form(test_url)
         
         # Test user can create a new subject area, and it's stored in db.
         response = self.client.post(test_url, {'subject_area': 'english', 'description': ''})
         self.assertEqual(response.status_code, 302)
-        sa_names = [sa.subject_area for sa in self.test_schools[0].subjectarea_set.all()]
+        sa_names = [sa.subject_area for sa in self.test_organizations[0].subjectarea_set.all()]
         self.assertTrue('english' in sa_names)
         
     def test_new_sda_view(self):
@@ -253,7 +253,7 @@ class CompetencyViewTests(TestCase):
         self.assertTrue('can state first law' in eu_bodies)
 
     def test_sa_summary_view(self):
-        sa = self.test_schools[0].subjectarea_set.all()[0]
+        sa = self.test_organizations[0].subjectarea_set.all()[0]
         test_url = reverse('competencies:sa_summary', args=(sa.id,))
         self.client.login(username='testuser0', password='pw')
         response = self.client.get(test_url)
