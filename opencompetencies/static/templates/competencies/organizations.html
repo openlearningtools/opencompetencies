@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 
-{% block title_extension %} - Schools{% endblock %}
+{% block title_extension %} - Schools/ Organizations{% endblock %}
 
 {% block content %}
 
 	 <h2>Click on any school or organization to begin exploring its competency system.</h2>
-	 {% if schools %}
+	 {% if organizations %}
 	   <ul>
-	   {% for school in schools %}
-        <li><h3><a href='/schools/{{ school.id }}/'>{{ school.name }}</a></h3></li>
+	   {% for organization in organizations %}
+        <li><h3><a href="{% url 'competencies:organization' organization.id %}">{{ organization.name }}</a></h3></li>
 		{% endfor %}
 		</ul>
     {% else %}
-		<h3>No schools have been created yet.</h3>
+		<h3>No organizations have been created yet.</h3>
     {% endif %}
 
 	 <p>You may also <a href="{% url 'competencies:new_organization' %}">create a new school or organization</a>, and start developing your own set of competencies.</p>

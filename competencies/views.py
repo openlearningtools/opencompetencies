@@ -81,7 +81,7 @@ def no_edit_permission(request, school_id):
 # --- Simple views, for exploring system without changing it: ---
 def organizations(request):
     organizations = Organization.objects.all()
-    return render_to_response('competencies/organizations.html', {'schools': organizations}, context_instance=RequestContext(request))
+    return render_to_response('competencies/organizations.html', {'organizations': organizations}, context_instance=RequestContext(request))
 
 def organization(request, organization_id):
     """Displays subject areas and subdiscipline areas for a given organization."""
