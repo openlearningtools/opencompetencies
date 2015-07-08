@@ -144,10 +144,12 @@ class UserProfile(models.Model):
 class OrganizationForm(ModelForm):
     class Meta:
         model = Organization
-        fields = ('name',)
-        labels = {'name': 'New organization name',}
+        fields = ('name', 'org_type')
+        labels = {'name': 'Name of new school or organization',
+                  'org_type': 'Type of organization',}
         widgets = {
             'name': TextInput(attrs={'class': 'span4'}),
+            'org_type': TextInput(attrs={'class': 'span4'}),
             }
 
 class SubjectAreaForm(ModelForm):

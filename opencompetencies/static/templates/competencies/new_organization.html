@@ -4,12 +4,12 @@
 
 {% block content %}
 
-	 <p>This page allows you to create a new school.</p>
+	 <p>This page allows you to create a new school or organization.</p>
 
 	 <form method='post' action=''>
 		  {% csrf_token %}
 		  {{ new_school_form.as_p }}
-		  <input type='submit' value='Create new school' />
+		  <input type='submit' value='Create new school/ organization' />
 	 </form>
 
 
