@@ -325,7 +325,7 @@ class CompetencyViewTests(TestCase):
         sa = SubjectArea.objects.get(pk=sa_pk)
         self.assertEqual(sa.subject_area, 'modified subject area')
 
-        # --- Test modifying an sda. ---
+        # --- Test modifying a subdiscipline area. ---
         sda = sa.subdisciplinearea_set.all()[0]
         sda_pk = sda.pk
         sda_form_element_name = 'sda_form_%d-subdiscipline_area' % sda.id
@@ -335,6 +335,18 @@ class CompetencyViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         sda = SubdisciplineArea.objects.get(pk=sda_pk)
         self.assertEqual(sda.subdiscipline_area, 'modified sda')
+
+        # --- Test modifying a competency area. ---
+        ca = sa.competencyarea_set.all()[0]
+        ca_pk = ca.pk
+        ca_form_element_name = 'ca_form_%d-competency_area' % ca.id
+        post_data = {ca_form_element_name: 'modified ca',}
+        response = self.client.post(test_url, post_data)
+
+        self.assertEqual(response.status_code, 200)
+        ca = CompetencyArea.objects.get(pk=ca_pk)
+        self.assertEqual(ca.competency_area, 'modified ca')
+
 
 
     def test_register_view(self):
