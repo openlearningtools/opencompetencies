@@ -32,6 +32,31 @@
 	 {% endif %}
 	 {% endfor %}
 
+	 {% for sda in sdas %}
+		<div class="row row-eq-height">
+		  <div class="span4 lead summary_box sda_col"><strong>{{ sda }}</strong></div>
+		  <div class="span7 lead summary_box sda_col">&nbsp</div>
+		</div>
+		{% for ca in cas %}
+		{% if ca.subdiscipline_area == sda %}
+	     <div class="row row-eq-height">
+			 <div class="span4 summary_box grad_std_col">
+				<p>{{ ca.competency_area }}</p>
+			 </div>
+			 <div class="span7 summary_box pi_col">
+				<ul>
+				  {% for eu in eus %}
+				  {% if eu.competency_area == ca %}
+				        <li>{{ eu.essential_understanding }}</li>
+				  {% endif %}
+				  {% endfor %}
+				</ul>
+			 </div>
+		  </div>
+		{% endif %}
+		{% endfor %}
+	 {% endfor %}	 
+
 
 
 

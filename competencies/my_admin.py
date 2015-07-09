@@ -44,6 +44,11 @@ def initialize_data():
         ru = User.objects.filter(username=ru_username)[0]
 
 def build_test_schools(num_elements=2):
+    """Build a set of test schools for dev work."""
+
+    # DEV: This is quite redundant with tests.test_views.setUp().
+    #  If I keep this, that redundancy should be removed somehow.
+
     # Build an organization, down to the performance indicator level.
     num_elements = num_elements
 
