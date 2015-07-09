@@ -259,48 +259,26 @@ class CompetencyViewTests(TestCase):
         response = self.client.get(test_url)
         self.assertEqual(response.status_code, 200)
 
-        # Check that cas for sa are in context.
-        self.assertTrue('ca_eus' in response.context)
-        ca_eus = response.context['ca_eus']
-        cas = sa.competencyarea_set.filter(subdiscipline_area=None)
-        # print(ca_eus)
-        # print(cas)
+        # Test that appropriate sa, sdas, cas, and eus are in context.
+        #  Also test that these elements are in the final rendered content.
+        content_str = response.content.decode()
+        self.assertEqual(sa, response.context['subject_area'])
+        self.assertTrue(sa.subject_area in content_str)
+
+        sdas = sa.subdisciplinearea_set.all()
+        for sda in sdas:
+            self.assertTrue(sda in response.context['sdas'])
+            self.assertTrue(sda.subdiscipline_area in content_str)
+
+        cas = sa.competencyarea_set.all()
         for ca in cas:
-            # print('ok', ca, ca_eus.keys())
-            self.assertTrue(ca in ca_eus.keys())
-            # Check that eus for each ca are in context.
-            eus = ca.essentialunderstanding_set.all()
-            # print(eus)
-            for eu in eus:
-                self.assertTrue(eu in ca_eus[ca])
-                # Check that eu is on the rendered page.
-                self.assertTrue(eu.essential_understanding in response.content.decode())
+            self.assertTrue(ca in response.context['cas'])
+            self.assertTrue(ca.competency_area in content_str)
 
-
-        # Check that cas for sda are in context.
-        sda = sa.subdisciplinearea_set.all()[0]
-        # print(sda, '\n')
-        self.assertTrue('sda_cas' in response.context)
-
-        sda_cas = response.context['sda_cas']
-        sda_ca_eus = response.context['sda_ca_eus']
-        # print('here', sda_ca_eus, '\n')
-        # print(sda_cas, '\n')
-        # print(sda_cas.keys(), '\n')
-        
-        cas = sda.competencyarea_set.all()
-        # print(cas, '\n')
-
-        for ca in cas:
-            # print(ca, sda_cas.keys(), '\n\n')
-            self.assertTrue(ca in sda_cas[sda])
-            # Check that eus for each ca are in context.
-            eus = ca.essentialunderstanding_set.all()
-            for eu in eus:
-                self.assertTrue(eu in sda_ca_eus[ca])
-                # print('--- context ---\n', response.content.decode())
-                # Check that eu is on rendered page.
-                self.assertTrue(eu.essential_understanding in response.content.decode())
+        eus = ca.essentialunderstanding_set.all()
+        for eu in eus:
+            self.assertTrue(eu in response.context['eus'])
+            self.assertTrue(eu.essential_understanding in content_str)
 
     def test_edit_sa_summary_view(self):
         """Lets user edit a subject area and its sdas, gstds, and pis."""
