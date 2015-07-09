@@ -304,71 +304,17 @@ class CompetencyViewTests(TestCase):
 
     def test_edit_sa_summary_view(self):
         """Lets user edit a subject area and its sdas, gstds, and pis."""
-        sa = self.test_organizations[0].subjectarea_set.all()[0]
-
-        # Before submitting blank form, copy current data.
-        #  Copy sa.
-        original_sa = SubjectArea.objects.get(id=sa.id)
-        original_sa.pk = None
-        original_sa.id = None
-        original_sa.save()
-        original_sa.organization = sa.organization
-
-        # Copy sdas.
-        original_sdas = SubdisciplineArea.objects.filter(subject_area=sa)
-        for original_sda in original_sdas:
-            original_sda.pk, original_sda.id = None, None
-            original_sda.save()
-            original_sda.subject_area = original_sa
-
-        # Copy cas (both general and sda cas).
-        original_cas = []
-        for original_ca in sa.competencyarea_set.all():
-            original_ca.pk, original_ca.id = None, None
-            original_ca.subject_area = original_sa
-            original_ca.save()
-            original_cas.append(original_ca)
-            if original_ca.subdiscipline_area:
-                original_sda = SubdisciplineArea.objects.filter(subdiscipline_area=original_ca.subdiscipline_area, subject_area=original_sa)
-                original_ca.subdisciplinearea = original_sda
-        # for ca, original_ca in zip(sa.competencyarea_set.all(), original_cas):
-        #     print(ca.pk, ca, ca.subject_area, ca.subdiscipline_area)
-        #     print('---', original_ca.pk, original_ca, original_ca.subject_area, original_ca.subdiscipline_area)
-
-        # Copy eus.
-        
-
-
 
         # Test submitting blank form.
+        sa = self.test_organizations[0].subjectarea_set.all()[0]
         test_url = reverse('competencies:edit_sa_summary', args=(sa.id,))
         self.generic_test_blank_form(test_url)
 
-        #   A) Test submitting an unmodified page leaves all elements the same.
-        #   B) Test modifying individual elements changes only those elements.
-        #   C) Test modying all elements changes all elements.
-        
-        # A) Test submitting an unmodified page leaves all elements the same.
-        #   Blank form has been submitted above. Verify elements for this sa
-        #   are unchanged.
-        #   Check: sa, sdas, cas, eus
-        # Check sa:
-        self.assertTrue(sa.subject_area == original_sa.subject_area)
-        self.assertTrue(sa.organization.name == original_sa.organization.name)
-        # Check sdas:
-        for original_sda, sda in zip(original_sdas, SubdisciplineArea.objects.filter(subject_area=sa)):
-            # If this fails, verify it's not an ordering issue.
-            self.assertTrue(sda.subdiscipline_area == original_sda.subdiscipline_area)
-            self.assertTrue(sda.subject_area.subject_area == original_sda.subject_area.subject_area)
-        # Check cas:
-        for ca, original_ca in zip(sa.competencyarea_set.all(), original_cas):
-            self.assertTrue(ca.competency_area == original_ca.competency_area)
-            self.assertTrue(ca.subject_area.subject_area == original_ca.subject_area.subject_area)
-            if ca.subdiscipline_area:
-                self.assertTrue(ca.subdiscipline_area.subdiscipline_area == original_ca.subdiscipline_area.subdiscipline_area)
-            else:
-                self.assertFalse(original_ca.subdiscipline_area)
-
+        # Test submitting data modifies elements.
+        post_data = {'subject_area': 'modifed subject area'}
+        response = self.client.post(test_url, post_data)
+        #self.assertEqual(response.status_code, 302)
+        self.assertEqual(sa.subject_area, 'modified subject area')
 
 
     def test_register_view(self):
