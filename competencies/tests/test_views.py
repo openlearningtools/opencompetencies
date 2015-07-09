@@ -315,6 +315,7 @@ class CompetencyViewTests(TestCase):
         self.generic_test_blank_form(test_url)
 
         # Test submitting data modifies elements.
+        # DEV: All of these could probably be generalized and refactored.
 
         # --- Test modifying subject area. ---
         sa_pk = sa.pk
@@ -347,7 +348,16 @@ class CompetencyViewTests(TestCase):
         ca = CompetencyArea.objects.get(pk=ca_pk)
         self.assertEqual(ca.competency_area, 'modified ca')
 
+        # --- Test modifying an essential understanding. ---
+        eu = ca.essentialunderstanding_set.all()[0]
+        eu_pk = eu.pk
+        eu_form_element_name = 'eu_form_%d-essential_understanding' % eu.id
+        post_data = {eu_form_element_name: 'modified eu',}
+        response = self.client.post(test_url, post_data)
 
+        self.assertEqual(response.status_code, 200)
+        eu = EssentialUnderstanding.objects.get(pk=eu_pk)
+        self.assertEqual(eu.essential_understanding, 'modified eu')
 
     def test_register_view(self):
         """Lets new user register an account."""
