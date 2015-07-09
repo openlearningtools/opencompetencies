@@ -305,16 +305,28 @@ class CompetencyViewTests(TestCase):
     def test_edit_sa_summary_view(self):
         """Lets user edit a subject area and its sdas, gstds, and pis."""
 
+        # DEV - possible improvements
+        #   Test that unmodified elements are unchanged after submission.
+        #   Test modifying multiple instances of sdas, cas, and eus.
+
         # Test submitting blank form.
         sa = self.test_organizations[0].subjectarea_set.all()[0]
         test_url = reverse('competencies:edit_sa_summary', args=(sa.id,))
         self.generic_test_blank_form(test_url)
 
         # Test submitting data modifies elements.
-        post_data = {'subject_area': 'modifed subject area'}
+
+        # Test modifying subject area.
+        sa_pk = sa.pk
+        post_data = {'subject_area': 'modified subject area', 'description': ''}
         response = self.client.post(test_url, post_data)
-        #self.assertEqual(response.status_code, 302)
+
+        self.assertEqual(response.status_code, 200)
+        sa = SubjectArea.objects.get(pk=sa_pk)
         self.assertEqual(sa.subject_area, 'modified subject area')
+
+        # Test modifying an sda.
+        sda_pks = [sda.pk for sda in sa.subdisciplinearea_set.all()]
 
 
     def test_register_view(self):
