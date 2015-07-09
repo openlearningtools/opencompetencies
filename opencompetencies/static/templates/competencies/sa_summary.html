@@ -13,7 +13,8 @@
 		<div class="span7 lead summary_box pi_col"><strong>{{ organization.alias_eu|title }}s</strong></div>
 	 </div>
 
-	 {% for ca, eus in ca_eus.items %}
+	 {% for ca in cas %}
+	 {% if not ca.subdiscipline_area %}
 	   <div class="row row-eq-height">
 		  <div class="span4 summary_box grad_std_col">
 			 <p>{{ ca.competency_area }}</p>
@@ -21,37 +22,17 @@
 		  <div class="span7 summary_box pi_col">
 			 <ul>
 				{% for eu in eus %}
+				{% if eu.competency_area == ca %}
 				  <li>{{ eu.essential_understanding }}</li>
+				{% endif %}
 				{% endfor %}
 			 </ul>
 		  </div>
 		</div>
+	 {% endif %}
 	 {% endfor %}
 
-	 {% for sda, cas in sda_cas.items %}
-		<div class="row row-eq-height">
-		  <div class="span4 lead summary_box sda_col"><strong>{{ sda }}</strong></div>
-		  <div class="span7 lead summary_box sda_col">&nbsp</div>
-		</div>
-		{% for ca in cas %}
-	     <div class="row row-eq-height">
-			 <div class="span4 summary_box grad_std_col">
-				<p>{{ ca.competency_area }}</p>
-			 </div>
-			 <div class="span7 summary_box pi_col">
-				<ul>
-				  {% for cand_ca, eus in sda_ca_eus.items %}
-				    {% if cand_ca == ca %}
-				      {% for eu in eus %}
-				        <li>{{ eu.essential_understanding }}</li>
-						{% endfor %}
-					 {% endif %}
-				  {% endfor %}
-				</ul>
-			 </div>
-		  </div>
-		{% endfor %}
-	 {% endfor %}
+
 
 
 

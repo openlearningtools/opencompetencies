@@ -43,3 +43,60 @@ def initialize_data():
         print('The user %s already exists.' % ru_username)
         ru = User.objects.filter(username=ru_username)[0]
 
+def build_test_schools(num_elements=2):
+    # Build an organization, down to the performance indicator level.
+    num_elements = num_elements
+
+    user = User.objects.filter(username=os.environ['RU_USERNAME'])[0]
+    su_user = User.objects.filter(username=os.environ['SU_USERNAME'])[0]
+
+    # Build num_elements test organizations that user 0 is associated with,
+    #  num_elements the user 1 is associated with.
+    test_organizations, test_sas = [], []
+    for organization_num in range(6):
+        name = "Test Organization %d" % organization_num
+        if organization_num < num_elements/2:
+            new_organization = Organization.objects.create(name=name, owner=user)
+            user.userprofile.organizations.add(new_organization)
+        else:
+            new_organization = Organization.objects.create(name=name, owner=su_user)
+            su_user.userprofile.organizations.add(new_organization)
+        test_organizations.append(new_organization)
+
+        # Create num_elements subject areas for each organization.
+        for sa_num in range(num_elements):
+            sa_name = "Test SA %d-%d" % (organization_num, sa_num)
+            new_sa = SubjectArea.objects.create(subject_area=sa_name,
+                                                organization=new_organization)
+            test_sas.append(new_sa)
+
+            # Create num_elements grad standards for each subject area.
+            for gs_num in range(num_elements):
+                gs_body = "Test GS %d-%d-%d" % (organization_num, sa_num, gs_num)
+                new_gs = CompetencyArea.objects.create(subject_area=new_sa,
+                                                           competency_area=gs_body)
+
+                # Create num_elements perf indicators for each grad std.
+                for pi_num in range(num_elements):
+                    pi_body = "Test PI %d-%d-%d-%d" % (organization_num, sa_num, gs_num, pi_num)
+                    new_pi = EssentialUnderstanding.objects.create(essential_understanding=pi_body,
+                                                                 competency_area=new_gs)
+
+            # Create num_elements sdas for each sa.
+            for sda_num in range(num_elements):
+                sda_name = "Test SDA %d-%d-%d" % (organization_num, sa_num, sda_num)
+                new_sda = SubdisciplineArea.objects.create(subject_area=new_sa,
+                                                           subdiscipline_area=sda_name)
+
+                # Create num_elements grad standards for each sda.
+                for gs_num in range(num_elements):
+                    gs_body = "Test GS %d-%d-%d-%d" % (organization_num, sa_num, sda_num, gs_num)
+                    new_gs = CompetencyArea.objects.create(subject_area=new_sa,
+                                                               subdiscipline_area=new_sda,
+                                                               competency_area=gs_body)
+
+                    # Create num_elements perf indicators for each grad std.
+                    for pi_num in range(num_elements):
+                        pi_body = "Test PI %d-%d-%d-%d-%d" % (organization_num, sa_num, sda_num, gs_num, pi_num)
+                        new_pi = EssentialUnderstanding.objects.create(essential_understanding=pi_body,
+                                                                     competency_area=new_gs)
