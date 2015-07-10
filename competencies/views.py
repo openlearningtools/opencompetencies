@@ -102,13 +102,7 @@ def sa_summary(request, sa_id):
     organization = sa.organization
     kwargs = get_visibility_filter(request.user, organization)
 
-    # Get sdas, cas, eus.
-    sdas = sa.subdisciplinearea_set.filter(**kwargs)
-    cas = sa.competencyarea_set.filter(**kwargs)
-    eus = []
-    for ca in cas:
-        for eu in ca.essentialunderstanding_set.filter(**kwargs):
-            eus.append(eu)
+    sdas, cas, eus = get_sda_ca_eu_elements(sa, kwargs)
     
     return render_to_response('competencies/sa_summary.html',
                               {'subject_area': sa, 'organization': organization,
@@ -131,13 +125,7 @@ def edit_sa_summary(request, sa_id):
         redirect_url = '/no_edit_permission/' + str(organization.id)
         return redirect(redirect_url)
 
-    # Get sdas, cas, eus.
-    sdas = subject_area.subdisciplinearea_set.filter(**kwargs)
-    cas = subject_area.competencyarea_set.filter(**kwargs)
-    eus = []
-    for ca in cas:
-        for eu in ca.essentialunderstanding_set.filter(**kwargs):
-            eus.append(eu)
+    sdas, cas, eus = get_sda_ca_eu_elements(subject_area, kwargs)
 
     # Respond to submitted data.
     if request.method == 'POST':
@@ -181,6 +169,16 @@ def edit_sa_summary(request, sa_id):
                                'zipped_eu_forms': zipped_eu_forms,
                                },
                               context_instance = RequestContext(request))
+
+def get_sda_ca_eu_elements(subject_area, kwargs):
+    """Get all sdas, cas, and eus associated with a subject area."""
+    sdas = subject_area.subdisciplinearea_set.filter(**kwargs)
+    cas = subject_area.competencyarea_set.filter(**kwargs)
+    eus = []
+    for ca in cas:
+        for eu in ca.essentialunderstanding_set.filter(**kwargs):
+            eus.append(eu)
+    return (sdas, cas, eus)
 
 def process_form(request, instance, element_type):
     """Process a form for a single element."""
