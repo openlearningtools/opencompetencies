@@ -96,9 +96,6 @@ def organization(request, organization_id):
                                'sa_sdas': sa_sdas},
                               context_instance = RequestContext(request))
 
-
-
-
 def sa_summary(request, sa_id):
     """Shows a simple summary for a subject area."""
     sa = SubjectArea.objects.get(id=sa_id)
@@ -112,39 +109,6 @@ def sa_summary(request, sa_id):
     for ca in cas:
         for eu in ca.essentialunderstanding_set.filter(**kwargs):
             eus.append(eu)
-
-
-    # DEV: Add some sdas, cas, eus through admin for troubleshooting.
-    #  or just fix new_ca, and do through regular site?
-    #  prolly use admin to focus on simplifying sa_summary
-    #  then troubleshoot new_ca, new_eu
-
-
-
-
-    # # Get competencies for the general subject area (no associated sda):
-    # sa_general_competency_areas = sa.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
-
-    # # Get eus for each competency area.
-    # ca_eus = OrderedDict()
-    # for ca in sa_general_competency_areas:
-    #     ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
-        
-    # # Get sdas, sda cas, sda eus
-    # sdas = sa.subdisciplinearea_set.filter(**kwargs)
-    # sda_cas = OrderedDict()
-    # for sda in sdas:
-    #     sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
-    # sda_ca_eus = OrderedDict()
-    # for sda in sdas:
-    #     for ca in sda_cas[sda]:
-    #         sda_ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
-
-    # return render_to_response('competencies/sa_summary.html',
-    #                           {'subject_area': sa, 'organization': organization,
-    #                            'ca_eus': ca_eus,
-    #                            'sda_cas': sda_cas, 'sda_ca_eus': sda_ca_eus},
-    #                           context_instance = RequestContext(request))
     
     return render_to_response('competencies/sa_summary.html',
                               {'subject_area': sa, 'organization': organization,
@@ -161,7 +125,6 @@ def edit_sa_summary(request, sa_id):
     # This should work for a given sa_id, or with no sa_id.
     # Have an id, edit a subject area.
     # No id, create a new subject area.
-    # Needs sda elements as well.
 
     subject_area = SubjectArea.objects.get(id=sa_id)
     school = subject_area.organization
