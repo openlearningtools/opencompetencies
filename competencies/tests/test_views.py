@@ -280,6 +280,8 @@ class CompetencyViewTests(TestCase):
             self.assertTrue(eu in response.context['eus'])
             self.assertTrue(eu.essential_understanding in content_str)
 
+
+
     def test_edit_sa_summary_view(self):
         """Lets user edit a subject area and its sdas, gstds, and pis."""
 

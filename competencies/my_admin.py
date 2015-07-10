@@ -77,13 +77,13 @@ def build_test_schools(num_elements=2):
 
             # Create num_elements grad standards for each subject area.
             for gs_num in range(num_elements):
-                gs_body = "Test GS %d-%d-%d" % (organization_num, sa_num, gs_num)
+                gs_body = "Test CA %d-%d-%d" % (organization_num, sa_num, gs_num)
                 new_gs = CompetencyArea.objects.create(subject_area=new_sa,
                                                            competency_area=gs_body)
 
                 # Create num_elements perf indicators for each grad std.
                 for pi_num in range(num_elements):
-                    pi_body = "Test PI %d-%d-%d-%d" % (organization_num, sa_num, gs_num, pi_num)
+                    pi_body = "Test EU %d-%d-%d-%d" % (organization_num, sa_num, gs_num, pi_num)
                     new_pi = EssentialUnderstanding.objects.create(essential_understanding=pi_body,
                                                                  competency_area=new_gs)
 
@@ -95,13 +95,13 @@ def build_test_schools(num_elements=2):
 
                 # Create num_elements grad standards for each sda.
                 for gs_num in range(num_elements):
-                    gs_body = "Test GS %d-%d-%d-%d" % (organization_num, sa_num, sda_num, gs_num)
+                    gs_body = "Test CA %d-%d-%d-%d" % (organization_num, sa_num, sda_num, gs_num)
                     new_gs = CompetencyArea.objects.create(subject_area=new_sa,
                                                                subdiscipline_area=new_sda,
                                                                competency_area=gs_body)
 
                     # Create num_elements perf indicators for each grad std.
                     for pi_num in range(num_elements):
-                        pi_body = "Test PI %d-%d-%d-%d-%d" % (organization_num, sa_num, sda_num, gs_num, pi_num)
+                        pi_body = "Test EU %d-%d-%d-%d-%d" % (organization_num, sa_num, sda_num, gs_num, pi_num)
                         new_pi = EssentialUnderstanding.objects.create(essential_understanding=pi_body,
                                                                      competency_area=new_gs)

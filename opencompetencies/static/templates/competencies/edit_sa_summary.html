@@ -1,83 +1,82 @@
 {% extends 'base.html' %}
 
-{% block title_extension %} - {{ school }}{% endblock %}
+{% block title_extension %} - {{ organization }}{% endblock %}
 
 {% block content %}
 
-	 <h2><a href='{% url 'competencies:organization' school.id %}'>{{ school }}</a></h2>
+	 <h2><a href='{% url 'competencies:organization' organization.id %}'>{{ organization }}</a></h2>
 
 	 <form action="" method="post">
 
 		{% csrf_token %}
 		{{ sa_form.subject_area }}
-		<a href="{% url 'competencies:new_sa' school.id %}">new subject area</a>
+		<a href="{% url 'competencies:new_sa' organization.id %}">new subject area</a>
 
 	 <div class="row row-eq-height">
-		<div class="span4 lead summary_box grad_std_col"><strong>{{ school.alias_ca|title }}s</strong></div>
-		<div class="span7 lead summary_box pi_col"><strong>{{ school.alias_eu|title }}s</strong></div>
+		<div class="span4 lead summary_box grad_std_col"><strong>{{ organization.alias_ca|title }}s</strong></div>
+		<div class="span7 lead summary_box pi_col"><strong>{{ organization.alias_eu|title }}s</strong></div>
 	 </div>
 
-
-	 {% for ca_form, eu_forms in ca_eu_forms.items %}
+	 {% for ca, ca_form in zipped_ca_forms %}
+	 {% if not ca.subdiscipline_area %}
 	   <div class="row row-eq-height">
 		  <div class="span4 summary_box grad_std_col">
-			 <p class="lead">{{ ca_form.phrase }}</p>
-			 <p>{{ ca_form.graduation_standard }}</p>
+			 <p>{{ ca_form.competency_area }}</p>
 		  </div>
 		  <div class="span7 summary_box pi_col">
-				{% for eu_form in eu_forms %}
-				  {{ eu_form.performance_indicator }}
+				{% for eu, eu_form in zipped_eu_forms %}
+				{% if eu.competency_area == ca %}
+				  {{ eu_form.essential_understanding }}
+				{% endif %}
 				{% endfor %}
-				<a href="{% url 'competencies:new_eu' ca_form.my_id %}">new {{ school.alias_eu }}</a>
+				<a href="{% url 'competencies:new_eu' ca_form.my_id %}">new {{ organization.alias_eu }}</a>
 		  </div>
 		</div>
+	 {% endif %}
 	 {% endfor %}
 
 	 <div class="row row-eq-height">
-		<div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_ca' subject_area.id %}">new {{ school.alias_ca }}</a></div>
+		<div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_ca' subject_area.id %}">new {{ organization.alias_ca }}</a></div>
 		<div class="span7 lead summary_box pi_col">&nbsp</div>
 	 </div>
 
-	 {% for sda_form, ca_forms in sda_ca_forms.items %}
+	 {% for sda, sda_form in zipped_sda_forms %}
 		<div class="row row-eq-height">
-		  <div class="span4 lead summary_box sda_col">{{ sda_form.subdiscipline_area }}</div>
+		  <div class="span4 lead summary_box sda_col"><strong>{{ sda }}</strong></div>
 		  <div class="span7 lead summary_box sda_col">&nbsp</div>
 		</div>
-		{% for ca_form in ca_forms %}
+		{% for ca, ca_form in zipped_ca_forms %}
+		{% if ca.subdiscipline_area == sda %}
 	     <div class="row row-eq-height">
-		    <div class="span4 summary_box grad_std_col">
-				<p class="lead">{{ ca_form.phrase }}</p>
-				<p>{{ ca_form.graduation_standard }}</p>
+			 <div class="span4 summary_box grad_std_col">
+				<p>{{ ca_form.competency_area }}</p>
 			 </div>
 			 <div class="span7 summary_box pi_col">
-				{% for cand_ca_form, eu_forms in sda_eu_forms.items %}
-				  {% if cand_ca_form == ca_form %}
-				    {% for eu_form in eu_forms %}
-				      {{ eu_form.performance_indicator }}
-				    {% endfor %}
-				    <a href="{% url 'competencies:new_eu' ca_form.my_id %}">new {{ school.alias_eu }}</a>
+				  {% for eu, eu_form in zipped_eu_forms %}
+				  {% if eu.competency_area == ca %}
+				        {{ eu_form.essential_understanding }}
 				  {% endif %}
-				{% endfor %}
+				  {% endfor %}
+				  <a href="{% url 'competencies:new_eu' ca_form.my_id %}">new {{ organization.alias_eu }}</a>
 			 </div>
 		  </div>
+		{% endif %}
 		{% endfor %}
 
 		<div class="row row-eq-height">
-		  <div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_sda_ca' sda_form.my_id %}">new {{ school.alias_ca }}</a></div>
+		  <div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_sda_ca' sda_form.my_id %}">new {{ organization.alias_ca }}</a></div>
 		  <div class="span7 lead summary_box pi_col">&nbsp</div>
 		</div>
 
-	 {% endfor %}
+	 {% endfor %}	 
 
 		<div class="row row-eq-height">
-		  <div class="span4 lead summary_box sda_col"><a href="{% url 'competencies:new_sda' subject_area.id %}">new subdiscipline area</a></div>
+		  <div class="span4 lead summary_box sda_col"><a href="{% url 'competencies:new_sda' subject_area.id %}">new {{ organization.alias_sda }}</a></div>
 		  <div class="span7 lead summary_box sda_col">&nbsp</div>
 		</div>
 
-
 		<p><input type="submit" value="Save Changes" class="submit_sa_summary btn btn-small btn-info" /></p>
 	 </form>
-
 
 	 <p class="edit_view_link">
 		<a href='{% url 'competencies:sa_summary' subject_area.id %}'>view</a>

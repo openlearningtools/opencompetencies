@@ -115,10 +115,6 @@ def sa_summary(request, sa_id):
                                'sdas': sdas, 'cas': cas, 'eus': eus,},
                               context_instance = RequestContext(request))
 
-
-
-
-
 @login_required
 def edit_sa_summary(request, sa_id):
     """Edit the elements in sa_summary."""
@@ -127,95 +123,62 @@ def edit_sa_summary(request, sa_id):
     # No id, create a new subject area.
 
     subject_area = SubjectArea.objects.get(id=sa_id)
-    school = subject_area.organization
-    kwargs = get_visibility_filter(request.user, school)
+    organization = subject_area.organization
+    kwargs = get_visibility_filter(request.user, organization)
 
-    # Test if user allowed to edit this school.
-    if not has_edit_permission(request.user, school, subject_area):
-        redirect_url = '/no_edit_permission/' + str(school.id)
+    # Test if user allowed to edit this organization.
+    if not has_edit_permission(request.user, organization, subject_area):
+        redirect_url = '/no_edit_permission/' + str(organization.id)
         return redirect(redirect_url)
 
-    # Get competency areas.
-    sa_general_competency_areas = subject_area.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
-
-    # Get sdas, sda cas, sda eus
+    # Get sdas, cas, eus.
     sdas = subject_area.subdisciplinearea_set.filter(**kwargs)
-    sda_cas = OrderedDict()
-    for sda in sdas:
-        sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
-    sda_ca_eus = OrderedDict()
-    for sda in sdas:
-        for ca in sda_cas[sda]:
-            sda_ca_eus[ca] = ca.essentialunderstanding_set.filter(**kwargs)
-
-    # for sda, cas in sda_cas.items():
-    #     print('sda: ', sda)
-    #     print('cas: ', cas, '\n')
+    cas = subject_area.competencyarea_set.filter(**kwargs)
+    eus = []
+    for ca in cas:
+        for eu in ca.essentialunderstanding_set.filter(**kwargs):
+            eus.append(eu)
 
     # Respond to submitted data.
     if request.method == 'POST':
-
         process_form(request, subject_area, 'sa')
-
-        for ca in sa_general_competency_areas:
-            process_form(request, ca, 'ca')
-            eus = ca.essentialunderstanding_set.filter(**kwargs)
-            for eu in eus:
-                process_form(request, eu, 'eu')
-        
-        for sda, cas in sda_cas.items():
+        for sda in sdas:
             process_form(request, sda, 'sda')
-            for ca in cas:
-                process_form(request, ca, 'ca')
-                for eu in sda_ca_eus[ca]:
-                    process_form(request, eu, 'eu')
+        for ca in cas:
+            process_form(request, ca, 'ca')
+        for eu in eus:
+            process_form(request, eu, 'eu')
 
     # Build forms.
     sa_form = generate_form(subject_area, 'sa')
-
-    ca_eu_forms = OrderedDict()
-    for ca in sa_general_competency_areas:
-        ca_form = generate_form(ca, 'ca')
-        ca_form.my_id = ca.id
-        eus = ca.essentialunderstanding_set.filter(**kwargs)
-        eu_forms = []
-        for eu in eus:
-            eu_form = generate_form(eu, 'eu')
-            eu_forms.append(eu_form)
-        ca_eu_forms[ca_form] = eu_forms
-
-    sda_ca_forms = OrderedDict()
-    sda_eu_forms = OrderedDict()
+    sda_forms = []
     for sda in sdas:
         sda_form = generate_form(sda, 'sda')
-        # add the id manually here???
         sda_form.my_id = sda.id
-        ca_forms = []
-        for ca in sda_cas[sda]:
-            # print('making ca form for:', ca)
-            # DEV: not setting the instance properly here?
-            #  try adding a grad std to subject area?
-            ca_form = generate_form(ca, 'ca')
-            # print('ca form:', ca_form)
-            ca_form.my_id = ca.id
-            ca_forms.append(ca_form)
-            eu_forms = []
-            for eu in sda_ca_eus[ca]:
-                eu_form = generate_form(eu, 'eu')
-                eu_forms.append(eu_form)
-            sda_eu_forms[ca_form] = (eu_forms)
-        sda_ca_forms[sda_form] = ca_forms
+        sda_forms.append(sda_form)
+    zipped_sda_forms = list(zip(sdas, sda_forms))
+        
+    ca_forms = []
+    for ca in cas:
+        ca_form = generate_form(ca, 'ca')
+        ca_form.my_id = ca.id
+        ca_forms.append(ca_form)
+    zipped_ca_forms = list(zip(cas, ca_forms))
 
-    # for k, v in sda_ca_forms.items():
-    #     print('key:', k)
-    #     print('value:', v, '\n')
-
-
+    eu_forms = []
+    for eu in eus:
+        eu_form = generate_form(eu, 'eu')
+        eu_form.my_id = eu.id
+        eu_forms.append(eu_form)
+    zipped_eu_forms = list(zip(eus, eu_forms))
+    
 
     return render_to_response('competencies/edit_sa_summary.html',
-                              {'subject_area': subject_area, 'school': school,
-                               'sa_form': sa_form, 'sda_ca_forms': sda_ca_forms,
-                               'ca_eu_forms': ca_eu_forms, 'sda_eu_forms': sda_eu_forms,
+                              {'subject_area': subject_area, 'organization': organization,
+                               'sdas': sdas, 'cas': cas, 'eus': eus,
+                               'zipped_sda_forms': zipped_sda_forms,
+                               'zipped_ca_forms': zipped_ca_forms,
+                               'zipped_eu_forms': zipped_eu_forms,
                                },
                               context_instance = RequestContext(request))
 
