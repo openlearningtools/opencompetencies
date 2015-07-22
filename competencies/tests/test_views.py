@@ -134,13 +134,14 @@ class CompetencyViewTests(TestCase):
                 for sa in organization.subjectarea_set.all():
                     self.assertTrue(sa in response.context['subject_areas'])
                     for sda in sa.subdisciplinearea_set.all():
-                        self.assertTrue(sda in response.context['sa_sdas'][sa])
+                        self.assertTrue(sda in response.context['sdas'])
             else:
                 # All elements are private by default, so user should not see sas
                 #  or sdas for this organization.
                 for sa in organization.subjectarea_set.all():
                     self.assertFalse(sa in response.context['subject_areas'])
-                    self.assertFalse(sa in response.context['sa_sdas'].keys())
+                    for sda in sa.subdisciplinearea_set.all():
+                        self.assertFalse(sda in response.context['sdas'])
 
     def test_new_organization_view(self):
         """New organization allows uer to create a new organization."""

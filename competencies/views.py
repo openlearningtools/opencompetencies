@@ -87,16 +87,11 @@ def organization(request, organization_id):
     """Displays subject areas and subdiscipline areas for a given organization."""
     organization = get_organization(organization_id)
     kwargs = get_visibility_filter(request.user, organization)
-    # all subject areas for an organization
     sas = get_subjectareas(organization, kwargs)
-    # all subdiscipline areas for each subject area
-    sa_sdas = get_sa_sdas(sas, kwargs)
-    #sdas = [sda for sdas in sa.subdisciplinearea_set.all() for sda in sdas]
-    sdas = [sda for sa in sas for sda in sa.subdisciplinearea_set.all()]    
-    print('sdas', sdas)
+    sdas = [sda for sa in sas for sda in sa.subdisciplinearea_set.filter(**kwargs)]    
     return render_to_response('competencies/organization.html',
                               {'organization': organization, 'subject_areas': sas,
-                               'sa_sdas': sa_sdas},
+                               'sdas': sdas,},
                               context_instance = RequestContext(request))
 
 def sa_summary(request, sa_id):
@@ -342,15 +337,6 @@ def get_organization(school_id):
 def get_subjectareas(school, kwargs):
     """Returns subject areas for a given school."""
     return school.subjectarea_set.filter(**kwargs)
-
-def get_sa_sdas(subject_areas, kwargs):
-    """ Returns all subdiscipline areas for each subject area.
-    Uses OrderedDict to preserve order of subject areas.
-    """
-    sa_sdas = OrderedDict()
-    for sa in subject_areas:
-        sa_sdas[sa] = sa.subdisciplinearea_set.filter(**kwargs)
-    return sa_sdas
 
 def get_visibility_filter(user, school):
     # Get filter for visibility, based on logged-in status.
