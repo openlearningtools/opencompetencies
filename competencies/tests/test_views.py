@@ -50,10 +50,10 @@ class CompetencyViewTests(TestCase):
 
         # Build num_elements test organizations that user 0 is associated with,
         #  num_elements the user 1 is associated with.
-        self.test_organizations, self.test_sas = [], []
+        self.test_organizations = []
         for organization_num in range(6):
             name = "Test Organization %d" % organization_num
-            if organization_num < num_elements:
+            if organization_num < self.num_elements:
                 new_organization = Organization.objects.create(name=name, owner=self.test_user_0)
                 self.test_user_0.userprofile.organizations.add(new_organization)
             else:
@@ -61,43 +61,52 @@ class CompetencyViewTests(TestCase):
                 self.test_user_1.userprofile.organizations.add(new_organization)
             self.test_organizations.append(new_organization)
 
+    def build_to_eus(self):
+        """Build out a system to the essential understanding level."""
+        self.test_sas = []
+        for organization_num, organization in enumerate(self.test_organizations):
+
             # Create num_elements subject areas for each organization.
-            for sa_num in range(num_elements):
+            for sa_num in range(self.num_elements):
                 sa_name = "Test SA %d-%d" % (organization_num, sa_num)
                 new_sa = SubjectArea.objects.create(subject_area=sa_name,
-                                                    organization=new_organization)
+                                                    organization=organization)
                 self.test_sas.append(new_sa)
 
                 # Create num_elements grad standards for each subject area.
-                for gs_num in range(num_elements):
+                for gs_num in range(self.num_elements):
                     gs_body = "Test GS %d-%d-%d" % (organization_num, sa_num, gs_num)
                     new_gs = CompetencyArea.objects.create(subject_area=new_sa,
                                                                competency_area=gs_body)
 
                     # Create num_elements perf indicators for each grad std.
-                    for pi_num in range(num_elements):
+                    for pi_num in range(self.num_elements):
                         pi_body = "Test PI %d-%d-%d-%d" % (organization_num, sa_num, gs_num, pi_num)
                         new_pi = EssentialUnderstanding.objects.create(essential_understanding=pi_body,
                                                                      competency_area=new_gs)
 
                 # Create num_elements sdas for each sa.
-                for sda_num in range(num_elements):
+                for sda_num in range(self.num_elements):
                     sda_name = "Test SDA %d-%d-%d" % (organization_num, sa_num, sda_num)
                     new_sda = SubdisciplineArea.objects.create(subject_area=new_sa,
                                                                subdiscipline_area=sda_name)
 
                     # Create num_elements grad standards for each sda.
-                    for gs_num in range(num_elements):
+                    for gs_num in range(self.num_elements):
                         gs_body = "Test GS %d-%d-%d-%d" % (organization_num, sa_num, sda_num, gs_num)
                         new_gs = CompetencyArea.objects.create(subject_area=new_sa,
                                                                    subdiscipline_area=new_sda,
                                                                    competency_area=gs_body)
 
                         # Create num_elements perf indicators for each grad std.
-                        for pi_num in range(num_elements):
+                        for pi_num in range(self.num_elements):
                             pi_body = "Test PI %d-%d-%d-%d-%d" % (organization_num, sa_num, sda_num, gs_num, pi_num)
                             new_pi = EssentialUnderstanding.objects.create(essential_understanding=pi_body,
                                                                          competency_area=new_gs)
+
+
+
+
 
 
     def test_index_view(self):
@@ -119,6 +128,8 @@ class CompetencyViewTests(TestCase):
 
     def test_organization_view_logged_in(self):
         """Organization page lists subject areas and subdiscipline areas for that organization."""
+        self.build_to_eus()
+
         self.client.login(username='testuser0', password='pw')
 
         for organization_num, organization in enumerate(self.test_organizations):
@@ -200,6 +211,8 @@ class CompetencyViewTests(TestCase):
         
     def test_new_sda_view(self):
         """Lets user create a new subdiscipline area."""
+        self.build_to_eus()
+
         test_url = reverse('competencies:new_sda', args=(self.test_sas[0].id,))
         self.generic_test_blank_form(test_url)
 
@@ -211,6 +224,8 @@ class CompetencyViewTests(TestCase):
 
     def test_new_ca_view(self):
         """Lets user create a new competency area for a general subject area."""
+        self.build_to_eus()
+
         test_url = reverse('competencies:new_ca', args=(self.test_sas[0].id,))
         self.generic_test_blank_form(test_url)
 
@@ -225,6 +240,8 @@ class CompetencyViewTests(TestCase):
 
     def test_new_sda_ca_view(self):
         """Lets user create a new competency area for a subdiscipline area."""
+        self.build_to_eus()
+
         test_sdas = [sda for sda in self.test_sas[0].subdisciplinearea_set.all()]
         test_url = reverse('competencies:new_sda_ca', args=(test_sdas[0].id,))
         self.generic_test_blank_form(test_url)
@@ -240,6 +257,8 @@ class CompetencyViewTests(TestCase):
 
     def test_new_eu_view(self):
         """Lets user create a new essential understanding for a ca."""
+        self.build_to_eus()
+
         test_gstds = CompetencyArea.objects.all()
         test_url = reverse('competencies:new_eu', args=(test_gstds[0].id,))
         self.generic_test_blank_form(test_url)
@@ -254,6 +273,8 @@ class CompetencyViewTests(TestCase):
         self.assertTrue('can state first law' in eu_bodies)
 
     def test_sa_summary_view(self):
+        self.build_to_eus()
+
         sa = self.test_organizations[0].subjectarea_set.all()[0]
         test_url = reverse('competencies:sa_summary', args=(sa.id,))
         self.client.login(username='testuser0', password='pw')
@@ -289,6 +310,8 @@ class CompetencyViewTests(TestCase):
         # DEV - possible improvements
         #   Test that unmodified elements are unchanged after submission.
         #   Test modifying multiple instances of sdas, cas, and eus.
+
+        self.build_to_eus()
 
         # Test submitting blank form.
         sa = self.test_organizations[0].subjectarea_set.all()[0]
