@@ -91,6 +91,9 @@ def organization(request, organization_id):
     sas = get_subjectareas(organization, kwargs)
     # all subdiscipline areas for each subject area
     sa_sdas = get_sa_sdas(sas, kwargs)
+    #sdas = [sda for sdas in sa.subdisciplinearea_set.all() for sda in sdas]
+    sdas = [sda for sa in sas for sda in sa.subdisciplinearea_set.all()]    
+    print('sdas', sdas)
     return render_to_response('competencies/organization.html',
                               {'organization': organization, 'subject_areas': sas,
                                'sa_sdas': sa_sdas},
@@ -349,31 +352,6 @@ def get_sa_sdas(subject_areas, kwargs):
         sa_sdas[sa] = sa.subdisciplinearea_set.filter(**kwargs)
     return sa_sdas
 
-def get_sa_cas(subject_areas, kwargs):
-    """Returns all general competency areas for each subject.
-    Need to preserve the order of subject areas, so use OrderedDict.
-    """
-    sa_cas = OrderedDict()
-    for sa in subject_areas:
-        sa_cas[sa] = sa.competencyarea_set.filter(subdiscipline_area=None).filter(**kwargs)
-    return sa_cas
-
-def get_sda_cas(subject_areas, sa_sdas, kwargs):
-    """Returns all competency areas for each subdiscipline area."""
-    sda_cas = {}
-    for sa in subject_areas:
-        for sda in sa_sdas[sa]:
-            sda_cas[sda] = sda.competencyarea_set.filter(**kwargs)
-    return sda_cas
-
-def get_eu_lts(ca_eus, kwargs):
-    """Returns all learning targets for each essential understanding."""
-    eu_lts = {}
-    for eus in ca_eus.values():
-        for eu in eus:
-            eu_lts[eu] = eu.learningobjective_set.filter(**kwargs)
-    return eu_lts
-
 def get_visibility_filter(user, school):
     # Get filter for visibility, based on logged-in status.
     if user.is_authenticated() and school in user.userprofile.organizations.all():
@@ -409,22 +387,6 @@ def has_edit_permission(user, school, subject_area=None):
         return True
     else:
         return False
-
-def get_subjectarea_from_object(object_in):
-    """Returns the subject_area of the given object, and none if the
-    given object is above the level of a subject_area.
-    """
-    class_name = object_in.__class__.__name__
-    if class_name == 'Organization':
-        return None
-    elif class_name == 'SubjectArea':
-        return object_in
-    elif class_name in ['SubdisciplineArea', 'CompetencyArea']:
-        return object_in.subject_area
-    elif class_name == 'EssentialUnderstanding':
-        return object_in.competency_area.subject_area
-    elif class_name == 'LearningObjective':
-        return object_in.essential_understanding.competency_area.subject_area
 
 @login_required    
 def change_visibility(request, school_id, object_type, object_pk, visibility_mode):
