@@ -62,7 +62,7 @@ class CompetencyViewTests(TestCase):
             self.test_organizations.append(new_organization)
 
         # Empty lists of other elements.
-        self.test_sas = []
+        self.test_sas, self.test_sdas = [], []
 
     def build_to_eus(self):
         """Build out a system to the essential understanding level."""
@@ -112,7 +112,6 @@ class CompetencyViewTests(TestCase):
                             new_pi = EssentialUnderstanding.objects.create(essential_understanding=pi_body,
                                                                          competency_area=new_gs)
 
-
     def build_to_sas(self):
         """Build out system to the subject area level."""
         # Create num_elements subject areas for each organization.
@@ -123,6 +122,22 @@ class CompetencyViewTests(TestCase):
                 new_sa = SubjectArea.objects.create(subject_area=sa_name,
                                                     organization=organization)
                 self.test_sas.append(new_sa)
+
+    def build_to_sdas(self):
+        """Build out system to the subdiscipline_area level."""
+        self.build_to_sas()
+        for sa_num, sa in enumerate(self.test_sas):
+            # Create num_elements sdas for each sa.
+            for sda_num in range(self.num_elements):
+                sda_name = "Test SDA %d-%d-%d" % (organization_num, sa_num, sda_num)
+                new_sda = SubdisciplineArea.objects.create(subject_area=sa,
+                                                           subdiscipline_area=sda_name)
+                self.test_sdas.append(new_sda)
+
+    def build_to_cas(self):
+        """Build out system to the competency_area level."""
+        # Be sure to include general sa cas, and sda cas.
+        pass
 
     def test_index_view(self):
         """Index page is a static page for now, so just check status."""
