@@ -65,7 +65,7 @@ class CompetencyViewTests(TestCase):
         self.test_sas, self.test_sdas = [], []
         self.test_cas, self.test_eus = [], []
 
-    def build_to_eus(self):
+    def build_to_eus_old(self):
         """Build out a system to the essential understanding level."""
         for organization_num, organization in enumerate(self.test_organizations):
 
@@ -156,6 +156,18 @@ class CompetencyViewTests(TestCase):
                                                            subdiscipline_area=sda,
                                                            competency_area=ca_body)
                 self.test_cas.append(new_ca)
+
+    def build_to_eus(self):
+        """Build out a system to the essential understanding level."""
+        self.build_to_cas()
+        
+        for ca in self.test_cas:
+            # Create num_elements eus for each grad std.
+            for eu_num in range(self.num_elements):
+                eu_body = "Test EU %d" % eu_num
+                new_eu = EssentialUnderstanding.objects.create(essential_understanding=eu_body,
+                                                             competency_area=ca)
+            
 
 
     def test_index_view(self):
