@@ -63,6 +63,7 @@ class CompetencyViewTests(TestCase):
 
         # Empty lists of other elements.
         self.test_sas, self.test_sdas = [], []
+        self.test_cas, self.test_eus = [], []
 
     def build_to_eus(self):
         """Build out a system to the essential understanding level."""
@@ -126,10 +127,10 @@ class CompetencyViewTests(TestCase):
     def build_to_sdas(self):
         """Build out system to the subdiscipline_area level."""
         self.build_to_sas()
-        for sa_num, sa in enumerate(self.test_sas):
+        for sa in self.test_sas:
             # Create num_elements sdas for each sa.
             for sda_num in range(self.num_elements):
-                sda_name = "Test SDA %d-%d-%d" % (organization_num, sa_num, sda_num)
+                sda_name = "Test SDA %d" % sda_num
                 new_sda = SubdisciplineArea.objects.create(subject_area=sa,
                                                            subdiscipline_area=sda_name)
                 self.test_sdas.append(new_sda)
@@ -137,7 +138,25 @@ class CompetencyViewTests(TestCase):
     def build_to_cas(self):
         """Build out system to the competency_area level."""
         # Be sure to include general sa cas, and sda cas.
-        pass
+        self.build_to_sdas()
+
+        for sa in self.test_sas:
+            # Create num_elements competency areas for each subject area.
+            for ca_num in range(self.num_elements):
+                ca_body = "Test CA %d" % ca_num
+                new_ca = CompetencyArea.objects.create(subject_area=sa,
+                                                           competency_area=ca_body)
+                self.test_cas.append(new_ca)
+
+        for sda in self.test_sdas:
+            # Create num_elements competency areas for each sda.
+            for ca_num in range(self.num_elements):
+                ca_body = "Test CA %d" % ca_num
+                new_ca = CompetencyArea.objects.create(subject_area=sda.subject_area,
+                                                           subdiscipline_area=sda,
+                                                           competency_area=ca_body)
+                self.test_cas.append(new_ca)
+
 
     def test_index_view(self):
         """Index page is a static page for now, so just check status."""
@@ -270,7 +289,7 @@ class CompetencyViewTests(TestCase):
 
     def test_new_sda_ca_view(self):
         """Lets user create a new competency area for a subdiscipline area."""
-        self.build_to_eus()
+        self.build_to_sdas()
 
         test_sdas = [sda for sda in self.test_sas[0].subdisciplinearea_set.all()]
         test_url = reverse('competencies:new_sda_ca', args=(test_sdas[0].id,))
