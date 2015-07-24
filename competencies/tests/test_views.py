@@ -48,9 +48,15 @@ class CompetencyViewTests(TestCase):
         new_up = UserProfile(user=self.test_user_1)
         new_up.save()
 
+        # Empty lists of elements.
+        self.test_organizations = []
+        self.test_sas, self.test_sdas = [], []
+        self.test_cas, self.test_eus = [], []
+
+    def build_to_organizations(self):
+        """Build out system to the organization level."""
         # Build num_elements test organizations that user 0 is associated with,
         #  num_elements the user 1 is associated with.
-        self.test_organizations = []
         for organization_num in range(6):
             name = "Test Organization %d" % organization_num
             if organization_num < self.num_elements:
@@ -61,60 +67,10 @@ class CompetencyViewTests(TestCase):
                 self.test_user_1.userprofile.organizations.add(new_organization)
             self.test_organizations.append(new_organization)
 
-        # Empty lists of other elements.
-        self.test_sas, self.test_sdas = [], []
-        self.test_cas, self.test_eus = [], []
-
-    def build_to_eus_old(self):
-        """Build out a system to the essential understanding level."""
-        for organization_num, organization in enumerate(self.test_organizations):
-
-            # DEV
-            #  Each build_to_elementlevel() method needs to be callable on its own.
-            #    ie it can't take arguments from the build process; it needs
-            #    to stand on its own so it can be called from a test method.
-
-            # Create num_elements subject areas for each organization.
-            for sa_num in range(self.num_elements):
-                sa_name = "Test SA %d-%d" % (organization_num, sa_num)
-                new_sa = SubjectArea.objects.create(subject_area=sa_name,
-                                                    organization=organization)
-                self.test_sas.append(new_sa)
-                sa=new_sa
-
-                # Create num_elements grad standards for each subject area.
-                for gs_num in range(self.num_elements):
-                    gs_body = "Test GS %d-%d-%d" % (organization_num, sa_num, gs_num)
-                    new_gs = CompetencyArea.objects.create(subject_area=sa,
-                                                               competency_area=gs_body)
-
-                    # Create num_elements perf indicators for each grad std.
-                    for pi_num in range(self.num_elements):
-                        pi_body = "Test PI %d-%d-%d-%d" % (organization_num, sa_num, gs_num, pi_num)
-                        new_pi = EssentialUnderstanding.objects.create(essential_understanding=pi_body,
-                                                                     competency_area=new_gs)
-
-                # Create num_elements sdas for each sa.
-                for sda_num in range(self.num_elements):
-                    sda_name = "Test SDA %d-%d-%d" % (organization_num, sa_num, sda_num)
-                    new_sda = SubdisciplineArea.objects.create(subject_area=sa,
-                                                               subdiscipline_area=sda_name)
-
-                    # Create num_elements grad standards for each sda.
-                    for gs_num in range(self.num_elements):
-                        gs_body = "Test GS %d-%d-%d-%d" % (organization_num, sa_num, sda_num, gs_num)
-                        new_gs = CompetencyArea.objects.create(subject_area=sa,
-                                                                   subdiscipline_area=new_sda,
-                                                                   competency_area=gs_body)
-
-                        # Create num_elements perf indicators for each grad std.
-                        for pi_num in range(self.num_elements):
-                            pi_body = "Test PI %d-%d-%d-%d-%d" % (organization_num, sa_num, sda_num, gs_num, pi_num)
-                            new_pi = EssentialUnderstanding.objects.create(essential_understanding=pi_body,
-                                                                         competency_area=new_gs)
-
     def build_to_sas(self):
         """Build out system to the subject area level."""
+        self.build_to_organizations()
+
         # Create num_elements subject areas for each organization.
         for organization_num, organization in enumerate(self.test_organizations):
 
@@ -177,6 +133,8 @@ class CompetencyViewTests(TestCase):
 
     def test_organizations_view(self):
         """Organizations page lists all organizations, links to detail view of that organization."""
+        self.build_to_organizations()
+        
         response = self.client.get(reverse('competencies:organizations'))
         self.assertEqual(response.status_code, 200)
 
@@ -259,6 +217,8 @@ class CompetencyViewTests(TestCase):
 
     def test_new_sa_view(self):
         """Lets user create a new subject area."""
+        self.build_to_organizations()
+        
         test_url = reverse('competencies:new_sa', args=(self.test_organizations[0].id,))
         self.generic_test_blank_form(test_url)
         
