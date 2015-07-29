@@ -12,7 +12,8 @@ urlpatterns = patterns('',
 
     # --- Simple views of competency system; no opportunity to modify system ---
 
-    # organizations: List of all organizations participating in Open Competencies
+    # organizations: List of all organizations the user owns, can edit,
+    #  and all public organizations.
     url(r'^organizations/$', views.organizations, name='organizations'),
 
     # organization: Detail view for an organization, showing subject areas.

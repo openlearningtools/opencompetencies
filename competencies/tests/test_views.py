@@ -132,17 +132,52 @@ class CompetencyViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_organizations_view(self):
-        """Organizations page lists all organizations, links to detail view of that organization."""
+        """Organizations page lists all orgs user owns, can edit, and public organizations;
+           links to detail view of that organization."""
         self.build_to_organizations()
-        
-        response = self.client.get(reverse('competencies:organizations'))
-        self.assertEqual(response.status_code, 200)
 
-        # Make sure list of organizations appears in context, and that test_organization
-        #  is in that list.
-        self.assertTrue('organizations' in response.context)
-        for organization in self.test_organizations:
-            self.assertTrue(organization in response.context['organizations'])
+        test_url = reverse('competencies:organizations')
+
+        # Test for anonymous users, my_orgs and editor_orgs are empty.
+        #  Also test that private orgs not in public_orgs.
+        self.client.logout()
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['my_organizations']), 0)
+        self.assertEqual(len(response.context['editor_organizations']), 0)
+        for org in self.test_organizations:
+            if org.public:
+                self.assertTrue(org in response.context['public_organizations'])
+            else:
+                self.assertFalse(org in response.context['public_organizations'])
+
+        # Test for logged in users.
+        self.client.login(username='testuser0', password='pw')
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 200)
+        for org in self.test_organizations:
+            # Make sure owned org is in my_orgs
+            # Make sure owned org is not in editor_orgs
+            # Make sure not owned org is not in my_orgs
+            if org.owner == self.test_user_0:
+                self.assertTrue(org in response.context['my_organizations'])
+                self.assertFalse(org in response.context['editor_organizations'])
+            else:
+                self.assertFalse(org in response.context['my_organizations'])
+
+            # Make sure can edit org is in editor_orgs
+            # Make sure non edit org is not in editor_orgs
+            if (org in self.test_user_0.userprofile.organizations.all()
+                and org.owner != self.test_user_0):
+                self.assertTrue(org in response.context['editor_organizations'])
+            else:
+                self.assertFalse(org in response.context['editor_organizations'])
+
+            # Make sure private org is not in public orgs
+            if org.public:
+                self.assertTrue(org in response.context['public_organizations'])
+            else:
+                self.assertFalse(org in response.context['public_organizations'])
 
 
     def test_organization_view_logged_in(self):
