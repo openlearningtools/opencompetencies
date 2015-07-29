@@ -153,6 +153,16 @@ class OrganizationForm(ModelForm):
             'org_type': TextInput(attrs={'class': 'span4'}),
             }
 
+class OrganizationAdminForm(OrganizationForm):
+    """Extends OrganizationForm to include admin elements."""
+    class Meta(OrganizationForm.Meta):
+        fields = ('name', 'org_type', 'public',
+                  'alias_sa', 'alias_sda', 'alias_ca', 'alias_eu', 'alias_lt',
+                  )
+        OrganizationForm.Meta.labels['name'] = 'Name'
+                
+
+
 class SubjectAreaForm(ModelForm):
     class Meta:
         model = SubjectArea

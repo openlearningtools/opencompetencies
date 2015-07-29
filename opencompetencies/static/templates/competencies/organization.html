@@ -4,7 +4,15 @@
 
 {% block content %}
 
-	 <h2>{{ organization.name }}</h2>
+	 <h2>
+		{{ organization.name }}
+		<small>
+		{% if user == organization.owner %}
+	     <a href="{% url 'competencies:organization_admin' organization.id %}">admin page</a>
+		{% endif %}
+		</small>
+	 </h2>
+
 	 <p>Click on a subject area to see the {{ organization.alias_ca }}s and {{ organization.alias_eu }}s for that subject area.</p>
 
 	 {% if subject_areas %}

@@ -25,9 +25,11 @@ urlpatterns = patterns('',
 
     # --- Edit system pages ---
 
-    # edit_sa_summary/id: Edit a GSP-style summary for a given subject area.
+    # edit_sa_summary/id: Edit a summary for a given subject area.
     url(r'^edit_sa_summary/(?P<sa_id>\d+)/$', views.edit_sa_summary, name='edit_sa_summary'),                       
 
+    # organization_admin/id: Administer an organization.
+    url(r'^organization_admin/(?P<organization_id>\d+)/$', views.organization_admin, name='organization_admin'),
 
     # --- New element pages ---
 

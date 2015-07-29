@@ -118,6 +118,30 @@ def sa_summary(request, sa_id):
                                'sdas': sdas, 'cas': cas, 'eus': eus,},
                               context_instance = RequestContext(request))
 
+# --- Views for editing content. ---
+@login_required
+def organization_admin(request, organization_id):
+    """Administer an organization. Restricted to owners of the org."""
+    # DEV: This page will need a list of the organization's editors.
+
+    organization = Organization.objects.get(id=organization_id)
+    # Make sure user owns this org.
+    if request.user != organization.owner:
+        return redirect(reverse('competencies:organizations'))
+
+    if request.method != 'POST':
+        organization_form = OrganizationAdminForm(instance=organization)
+    else:
+        organization_form = OrganizationAdminForm(request.POST, instance=organization)
+        if organization_form.is_valid():
+            organization_form.save()
+            # DEV: Check if org.public changed; if private, cascade down all elements.
+
+    return render_to_response('competencies/organization_admin.html',
+                              {'organization': organization, 'organization_form': organization_form,
+                               },
+                              context_instance = RequestContext(request))
+                                  
 @login_required
 def edit_sa_summary(request, sa_id):
     """Edit the elements in sa_summary."""
