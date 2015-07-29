@@ -208,6 +208,35 @@ class CompetencyViewTests(TestCase):
                     for sda in sa.subdisciplinearea_set.all():
                         self.assertFalse(sda in response.context['sdas'])
 
+    def test_organization_admin_view(self):
+        """Organization_admin allows org owner to administer organization."""
+        # DEV: Incomplete
+        #   Test that form works for name, type, aliases etc.
+        
+        # Use test_user_1's org as test org.
+        self.build_to_eus()
+        for org in self.test_organizations:
+            if org.owner == self.test_user_1:
+                organization = org
+                break
+        self.assertTrue(organization)
+
+        # Test that an anonymous user is redirected.
+        self.client.logout()
+        test_url = reverse('competencies:organization_admin', args=(organization.id,))
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 302)
+
+        # Test that a non-owner is redirected.
+        logged_in = self.client.login(username='testuser0', password='pw')
+        self.assertTrue(logged_in)
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 302)
+
+        # Test changing a school public to private works.
+        #HERE
+        
+
     def test_new_organization_view(self):
         """New organization allows uer to create a new organization."""
         test_url = reverse('competencies:new_organization')
