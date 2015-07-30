@@ -211,16 +211,17 @@ class CompetencyViewTests(TestCase):
     def test_organization_admin_view(self):
         """Organization_admin allows org owner to administer organization."""
         # DEV: Incomplete
-        #   Test that form works for name, type, aliases etc.
         
         # Use test_user_1's org as test org.
         self.build_to_eus()
         for org in self.test_organizations:
             if org.owner == self.test_user_1:
                 organization = org
+                org_id = org.id
                 break
         self.assertTrue(organization)
 
+        # --- Critical security tests ---
         # Test that an anonymous user is redirected.
         self.client.logout()
         test_url = reverse('competencies:organization_admin', args=(organization.id,))
@@ -233,9 +234,47 @@ class CompetencyViewTests(TestCase):
         response = self.client.get(test_url)
         self.assertEqual(response.status_code, 302)
 
-        # Test changing a school public to private works.
-        #HERE
-        
+        # Test changing a school from public to private works.
+        self.client.login(username='testuser1', password='pw')
+        # Set organization public.
+        organization.public = True
+        organization.save()
+        modified_org = Organization.objects.get(id=org_id)
+        self.assertTrue(modified_org.public)
+        # Submit post request changing public to private.
+        post_data = self.get_org_admin_post_data(organization)
+        post_data['public'] = False
+        response = self.client.post(test_url, post_data)
+        self.assertEqual(response.status_code, 200)
+        modified_org = Organization.objects.get(id=org_id)
+        self.assertFalse(modified_org.public)
+
+        # --- Non-security tests ---
+        # Test that form works for name, type, aliases, etc.
+
+        # Test that form works for changing org type.
+        self.assertEqual(organization.org_type, 'school')
+        self.client.login(username='testuser1', password='pw')
+
+        post_data = self.get_org_admin_post_data(organization)
+        post_data['org_type'] = 'nonprofit'
+        response = self.client.post(test_url, post_data)
+
+        self.assertEqual(response.status_code, 200)
+        modified_org = Organization.objects.get(id=org_id)
+        self.assertEqual(modified_org.org_type, 'nonprofit')
+
+    def get_org_admin_post_data(self, organization):
+        post_data = {'name': organization.name,
+                     'org_type': organization.org_type,
+                     'public': organization.public,
+                     'alias_sa': organization.alias_sa,
+                     'alias_sda': organization.alias_sda,
+                     'alias_ca': organization.alias_ca,
+                     'alias_eu': organization.alias_eu,
+                     'alias_lt': organization.alias_lt,
+                     }
+        return post_data
 
     def test_new_organization_view(self):
         """New organization allows uer to create a new organization."""
