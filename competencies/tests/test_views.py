@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 from competencies.models import *
 from competencies.views import organization
-from competencies import my_admin
+from competencies import my_admin, utils
 
 """DEV NOTES
   - Maybe instead of using indices to store organizations, use separate lists:
@@ -513,3 +513,53 @@ class CompetencyViewTests(TestCase):
         self.client.login(username='testuser0', password='pw')
         response = self.client.get(test_url)
         self.assertEqual(response.status_code, 200)
+
+
+    # --- Test view utilities ---
+    def test_cascade_visibility_down(self):
+        """Test that cascading visibility reaches all elements."""
+        self.build_to_eus()
+
+        # Verify that all elements start out private.
+        element_lists = [self.test_sas, self.test_sdas, self.test_cas, self.test_eus]
+        for element_list in element_lists:
+            for element in element_list:
+                self.assertFalse(element.public)
+
+        # Set each org public, and cascade public down for each org.
+        for org in self.test_organizations:
+            org.public = True
+            org.save()
+            # Calling utils.cvd() saves to db, but doesn't modify original objects.
+            utils.cascade_visibility_down(org, 'public')
+
+        # Test that all orgs are public.
+        for org in self.test_organizations:
+            self.assertTrue(org.public)
+
+        # Test that all related elements in the db are public.
+        for element_list in element_lists:
+            for element in element_list:
+                element_id = element.id
+                db_element = element.__class__.objects.get(id=element.id)
+                self.assertTrue(db_element.public)
+
+        # Set each org private, and cascade private down for each org.
+        for org in self.test_organizations:
+            org.public = False
+            org.save()
+            # Calling utils.cvd() saves to db, but doesn't modify original objects.
+            utils.cascade_visibility_down(org, 'private')
+
+        # Test that all orgs are private.
+        for org in self.test_organizations:
+            self.assertFalse(org.public)
+
+        # Test that all related elements in the db are private.
+        for element_list in element_lists:
+            for element in element_list:
+                element_id = element.id
+                db_element = element.__class__.objects.get(id=element.id)
+                self.assertFalse(db_element.public)
+
+
