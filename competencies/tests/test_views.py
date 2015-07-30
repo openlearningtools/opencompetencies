@@ -222,19 +222,19 @@ class CompetencyViewTests(TestCase):
         self.assertTrue(organization)
 
         # --- Critical security tests ---
-        # Test that an anonymous user is redirected.
+        # -- Test that an anonymous user is redirected.
         self.client.logout()
         test_url = reverse('competencies:organization_admin', args=(organization.id,))
         response = self.client.get(test_url)
         self.assertEqual(response.status_code, 302)
 
-        # Test that a non-owner is redirected.
+        # -- Test that a non-owner is redirected.
         logged_in = self.client.login(username='testuser0', password='pw')
         self.assertTrue(logged_in)
         response = self.client.get(test_url)
         self.assertEqual(response.status_code, 302)
 
-        # Test changing a school from public to private works.
+        # -- Test changing a school from public to private works.
         self.client.login(username='testuser1', password='pw')
         # Set organization public.
         organization.public = True
@@ -249,10 +249,16 @@ class CompetencyViewTests(TestCase):
         modified_org = Organization.objects.get(id=org_id)
         self.assertFalse(modified_org.public)
 
+        # Test that making org private cascades down through all elements.
+        # DEV: INCOMPLETE - HIGH PRIORITY
+        #  To test this, need to set at least one of each element for the org public, then
+        #    test that each is private.
+
+
         # --- Non-security tests ---
         # Test that form works for name, type, aliases, etc.
 
-        # Test that form works for changing org type.
+        # -- Test that form works for changing org type.
         self.assertEqual(organization.org_type, 'school')
         self.client.login(username='testuser1', password='pw')
 

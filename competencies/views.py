@@ -15,6 +15,7 @@ from collections import OrderedDict
 
 from competencies.models import *
 from competencies import my_admin
+from . import utils
 
 def index(request):
     return render_to_response('competencies/index.html',
@@ -135,8 +136,10 @@ def organization_admin(request, organization_id):
         organization_form = OrganizationAdminForm(request.POST, instance=organization)
         if organization_form.is_valid():
             organization_form.save()
-            # DEV: Check if org.public changed; if private, cascade down all elements.
-
+            # If org has been made private, set all elements private.
+            if 'public' in organization_form.changed_data:
+                if not organization_form.cleaned_data.get('public'):
+                    utils.cascade_visibility_down(organization, 'private')
     return render_to_response('competencies/organization_admin.html',
                               {'organization': organization, 'organization_form': organization_form,
                                },
