@@ -34,9 +34,10 @@ class CompetencyViewTests(TestCase):
     # Then each test method can only call the level it needs. Testing efficiency
     #  should be greatly improved. Methdods such as build_to_sas(), build_to_eus().
 
-    def setUp(self, num_elements=2):
+    def setUp(self):
         # Build an organization, down to the performance indicator level.
-        self.num_elements = num_elements
+        self.num_orgs = 2
+        self.num_elements = 2
         self.client = Client()
 
         # Create 2 test users.
@@ -55,11 +56,12 @@ class CompetencyViewTests(TestCase):
 
     def build_to_organizations(self):
         """Build out system to the organization level."""
-        # Build num_elements test organizations that user 0 is associated with,
-        #  num_elements the user 1 is associated with.
-        for organization_num in range(6):
+        # Build a test organization that user 0 is associated with,
+        #  and one that user 1 is associated with.
+        # If a test only needs one org, it can set self.num_orgs = 1.
+        for organization_num in range(2):
             name = "Test Organization %d" % organization_num
-            if organization_num < self.num_elements:
+            if organization_num < self.num_orgs/2:
                 new_organization = Organization.objects.create(name=name, owner=self.test_user_0)
                 self.test_user_0.userprofile.organizations.add(new_organization)
             else:
@@ -123,7 +125,7 @@ class CompetencyViewTests(TestCase):
                 eu_body = "Test EU %d" % eu_num
                 new_eu = EssentialUnderstanding.objects.create(essential_understanding=eu_body,
                                                              competency_area=ca)
-            
+                self.test_eus.append(new_eu)
 
 
     def test_index_view(self):
@@ -194,7 +196,7 @@ class CompetencyViewTests(TestCase):
             # For now, all users can see the names of all organizations.
             self.assertEqual(organization, response.context['organization'])
 
-            if organization_num < self.num_elements:
+            if organization_num < self.num_orgs/2:
                 # User should see sa and sdas for organization they have permissions on.
                 for sa in organization.subjectarea_set.all():
                     self.assertTrue(sa in response.context['subject_areas'])
@@ -326,6 +328,7 @@ class CompetencyViewTests(TestCase):
 
     def test_new_sa_view(self):
         """Lets user create a new subject area."""
+        self.num_orgs = 1
         self.build_to_organizations()
         
         test_url = reverse('competencies:new_sa', args=(self.test_organizations[0].id,))
@@ -339,6 +342,7 @@ class CompetencyViewTests(TestCase):
         
     def test_new_sda_view(self):
         """Lets user create a new subdiscipline area."""
+        self.num_orgs = 1
         self.build_to_sas()
 
         # Get a test_sa that's connected to the user that generic_test_blank_form will use.
@@ -354,6 +358,7 @@ class CompetencyViewTests(TestCase):
 
     def test_new_ca_view(self):
         """Lets user create a new competency area for a general subject area."""
+        self.num_orgs = 1
         self.build_to_sas()
 
         test_url = reverse('competencies:new_ca', args=(self.test_sas[0].id,))
@@ -370,6 +375,7 @@ class CompetencyViewTests(TestCase):
 
     def test_new_sda_ca_view(self):
         """Lets user create a new competency area for a subdiscipline area."""
+        self.num_orgs = 1
         self.build_to_sdas()
 
         test_sdas = [sda for sda in self.test_sas[0].subdisciplinearea_set.all()]
@@ -387,6 +393,7 @@ class CompetencyViewTests(TestCase):
 
     def test_new_eu_view(self):
         """Lets user create a new essential understanding for a ca."""
+        self.num_orgs = 1
         self.build_to_eus()
 
         test_gstds = CompetencyArea.objects.all()
@@ -403,6 +410,7 @@ class CompetencyViewTests(TestCase):
         self.assertTrue('can state first law' in eu_bodies)
 
     def test_sa_summary_view(self):
+        self.num_orgs = 1
         self.build_to_eus()
 
         sa = self.test_organizations[0].subjectarea_set.all()[0]
@@ -441,6 +449,7 @@ class CompetencyViewTests(TestCase):
         #   Test that unmodified elements are unchanged after submission.
         #   Test modifying multiple instances of sdas, cas, and eus.
 
+        self.num_orgs = 1
         self.build_to_eus()
 
         # Test submitting blank form.
@@ -518,7 +527,10 @@ class CompetencyViewTests(TestCase):
     # --- Test view utilities ---
     def test_cascade_visibility_down(self):
         """Test that cascading visibility reaches all elements."""
+        self.num_orgs = 1
         self.build_to_eus()
+
+        # DEV: Speed up test by pulling all elements from db as a group, not individual calls.
 
         # Verify that all elements start out private.
         element_lists = [self.test_sas, self.test_sdas, self.test_cas, self.test_eus]
@@ -539,9 +551,8 @@ class CompetencyViewTests(TestCase):
 
         # Test that all related elements in the db are public.
         for element_list in element_lists:
-            for element in element_list:
-                element_id = element.id
-                db_element = element.__class__.objects.get(id=element.id)
+            db_elements = element_list[0].__class__.objects.all()
+            for db_element in db_elements:
                 self.assertTrue(db_element.public)
 
         # Set each org private, and cascade private down for each org.
@@ -557,9 +568,6 @@ class CompetencyViewTests(TestCase):
 
         # Test that all related elements in the db are private.
         for element_list in element_lists:
-            for element in element_list:
-                element_id = element.id
-                db_element = element.__class__.objects.get(id=element.id)
+            db_elements = element_list[0].__class__.objects.all()
+            for db_element in db_elements:
                 self.assertFalse(db_element.public)
-
-
