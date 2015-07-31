@@ -243,6 +243,10 @@ class CompetencyViewTests(TestCase):
         organization.save()
         modified_org = Organization.objects.get(id=org_id)
         self.assertTrue(modified_org.public)
+
+        # Set all elements in the school public.
+        utils.cascade_visibility_down(modified_org, 'public')
+
         # Submit post request changing public to private.
         post_data = self.get_org_admin_post_data(organization)
         post_data['public'] = False
@@ -252,10 +256,15 @@ class CompetencyViewTests(TestCase):
         self.assertFalse(modified_org.public)
 
         # Test that making org private cascades down through all elements.
-        # DEV: INCOMPLETE - HIGH PRIORITY
-        #  To test this, need to set at least one of each element for the org public, then
-        #    test that each is private.
-
+        modified_sas = modified_org.subjectarea_set.all()
+        for sa in modified_sas:
+            self.assertFalse(sa.public)
+            for sda in sa.subdisciplinearea_set.all():
+                self.assertFalse(sda.public)
+            for ca in sa.competencyarea_set.all():
+                self.assertFalse(ca.public)
+                for eu in ca.essentialunderstanding_set.all():
+                    self.assertFalse(eu.public)
 
         # --- Non-security tests ---
         # Test that form works for name, type, aliases, etc.
