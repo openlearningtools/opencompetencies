@@ -210,8 +210,8 @@ class CompetencyViewTests(TestCase):
                     for sda in sa.subdisciplinearea_set.all():
                         self.assertFalse(sda in response.context['sdas'])
 
-    def test_organization_admin_view(self):
-        """Organization_admin allows org owner to administer organization."""
+    def test_organization_admin_edit_view(self):
+        """Organization_admin_edit allows org owner to administer organization."""
         # DEV: Incomplete
         
         # Use test_user_1's org as test org.
@@ -226,7 +226,7 @@ class CompetencyViewTests(TestCase):
         # --- Critical security tests ---
         # -- Test that an anonymous user is redirected.
         self.client.logout()
-        test_url = reverse('competencies:organization_admin', args=(organization.id,))
+        test_url = reverse('competencies:organization_admin_edit', args=(organization.id,))
         response = self.client.get(test_url)
         self.assertEqual(response.status_code, 302)
 

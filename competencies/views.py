@@ -121,7 +121,7 @@ def sa_summary(request, sa_id):
 
 # --- Views for editing content. ---
 @login_required
-def organization_admin(request, organization_id):
+def organization_admin_edit(request, organization_id):
     """Administer an organization. Restricted to owners of the org."""
     # DEV: This page will need a list of the organization's editors.
 
@@ -140,7 +140,7 @@ def organization_admin(request, organization_id):
             if 'public' in organization_form.changed_data:
                 if not organization_form.cleaned_data.get('public'):
                     utils.cascade_visibility_down(organization, 'private')
-    return render_to_response('competencies/organization_admin.html',
+    return render_to_response('competencies/organization_admin_edit.html',
                               {'organization': organization, 'organization_form': organization_form,
                                },
                               context_instance = RequestContext(request))

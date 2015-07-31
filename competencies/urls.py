@@ -28,8 +28,8 @@ urlpatterns = patterns('',
     # edit_sa_summary/id: Edit a summary for a given subject area.
     url(r'^edit_sa_summary/(?P<sa_id>\d+)/$', views.edit_sa_summary, name='edit_sa_summary'),                       
 
-    # organization_admin/id: Administer an organization.
-    url(r'^organization_admin/(?P<organization_id>\d+)/$', views.organization_admin, name='organization_admin'),
+    # organization_admin_edit/id: Administer an organization.
+    url(r'^organization_admin_edit/(?P<organization_id>\d+)/$', views.organization_admin_edit, name='organization_admin_edit'),
 
     # --- New element pages ---
 
