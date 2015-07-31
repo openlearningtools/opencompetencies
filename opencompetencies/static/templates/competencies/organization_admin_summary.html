@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title_extension %} - {{ organization.name }} Admin Page{% endblock %}
+
+{% block content %}
+
+	 <h2>
+		{{ organization.name }}
+		<small><a href="{% url 'competencies:organization_admin_edit' organization.id %}">edit organization</a></small>
+	 </h2>
+
+	 <p>
+		This page provides an administrative summary of an organization that you own.
+	 </p>
+	 
+	 <hr />
+	 <p>Type of organization: <b>{{ organization.org_type }}</b></p>
+	 <p>
+		This organization is
+		<b>{% if organization.public %}
+		  public
+		{% else %}
+		  private
+		{% endif %}</b>. (Public means the organization is visible on this site; it has nothing to do with whether this is a public or private institution.)
+	 </p>
+
+	 <hr />
+	 <p>Subject area alias: <b>{{ organization.alias_sa }}</b></p>
+	 <p>Subdiscipline area alias: <b>{{ organization.alias_sda }}</b></p>
+	 <p>Competency area alias: <b>{{ organization.alias_ca }}</b></p>
+	 <p>Essential understanding alias: <b>{{ organization.alias_eu }}</b></p>
+	 <p>Learning target alias: <b>{{ organization.alias_lt }}</b></p>
+
+	 <hr />
+	 <p>Editors:</p>
+	 <ul>
+	 {% for editor in editors %}
+	   <li>{{ editor }}</li>
+	 {% endfor %}
+	 </ul>
+
+
+
+{% endblock %}

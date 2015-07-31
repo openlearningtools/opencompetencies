@@ -119,6 +119,23 @@ def sa_summary(request, sa_id):
                                'sdas': sdas, 'cas': cas, 'eus': eus,},
                               context_instance = RequestContext(request))
 
+@login_required
+def organization_admin_summary(request, organization_id):
+    """See an administrative summmary of an organization. Restricted to owners of the org."""
+    organization = Organization.objects.get(id=organization_id)
+    # Make sure user owns this org.
+    if request.user != organization.owner:
+        return redirect(reverse('competencies:organizations'))
+
+    editor_profiles = organization.userprofile_set.all()
+    editors = [user_profile.user.username for user_profile in editor_profiles]
+
+    return render_to_response('competencies/organization_admin_summary.html',
+                              {'organization': organization, 'editors': editors,
+                               },
+                              context_instance = RequestContext(request))
+
+
 # --- Views for editing content. ---
 @login_required
 def organization_admin_edit(request, organization_id):

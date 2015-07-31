@@ -8,7 +8,7 @@
 		{{ organization.name }}
 		<small>
 		{% if user == organization.owner %}
-	     <a href="{% url 'competencies:organization_admin_edit' organization.id %}">admin page</a>
+	     <a href="{% url 'competencies:organization_admin_summary' organization.id %}">admin page</a>
 		{% endif %}
 		</small>
 	 </h2>
