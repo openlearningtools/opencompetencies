@@ -4,8 +4,10 @@
 
 {% block content %}
 
-	 <h2>{{ organization.name }}</h2>
-	 <p>This page allows you to administer an organization that you own.</p>
+	 <h2>
+		<a href="{% url 'competencies:organization' organization.id %}">{{ organization.name }}</a>
+		<small><a href="{% url 'competencies:organization_admin_summary' organization.id %}">admin page</a></small>
+	 </h2>
 
 	 <form method='post' action=''>
 		{% csrf_token %}

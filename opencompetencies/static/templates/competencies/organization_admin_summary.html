@@ -5,7 +5,7 @@
 {% block content %}
 
 	 <h2>
-		{{ organization.name }}
+		<a href="{% url 'competencies:organization' organization.id %}">{{ organization.name }}</a>
 		<small><a href="{% url 'competencies:organization_admin_edit' organization.id %}">edit organization</a></small>
 	 </h2>
 
@@ -16,12 +16,12 @@
 	 <hr />
 	 <p>Type of organization: <b>{{ organization.org_type }}</b></p>
 	 <p>
-		This organization is
+		This organization is set to
 		<b>{% if organization.public %}
 		  public
 		{% else %}
 		  private
-		{% endif %}</b>. (Public means the organization is visible on this site; it has nothing to do with whether this is a public or private institution.)
+		{% endif %}</b>. (Public means the organization is visible on this site; it has nothing to do with whether this is associated with a public or private institution.)
 	 </p>
 
 	 <hr />
