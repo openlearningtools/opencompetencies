@@ -217,6 +217,7 @@ def edit_sa_summary(request, sa_id):
     return render_to_response('competencies/edit_sa_summary.html',
                               {'subject_area': subject_area, 'organization': organization,
                                'sdas': sdas, 'cas': cas, 'eus': eus,
+                               'sa_form': sa_form,
                                'zipped_sda_forms': zipped_sda_forms,
                                'zipped_ca_forms': zipped_ca_forms,
                                'zipped_eu_forms': zipped_eu_forms,

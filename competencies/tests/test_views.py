@@ -501,9 +501,13 @@ class CompetencyViewTests(TestCase):
         # DEV: All of these could probably be generalized and refactored.
 
         # --- Test modifying subject area. ---
+        # DEV: This test passes even when sa_form is not in the context. How???
+        #   For now, test that sa_form is in context.
+
         sa_pk = sa.pk
         post_data = {'subject_area': 'modified subject area',}
         response = self.client.post(test_url, post_data)
+        self.assertTrue('sa_form' in response.context)
 
         self.assertEqual(response.status_code, 200)
         sa = SubjectArea.objects.get(pk=sa_pk)
