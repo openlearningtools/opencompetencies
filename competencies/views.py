@@ -158,6 +158,11 @@ def organization_admin_edit(request, organization_id):
             if 'public' in organization_form.changed_data:
                 if not organization_form.cleaned_data.get('public'):
                     utils.cascade_visibility_down(organization, 'private')
+        # Make sure no organization owner was not removed from editors.
+        # DEV: Should prevent this from happening at all, by overriding form.save()?
+        if organization.owner not in organization.editors.all():
+            organization.editors.add(organization.owner)
+
         # Redirect to summary page after processing form.
         return redirect(reverse('competencies:organization_admin_summary', args=[organization_id]))
 

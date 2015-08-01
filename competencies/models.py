@@ -175,6 +175,7 @@ class OrganizationAdminForm(OrganizationForm):
     class Meta(OrganizationForm.Meta):
         fields = ('name', 'org_type', 'public',
                   'alias_sa', 'alias_sda', 'alias_ca', 'alias_eu', 'alias_lt',
+                  'editors',
                   )
         OrganizationForm.Meta.labels['name'] = 'Name'
                 
