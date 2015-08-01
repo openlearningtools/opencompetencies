@@ -153,12 +153,10 @@ class LearningTarget(CoreElement):
 # --- User Information ---
 
 class UserProfile(models.Model):
+    """Was here to manage m2m relation to Organization."""
+    # Keeping this, because I'll store more information about users at some point.
     user = models.OneToOneField(User)
-    # User is allowed to edit any aspect of any organization in this list.
-    organizations = models.ManyToManyField(Organization, blank=True)
-    # User is allowed to edit any descendent of any subject_area in this list.
-    subject_areas = models.ManyToManyField(SubjectArea, blank=True)
-
+    
 
 # --- ModelForms ---
 class OrganizationForm(ModelForm):
