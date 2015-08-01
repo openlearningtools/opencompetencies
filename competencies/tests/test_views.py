@@ -577,6 +577,9 @@ class CompetencyViewTests(TestCase):
             for eu in ca.essentialunderstanding_set.all():
                 self.assertFalse(eu.public)
 
+        # --- Test that setting eu public cascades up to sa.
+        pass
+
     def test_register_view(self):
         """Lets new user register an account."""
         test_url = reverse('register')
@@ -647,4 +650,20 @@ class CompetencyViewTests(TestCase):
     def test_cascade_public_up(self):
         """Test utils.cascade_public_up()."""
         # Make sure to test that organization is not set public on cascade.
-        pass
+        self.build_to_eus()
+        org = Organization.objects.get(id=1)
+        # Grab first available eu from the org.
+        for eu in EssentialUnderstanding.objects.all():
+            if eu.get_organization() == org:
+                break
+        # Verify eu private, then set public.
+        self.assertFalse(eu.public)
+        eu.public = True
+        # Cascade public up, and test cascade.
+        utils.cascade_public_up(eu)
+        element = eu.get_parent()
+        while element.__class__ != Organization:
+            self.assertTrue(element.public)
+            element = element.get_parent()
+        # Element is now org, verify it's still private.
+        self.assertFalse(element.public)

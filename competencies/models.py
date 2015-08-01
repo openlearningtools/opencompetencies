@@ -56,6 +56,9 @@ class SubjectArea(CoreElement):
     def get_parent(self):
         return self.organization
 
+    def get_organization(self):
+        return self.organization
+
 class SubdisciplineArea(CoreElement):
     subdiscipline_area = models.CharField(max_length=500)
     subject_area = models.ForeignKey(SubjectArea)
@@ -71,6 +74,9 @@ class SubdisciplineArea(CoreElement):
 
     def get_parent(self):
         return self.subject_area
+
+    def get_organization(self):
+        return self.subject_area.get_organization()
 
 class CompetencyArea(CoreElement):
     competency_area = models.CharField(max_length=500)
@@ -101,6 +107,9 @@ class CompetencyArea(CoreElement):
         else:
             return self.subject_area
 
+    def get_organization(self):
+        return self.subject_area.get_organization()
+
 class EssentialUnderstanding(CoreElement):
     essential_understanding = models.CharField(max_length=2000)
     competency_area = models.ForeignKey(CompetencyArea)
@@ -117,6 +126,9 @@ class EssentialUnderstanding(CoreElement):
     def get_parent(self):
         return self.competency_area
 
+    def get_organization(self):
+        return self.competency_area.get_organization()
+
 class LearningTarget(CoreElement):
     learning_target = models.CharField(max_length=2000)
     essential_understanding = models.ForeignKey(EssentialUnderstanding)
@@ -132,6 +144,9 @@ class LearningTarget(CoreElement):
 
     def get_parent(self):
         return self.essential_understanding
+
+    def get_organization(self):
+        return self.essential_understanding.get_organization()
 
 
 # --- User Information ---
