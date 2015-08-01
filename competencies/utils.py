@@ -1,8 +1,11 @@
 """Helper functions for views.py."""
+from competencies.models import Organization
+
 
 def cascade_visibility_down(element, visibility_mode):
     """Sets visibility for all descendents of an element. (cascades down)."""
-
+    # Does nothing to given element.
+    
     # Find all related objects, and set them all to the appropriate visibility mode.
     links = [rel.get_accessor_name() for rel in element._meta.get_all_related_objects()]
     for link in links:
@@ -25,3 +28,17 @@ def cascade_visibility_down(element, visibility_mode):
             if object._meta.get_all_related_objects():
                 cascade_visibility_down(object, visibility_mode)
 
+def cascade_public_up(element):
+    """Sets visibility to public for all ancestors of an element. (cascades up)."""
+    # Does nothing to given element.
+    # Does not affect organization; that is managed separately.
+    #   This allows an organization to be set up, and then made visible all at once.
+    # Only sets elements public, because I can't see any reason to cascade private upwards.
+
+    parent = element.get_parent()
+    while parent.__class__ != Organization:
+        if not parent.public:
+            parent.public = True
+            parent.save()
+        # Get next parent element.
+        parent = parent.get_parent()

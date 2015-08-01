@@ -182,15 +182,40 @@ def edit_sa_summary(request, sa_id):
 
     # Respond to submitted data.
     if request.method == 'POST':
-        process_form(request, subject_area, 'sa')
+        # Store elements that have had their privacy setting changed,
+        #   for processing after all forms have been processed.
+        privacy_changed = []
+        process_form(request, subject_area, 'sa', privacy_changed)
         for sda in sdas:
-            process_form(request, sda, 'sda')
+            process_form(request, sda, 'sda', privacy_changed)
         for ca in cas:
-            process_form(request, ca, 'ca')
+            process_form(request, ca, 'ca', privacy_changed)
         for eu in eus:
-            process_form(request, eu, 'eu')
+            process_form(request, eu, 'eu', privacy_changed)
 
-    # Build forms.
+        # Cascade privacy settings appropriately.
+        #   Change to private takes precedence, so process changes to public first.
+        changed_to_public = [element for element in privacy_changed if element.public]
+        changed_to_private = [element for element in privacy_changed if not element.public]
+
+        # Cascading public happens upwards. Setting an element public makes all its
+        #   ancestors public.
+        for element in changed_to_public:
+            utils.cascade_public_up(element)
+        
+        # Cascading private happens downwards. Setting an element private hides all
+        #   its descendants.
+        for element in changed_to_private:
+            utils.cascade_visibility_down(element, 'private')
+
+        # If any privacy settings were changed, need to refresh elements
+        #   to make sure forms are based on updated elements.
+        subject_area = SubjectArea.objects.get(id=sa_id)
+        organization = subject_area.organization
+        sdas, cas, eus = get_sda_ca_eu_elements(subject_area, kwargs)
+
+    # Build forms. Not in an else clause, because even POST requests need
+    #  forms re-generated.
     sa_form = generate_form(subject_area, 'sa')
     sda_forms = []
     for sda in sdas:
@@ -198,7 +223,7 @@ def edit_sa_summary(request, sa_id):
         sda_form.my_id = sda.id
         sda_forms.append(sda_form)
     zipped_sda_forms = list(zip(sdas, sda_forms))
-        
+
     ca_forms = []
     for ca in cas:
         ca_form = generate_form(ca, 'ca')
@@ -234,7 +259,7 @@ def get_sda_ca_eu_elements(subject_area, kwargs):
             eus.append(eu)
     return (sdas, cas, eus)
 
-def process_form(request, instance, element_type):
+def process_form(request, instance, element_type, privacy_changed):
     """Process a form for a single element."""
     prefix = '%s_form_%d' % (element_type, instance.id)
 
@@ -248,7 +273,13 @@ def process_form(request, instance, element_type):
         form = EssentialUnderstandingForm(request.POST, prefix=prefix, instance=instance)
 
     if form.is_valid():
-        form.save()
+        modified_element = form.save()
+
+    # If privacy setting changed, add to list for processing.
+    if 'public' in form.changed_data:
+        privacy_changed.append(modified_element)
+
+    return form
 
 def generate_form(instance, element_type):
     """Generate a form for a single element."""

@@ -96,7 +96,10 @@ class CompetencyArea(CoreElement):
             return False
 
     def get_parent(self):
-        return self.subject_area
+        if self.subdiscipline_area:
+            return self.subdiscipline_area
+        else:
+            return self.subject_area
 
 class EssentialUnderstanding(CoreElement):
     essential_understanding = models.CharField(max_length=2000)
@@ -166,7 +169,7 @@ class OrganizationAdminForm(OrganizationForm):
 class SubjectAreaForm(ModelForm):
     class Meta:
         model = SubjectArea
-        fields = ('subject_area', 'description')
+        fields = ('subject_area', 'description', 'public')
         widgets = {
             'subject_area': TextInput(attrs={'class': 'span4'}),
             'description': Textarea(attrs={'rows': 5, 'class': 'span8'}),
@@ -177,7 +180,7 @@ class SubdisciplineAreaForm(ModelForm):
     my_id = None
     class Meta:
         model = SubdisciplineArea
-        fields = ('subdiscipline_area', 'description')
+        fields = ('subdiscipline_area', 'description', 'public')
         widgets = {
             'subdiscipline_area': TextInput(attrs={'class': 'span4'}),
             'description': Textarea(attrs={'rows': 5, 'class': 'span8'}),
@@ -188,7 +191,7 @@ class CompetencyAreaForm(ModelForm):
     my_id = None
     class Meta:
         model = CompetencyArea
-        fields = ('competency_area', 'student_friendly', 'description')
+        fields = ('competency_area', 'student_friendly', 'description', 'public')
         labels = {'competency_area': 'Competency Area'}
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
         widgets = {'competency_area': Textarea(attrs={'rows': 5, 'class': 'span4'}),
@@ -199,7 +202,7 @@ class CompetencyAreaForm(ModelForm):
 class EssentialUnderstandingForm(ModelForm):
     class Meta:
         model = EssentialUnderstanding
-        fields = ('essential_understanding', 'student_friendly', 'description')
+        fields = ('essential_understanding', 'student_friendly', 'description', 'public')
         labels = {'essential_understanding': 'Essential Understanding'}
         # Bootstrap controls width of Textarea, ignoring the 'cols' setting. Can also use 'class': 'input-block-level'
         widgets = {'essential_understanding': Textarea(attrs={'rows': 5, 'class': 'span7'}),

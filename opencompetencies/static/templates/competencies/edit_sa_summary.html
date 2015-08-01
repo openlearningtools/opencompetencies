@@ -11,6 +11,7 @@
 		{% csrf_token %}
 		{{ sa_form.subject_area }}
 		<a href="{% url 'competencies:new_sa' organization.id %}">new subject area</a>
+		<p>public: {{ sa_form.public }}</p>
 
 	 <div class="row row-eq-height">
 		<div class="span4 lead summary_box grad_std_col"><strong>{{ organization.alias_ca|title }}s</strong></div>
@@ -22,11 +23,13 @@
 	   <div class="row row-eq-height">
 		  <div class="span4 summary_box grad_std_col">
 			 <p>{{ ca_form.competency_area }}</p>
+			 <p>public: {{ ca_form.public }}</p>
 		  </div>
 		  <div class="span7 summary_box pi_col">
 				{% for eu, eu_form in zipped_eu_forms %}
 				{% if eu.competency_area == ca %}
 				  {{ eu_form.essential_understanding }}
+				  <p>public: {{ eu_form.public }}</p>
 				{% endif %}
 				{% endfor %}
 				<a href="{% url 'competencies:new_eu' ca_form.my_id %}">new {{ organization.alias_eu }}</a>
@@ -42,7 +45,10 @@
 
 	 {% for sda, sda_form in zipped_sda_forms %}
 		<div class="row row-eq-height">
-		  <div class="span4 lead summary_box sda_col"><strong>{{ sda }}</strong></div>
+		  <div class="span4 lead summary_box sda_col">
+			 <strong>{{ sda_form.subdiscipline_area }}</strong>
+			 <small>public: {{ sda_form.public }}</small>
+		  </div>
 		  <div class="span7 lead summary_box sda_col">&nbsp</div>
 		</div>
 		{% for ca, ca_form in zipped_ca_forms %}
@@ -50,11 +56,13 @@
 	     <div class="row row-eq-height">
 			 <div class="span4 summary_box grad_std_col">
 				<p>{{ ca_form.competency_area }}</p>
+				<p>public: {{ ca_form.public }}</p>
 			 </div>
 			 <div class="span7 summary_box pi_col">
 				  {% for eu, eu_form in zipped_eu_forms %}
 				  {% if eu.competency_area == ca %}
 				        {{ eu_form.essential_understanding }}
+				        <p>public: {{ eu_form.public }}</p>
 				  {% endif %}
 				  {% endfor %}
 				  <a href="{% url 'competencies:new_eu' ca_form.my_id %}">new {{ organization.alias_eu }}</a>
