@@ -15,13 +15,11 @@
 
       <p>You have permission to work with the following organizations:</p>
 		    <ul>
-				  {% if user.userprofile.organizations %}
-				      {% for organization in user.userprofile.organizations.all %}
-			             <li><a href='{% url 'competencies:organization' organization.id %}'>{{ organization.name }}</a></li>
-						{% endfor %}
-				  {% else %}
-				      <li>You do not have permission to work with any organizations.</li>
-				  {% endif %}
+				{% for organization in editor_orgs %}
+			     <li><a href='{% url 'competencies:organization' organization.id %}'>{{ organization.name }}</a></li>
+				{% empty %}
+				  <li>You do not have permission to work with any organizations.</li>
+				{% endfor %}
 			 </ul>
 
 {% endblock %}

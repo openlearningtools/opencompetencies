@@ -63,10 +63,10 @@ class CompetencyViewTests(TestCase):
             name = "Test Organization %d" % organization_num
             if organization_num < self.num_orgs/2:
                 new_organization = Organization.objects.create(name=name, owner=self.test_user_0)
-                self.test_user_0.userprofile.organizations.add(new_organization)
+                new_organization.editors.add(self.test_user_0)
             else:
                 new_organization = Organization.objects.create(name=name, owner=self.test_user_1)
-                self.test_user_1.userprofile.organizations.add(new_organization)
+                new_organization.editors.add(self.test_user_1)
             self.test_organizations.append(new_organization)
 
     def build_to_sas(self):
@@ -169,7 +169,7 @@ class CompetencyViewTests(TestCase):
 
             # Make sure can edit org is in editor_orgs
             # Make sure non edit org is not in editor_orgs
-            if (org in self.test_user_0.userprofile.organizations.all()
+            if (self.test_user_0 in org.editors.all()
                 and org.owner != self.test_user_0):
                 self.assertTrue(org in response.context['editor_organizations'])
             else:
@@ -340,7 +340,7 @@ class CompetencyViewTests(TestCase):
         for organization in Organization.objects.all():
             if organization.name == 'my new organization':
                 self.assertTrue(organization.owner, self.test_user_0)
-                self.assertTrue(organization in self.test_user_0.userprofile.organizations.all())
+                self.assertTrue(self.test_user_0 in organization.editors.all())
 
         # Test that user can't create a second organization of the same name.
         # DEV: DB error causes test to fail. How test this properly?
@@ -386,7 +386,7 @@ class CompetencyViewTests(TestCase):
         self.build_to_sas()
 
         # Get a test_sa that's connected to the user that generic_test_blank_form will use.
-        sa = self.test_user_0.userprofile.organizations.all()[0].subjectarea_set.all()[0]
+        sa = self.test_organizations[0].subjectarea_set.all()[0]
         test_url = reverse('competencies:new_sda', args=(sa.id,))
         self.generic_test_blank_form(test_url)
 
@@ -609,7 +609,7 @@ class CompetencyViewTests(TestCase):
         for user in User.objects.all():
             if user.username == 'testuser0':
                 break
-        for org in user.userprofile.organizations.all():
+        for org in user.organization_set.all():
             self.assertTrue(org.name in response.content.decode())
 
     def generic_test_blank_form(self, test_url):

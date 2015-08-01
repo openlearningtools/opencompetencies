@@ -30,8 +30,9 @@ def logout_view(request):
 
 @login_required
 def profile(request):
+    editor_orgs = request.user.organization_set.all()
     return render_to_response('registration/profile.html',
-                              {},
+                              {'editor_orgs': editor_orgs},
                               context_instance = RequestContext(request))
 
 def password_change_form(request):
@@ -85,7 +86,7 @@ def organizations(request):
     my_organizations, editor_organizations = [], []
     if request.user.is_authenticated():
         my_organizations = Organization.objects.filter(owner=request.user)
-        editor_organizations = request.user.userprofile.organizations.all()
+        editor_organizations = request.user.organization_set.all()
     # Remove owned orgs from editor_organizations
     editor_organizations = [org for org in editor_organizations if org not in my_organizations]
     public_organizations = Organization.objects.filter(public=True)
@@ -128,8 +129,7 @@ def organization_admin_summary(request, organization_id):
     if request.user != organization.owner:
         return redirect(reverse('competencies:organizations'))
 
-    editor_profiles = organization.userprofile_set.all()
-    editors = [user_profile.user.username for user_profile in editor_profiles]
+    editors = organization.editors.all()
 
     return render_to_response('competencies/organization_admin_summary.html',
                               {'organization': organization, 'editors': editors,
@@ -178,7 +178,7 @@ def edit_sa_summary(request, sa_id):
     kwargs = get_visibility_filter(request.user, organization)
 
     # Test if user allowed to edit this organization.
-    if not has_edit_permission(request.user, organization, subject_area):
+    if not has_edit_permission(request.user, organization):
         redirect_url = '/no_edit_permission/' + str(organization.id)
         return redirect(redirect_url)
 
@@ -420,94 +420,24 @@ def new_eu(request, ca_id):
 
 # helper methods to get elements of the system.
 
-def get_visibility_filter(user, school):
+def get_visibility_filter(user, organization):
     # Get filter for visibility, based on logged-in status.
-    if user.is_authenticated() and school in user.userprofile.organizations.all():
-        kwargs = {}
-    elif user.is_authenticated() and school in get_user_sa_schools(user):
+    if user.is_authenticated() and user in organization.editors.all():
         kwargs = {}
     else:
         kwargs = {'{0}'.format('public'): True}
     return kwargs
 
-def get_user_sa_schools(user):
-    """Return a list of schools associated with the subject areas this user can edit.
-    Needed because if a user can edit one subject area, that user needs to be able
-    to see all elements of that school's system. Can only edit some sa's, but can see everything.
-    """
-    # This is ugly implementation; should probably be in models.py
-    schools = [sa.organization for sa in user.userprofile.subject_areas.all()]
-    return schools
-
 # --- Edit views, for editing parts of the system ---
-def has_edit_permission(user, school, subject_area=None):
+def has_edit_permission(user, organization):
     """Checks whether given user has permission to edit given object.
     """
     # Returns True if allowed to edit, False if not allowed to edit
-    # If school is in userprofile, user can edit anything
-    if school in user.userprofile.organizations.all():
-        return True
-    # User can not edit entire school system; check if user has permission to edit this subject area.
-    # Will throw error if user has no subject_areas defined? (public, guest)
-    #  Default sa is None, and None not in empty list, but this makes sure a subject_area
-    #   was actually passed in.
-    if subject_area and (subject_area in user.userprofile.subject_areas.all()):
+    if user in organization.editors.all():
         return True
     else:
         return False
 
-@login_required    
-def change_visibility(request, school_id, object_type, object_pk, visibility_mode):
-    # Get object, and toggle attribute 'public'
-    current_object = get_model('competencies', object_type).objects.get(pk=object_pk)
-    # Hack to deal with bug around ordering
-    #  Saving an object after toggling 'public' attribute can affect _order
-    #  Probably need a custom migration that stops db from setting _order=0 on every save
-    old_order = get_parent_order(current_object)
-    if visibility_mode == 'public':
-        # Need to check that parent is public
-        if current_object.is_parent_public():
-            current_object.public = True
-            current_object.save()
-            check_parent_order(current_object, old_order)
-    elif visibility_mode == 'cascade_public':
-        if current_object.is_parent_public():
-            current_object.public = True
-            current_object.save()
-            check_parent_order(current_object, old_order)
-            set_related_visibility(current_object, 'public')
-    else:  # visibility mode == 'private'
-        # Setting an object private implies all the elements under it should be private.
-        current_object.public = False
-        current_object.save()
-        check_parent_order(current_object, old_order)
-        set_related_visibility(current_object, 'private')
-
-    redirect_url = '/edit_visibility/' + school_id
-    return redirect(redirect_url)
-
-def set_related_visibility(object_in, visibility_mode):
-    """Finds all related objects, and sets them all to the appropriate visibility mode."""
-    links = [rel.get_accessor_name() for rel in object_in._meta.get_all_related_objects()]
-    for link in links:
-        objects = getattr(object_in, link).all()
-        for object in objects:
-            try:
-                # Hack to deal with ordering issue
-                old_order = get_parent_order(object)
-                if visibility_mode == 'public':
-                    object.public = True
-                    object.save()
-                else:
-                    object.public = False
-                    object.save()
-                check_parent_order(object, old_order)
-            except:
-                # Must not be a public/ private object
-                pass
-            # Check if this object has related objects, if so use recursion
-            if object._meta.get_all_related_objects():
-                set_related_visibility(object, visibility_mode)
 
 # Methods to deal with ordering issue around order_with_respect_to
 def check_parent_order(child_object, correct_order):
@@ -536,7 +466,7 @@ def new_organization(request):
             new_organization = new_organization_form.save(commit=False)
             new_organization.owner = request.user
             new_organization.save()
-            associate_user_organization(request.user, new_organization)
+            new_organization.editors.add(request.user)
             return redirect(reverse('competencies:organizations'))
 
     new_organization_form = OrganizationForm()
@@ -545,12 +475,3 @@ def new_organization(request):
                               {'new_organization_form': new_organization_form,},
                               context_instance = RequestContext(request))
 
-def associate_user_organization(user, organization):
-    # Associates a given organization with a given user
-    try:
-        user.userprofile.organizations.add(organization)
-    except ObjectDoesNotExist: # User probably does not have a profile yet
-        up = UserProfile()
-        up.user = user
-        up.save()
-        up.organizations.add(organization)
