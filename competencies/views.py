@@ -28,6 +28,7 @@ def logout_view(request):
     # Redirect to home page for now. Later, maybe stay on same page.
     return redirect('/')
 
+@login_required
 def profile(request):
     return render_to_response('registration/profile.html',
                               {},

@@ -593,6 +593,25 @@ class CompetencyViewTests(TestCase):
         new_user = User.objects.filter(username='ozzy')[0]
         self.assertTrue(hasattr(new_user, 'userprofile'))
 
+    def test_profile_view(self):
+        """Lets user view their profile details."""
+        self.build_to_organizations()
+        test_url = reverse('profile')
+        # Test that anonymous users are redirected.
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 302)
+
+        # Test that registered users see appropriate information.
+        self.client.login(username='testuser0', password='pw')
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('testuser0' in response.content.decode())
+        for user in User.objects.all():
+            if user.username == 'testuser0':
+                break
+        for org in user.userprofile.organizations.all():
+            self.assertTrue(org.name in response.content.decode())
+
     def generic_test_blank_form(self, test_url):
         """A helper method to test that a form-based page returns a blank form properly."""
         # Test that a logged in user can get a blank form properly.
