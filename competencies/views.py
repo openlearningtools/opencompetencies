@@ -157,6 +157,9 @@ def organization_admin_edit(request, organization_id):
             if 'public' in organization_form.changed_data:
                 if not organization_form.cleaned_data.get('public'):
                     utils.cascade_visibility_down(organization, 'private')
+        # Redirect to summary page after processing form.
+        return redirect(reverse('competencies:organization_admin_summary', args=[organization_id]))
+
     return render_to_response('competencies/organization_admin_edit.html',
                               {'organization': organization, 'organization_form': organization_form,
                                },

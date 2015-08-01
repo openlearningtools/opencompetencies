@@ -282,7 +282,7 @@ class CompetencyViewTests(TestCase):
         post_data = self.get_org_admin_post_data(organization)
         post_data['public'] = False
         response = self.client.post(test_url, post_data)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         modified_org = Organization.objects.get(id=org_id)
         self.assertFalse(modified_org.public)
 
@@ -308,7 +308,7 @@ class CompetencyViewTests(TestCase):
         post_data['org_type'] = 'nonprofit'
         response = self.client.post(test_url, post_data)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         modified_org = Organization.objects.get(id=org_id)
         self.assertEqual(modified_org.org_type, 'nonprofit')
 
