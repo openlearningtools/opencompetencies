@@ -35,10 +35,10 @@ def cascade_public_up(element):
     #   This allows an organization to be set up, and then made visible all at once.
     # Only sets elements public, because I can't see any reason to cascade private upwards.
 
-    parent = element.get_parent()
-    while parent.__class__ != Organization:
-        if not parent.public:
-            parent.public = True
-            parent.save()
+    element = element.get_parent()
+    while element.__class__ != Organization:
+        if not element.public:
+            element.public = True
+            element.save()
         # Get next parent element.
-        parent = parent.get_parent()
+        element = element.get_parent()
