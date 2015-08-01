@@ -274,10 +274,9 @@ def process_form(request, instance, element_type, privacy_changed):
 
     if form.is_valid():
         modified_element = form.save()
-
-    # If privacy setting changed, add to list for processing.
-    if 'public' in form.changed_data:
-        privacy_changed.append(modified_element)
+        # If privacy setting changed, add to list for processing.
+        if 'public' in form.changed_data:
+            privacy_changed.append(modified_element)
 
     return form
 

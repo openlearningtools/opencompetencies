@@ -499,9 +499,16 @@ class CompetencyViewTests(TestCase):
 
         # Test submitting data modifies elements.
         # DEV: All of these could probably be generalized and refactored.
+        # DEV: Each of these generates many form errors. I'm only submitting post data
+        #   relevant to the form being tested. The browser submits unchanged required
+        #   data for each form. So if I print form errors, I get many invalid forms.
+        #   But the tests pass because the individual form being tested works.
+        #   Perhaps this could be addressed by testing all of the forms in one
+        #   post request?
 
         # --- Test modifying subject area. ---
         # DEV: This test passes even when sa_form is not in the context. How???
+        #   Because this is testing the view function, not the rendered page.
         #   For now, test that sa_form is in context.
 
         sa_pk = sa.pk
@@ -546,6 +553,30 @@ class CompetencyViewTests(TestCase):
         eu = EssentialUnderstanding.objects.get(pk=eu_pk)
         self.assertEqual(eu.essential_understanding, 'modified eu')
 
+        # --- Test that setting sa private sets all descendants private.
+        # Start with sa, and all descendants public.
+        sa_id = sa.id
+        sa.public = True
+        sa.save()
+        utils.cascade_visibility_down(sa, 'public')
+        sa = SubjectArea.objects.get(id=sa_id)
+        # Verify sa, and at least its sdas are now public.
+        self.assertTrue(sa.public)
+        for sda in sa.subdisciplinearea_set.all():
+            self.assertTrue(sda.public)
+        # Set sa private through view, and verify all elements are private.
+        post_data = {'subject_area': sa.subject_area, 'public': False}
+        response = self.client.post(test_url, post_data)
+        self.assertEqual(response.status_code, 200)
+        sa = SubjectArea.objects.get(id=sa_id)
+        self.assertFalse(sa.public)
+        for sda in sa.subdisciplinearea_set.all():
+            self.assertFalse(sda.public)
+        for ca in sa.competencyarea_set.all():
+            self.assertFalse(ca.public)
+            for eu in ca.essentialunderstanding_set.all():
+                self.assertFalse(eu.public)
+
     def test_register_view(self):
         """Lets new user register an account."""
         test_url = reverse('register')
@@ -558,7 +589,6 @@ class CompetencyViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
         new_user = User.objects.filter(username='ozzy')[0]
         self.assertTrue(hasattr(new_user, 'userprofile'))
-
 
     def generic_test_blank_form(self, test_url):
         """A helper method to test that a form-based page returns a blank form properly."""
@@ -573,8 +603,6 @@ class CompetencyViewTests(TestCase):
         """Test that cascading visibility reaches all elements."""
         self.num_orgs = 1
         self.build_to_eus()
-
-        # DEV: Speed up test by pulling all elements from db as a group, not individual calls.
 
         # Verify that all elements start out private.
         element_lists = [self.test_sas, self.test_sdas, self.test_cas, self.test_eus]
@@ -615,3 +643,8 @@ class CompetencyViewTests(TestCase):
             db_elements = element_list[0].__class__.objects.all()
             for db_element in db_elements:
                 self.assertFalse(db_element.public)
+
+    def test_cascade_public_up(self):
+        """Test utils.cascade_public_up()."""
+        # Make sure to test that organization is not set public on cascade.
+        pass
