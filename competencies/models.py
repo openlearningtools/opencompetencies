@@ -16,8 +16,9 @@ from django.contrib.auth.forms import UserCreationForm
 class Organization(models.Model):
     name = models.CharField(max_length=500)
     org_type = models.CharField(max_length=500, default='school')
-    owner = models.ForeignKey(User)
     public = models.BooleanField(default=False)
+    owner = models.ForeignKey(User)
+    editors = models.ManyToManyField(User, related_name='org_editors')
 
     # Allow organizations to rename taxonomy elements.
     alias_sa = models.CharField(max_length=500, default='subject area')
