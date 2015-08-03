@@ -253,7 +253,6 @@ class CompetencyViewTests(TestCase):
                 org_id = org.id
                 break
         self.assertTrue(organization)
-
         # --- Critical security tests ---
         # -- Test that an anonymous user is redirected.
         self.client.logout()
@@ -297,6 +296,34 @@ class CompetencyViewTests(TestCase):
                 for eu in ca.essentialunderstanding_set.all():
                     self.assertFalse(eu.public)
 
+        # Test an org owner can not remove self from editors.
+        #   Send a request with owner not selected, verify still in editors.
+        post_data = self.get_org_admin_post_data(organization)
+        # Since editors is required field, something needs to be selected.
+        # Get the index of a non-owner.
+        for index, user in enumerate(User.objects.all()):
+            if user == organization.owner:
+                owner_index = index
+            else:
+                non_owner = user
+                non_owner_index = index
+        # Index is 0-based, select numbering is 1-based.
+        post_data['editors'] = [str(non_owner_index+1)]
+        response = self.client.post(test_url, post_data)
+        # Verify two editors - owner, and non-owner selected.
+        self.assertTrue(self.test_user_1 in organization.editors.all())
+        self.assertTrue(non_owner in organization.editors.all())
+
+        # Test an org owner can remove another editor.
+        #   Do this by selecting only the owner.
+        post_data['editors'] = [str(owner_index+1)]
+        response = self.client.post(test_url, post_data)
+        # Verify two editors - owner, and editor selected.
+        editors = organization.editors.all()
+        self.assertTrue(self.test_user_1 in editors)
+        self.assertFalse(non_owner in editors)
+        self.assertEqual(len(editors), 1)
+
         # --- Non-security tests ---
         # Test that form works for name, type, aliases, etc.
 
@@ -313,6 +340,11 @@ class CompetencyViewTests(TestCase):
         self.assertEqual(modified_org.org_type, 'nonprofit')
 
     def get_org_admin_post_data(self, organization):
+        """Get default initial post data for org."""
+        #for index, editor in enumerate(organization.editors.all()):
+        for index, editor in enumerate(User.objects.all()):
+            if editor == organization.owner:
+                owner_index = index
         post_data = {'name': organization.name,
                      'org_type': organization.org_type,
                      'public': organization.public,
@@ -321,6 +353,7 @@ class CompetencyViewTests(TestCase):
                      'alias_ca': organization.alias_ca,
                      'alias_eu': organization.alias_eu,
                      'alias_lt': organization.alias_lt,
+                     'editors': [str(owner_index+1)],
                      }
         return post_data
 
