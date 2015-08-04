@@ -63,21 +63,21 @@ def fork_organization(forking_org, original_org):
     #   (Follow relations automatically.)
     # DEV: Copy public elements only.
     from copy import deepcopy
-    for sa in original_org.subjectarea_set.all():
+    for sa in original_org.subjectarea_set.filter(public=True):
         original_sa = deepcopy(sa)
         sa.pk = None
         sa.organization = forking_org
         sa.save()
 
         # Copy this sa's sdas.
-        for sda in original_sa.subdisciplinearea_set.all():
+        for sda in original_sa.subdisciplinearea_set.filter(public=True):
             original_sda = deepcopy(sda)
             sda.pk = None
             sda.subject_area = sa
             sda.save()
 
             # Copy this sda's cas.
-            for ca in original_sda.competencyarea_set.all():
+            for ca in original_sda.competencyarea_set.filter(public=True):
                 original_ca = deepcopy(ca)
                 ca.pk = None
                 ca.subject_area = sa
@@ -85,7 +85,7 @@ def fork_organization(forking_org, original_org):
                 ca.save()
 
                 # Copy this ca's eus.
-                for eu in original_ca.essentialunderstanding_set.all():
+                for eu in original_ca.essentialunderstanding_set.filter(public=True):
                     eu.pk = None
                     eu.competency_area = ca
                     eu.save()
@@ -98,7 +98,7 @@ def fork_organization(forking_org, original_org):
             ca.save()
             
             # Copy this ca's eus.
-            for eu in original_ca.essentialunderstanding_set.all():
+            for eu in original_ca.essentialunderstanding_set.filter(public=True):
                 eu.pk = None
                 eu.competency_area = ca
                 eu.save()

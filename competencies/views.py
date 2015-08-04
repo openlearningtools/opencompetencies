@@ -380,10 +380,10 @@ def new_sda(request, sa_id):
 def new_ca(request, sa_id):
     """Create a new competency area for a given general subject area."""
     sa = SubjectArea.objects.get(id=sa_id)
-    school = sa.organization
-    # Test if user allowed to edit this school.
-    if not has_edit_permission(request.user, school):
-        redirect_url = '/no_edit_permission/' + str(school.id)
+    organization = sa.organization
+    # Test if user allowed to edit this organization.
+    if not has_edit_permission(request.user, organization):
+        redirect_url = '/no_edit_permission/' + str(organization.id)
         return redirect(redirect_url)
 
     if request.method == 'POST':
@@ -397,17 +397,17 @@ def new_ca(request, sa_id):
     ca_form = CompetencyAreaForm()
 
     return render_to_response('competencies/new_ca.html',
-                              {'school': school, 'sa': sa, 'ca_form': ca_form,},
+                              {'organization': organization, 'sa': sa, 'ca_form': ca_form,},
                               context_instance=RequestContext(request))
 
 def new_sda_ca(request, sda_id):
     """Create a new competency area for a given subdiscipline area."""
     sda = SubdisciplineArea.objects.get(id=sda_id)
     sa = sda.subject_area
-    school = sa.organization
-    # Test if user allowed to edit this school.
-    if not has_edit_permission(request.user, school):
-        redirect_url = '/no_edit_permission/' + str(school.id)
+    organization = sa.organization
+    # Test if user allowed to edit this organization.
+    if not has_edit_permission(request.user, organization):
+        redirect_url = '/no_edit_permission/' + str(organization.id)
         return redirect(redirect_url)
 
     if request.method == 'POST':
@@ -422,7 +422,7 @@ def new_sda_ca(request, sda_id):
     ca_form = CompetencyAreaForm()
 
     return render_to_response('competencies/new_sda_ca.html',
-                              {'school': school, 'sa': sa, 'sda': sda,
+                              {'organization': organization, 'sa': sa, 'sda': sda,
                                'ca_form': ca_form,},
                               context_instance=RequestContext(request))
 
@@ -430,10 +430,10 @@ def new_eu(request, ca_id):
     """Create a new essential understanding for given ca."""
     ca = CompetencyArea.objects.get(id=ca_id)
     sa = ca.subject_area
-    school = sa.organization
-    # Test if user allowed to edit this school.
-    if not has_edit_permission(request.user, school):
-        redirect_url = '/no_edit_permission/' + str(school.id)
+    organization = sa.organization
+    # Test if user allowed to edit this organization.
+    if not has_edit_permission(request.user, organization):
+        redirect_url = '/no_edit_permission/' + str(organization.id)
         return redirect(redirect_url)
 
     if request.method == 'POST':
@@ -447,7 +447,7 @@ def new_eu(request, ca_id):
     eu_form = EssentialUnderstandingForm()
 
     return render_to_response('competencies/new_eu.html',
-                              {'school': school, 'sa': sa, 'ca': ca,
+                              {'organization': organization, 'sa': sa, 'ca': ca,
                                'eu_form': eu_form,},
                               context_instance=RequestContext(request))
     
