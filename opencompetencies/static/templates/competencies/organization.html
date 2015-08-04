@@ -42,8 +42,12 @@
 		  {% endfor %}
 		  </ul>
 
-	 {% elif user.is_authenticated and organization in user.userprofile.organizations.all %}
-		  <p>This {{ organization.org_type }} does not have any subject areas yet. <a href="{% url 'competencies:new_sa' school.id %}">Create a subject area</a>.</p>
+	 {% elif user.is_authenticated and user in editors %}
+		  <p>This {{ organization.org_type }} does not have any subject areas yet:</p>
+		  <ul>
+			 <li><a href="{% url 'competencies:new_sa' organization.id %}">Create a subject area</a>.</li>
+			 <li>You may also <a href="{% url 'competencies:fork' organization.id %}">fork</a> an existing organization's system.</li>
+		  </ul>
     {% else %}
 		  <p>This {{ organization.org_type }} does not have any public subject areas yet.</p>
     {% endif %}

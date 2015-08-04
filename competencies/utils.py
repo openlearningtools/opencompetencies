@@ -42,3 +42,63 @@ def cascade_public_up(element):
             element.save()
         # Get next parent element.
         element = element.get_parent()
+
+def fork_organization(forking_org, original_org):
+    """Copy all elements of original_org to forking_org."""
+    # Make sure forking_org is empty, and original_org is public.
+    # Make sure original_org is public, and forking_org is empty.
+    print("Forking", original_org.name, "to", forking_org.name, "...")
+    if not original_org.public:
+        print("Can't fork - original org is private.")
+        return None
+    if forking_org.subjectarea_set.all():
+        print("Can't fork - forking org is not empty.")
+        return None
+    if original_org == forking_org:
+        print("Can't fork - original org is forking org.")
+        return None
+
+    # Copy all elements from original to forking org.
+    #   There's definitely a more efficient way to do this, but quick and dirty for now.
+    #   (Follow relations automatically.)
+    # DEV: Copy public elements only.
+    from copy import deepcopy
+    for sa in original_org.subjectarea_set.all():
+        original_sa = deepcopy(sa)
+        sa.pk = None
+        sa.organization = forking_org
+        sa.save()
+
+        # Copy this sa's sdas.
+        for sda in original_sa.subdisciplinearea_set.all():
+            original_sda = deepcopy(sda)
+            sda.pk = None
+            sda.subject_area = sa
+            sda.save()
+
+            # Copy this sda's cas.
+            for ca in original_sda.competencyarea_set.all():
+                original_ca = deepcopy(ca)
+                ca.pk = None
+                ca.subject_area = sa
+                ca.subdiscipline_area = sda
+                ca.save()
+
+                # Copy this ca's eus.
+                for eu in original_ca.essentialunderstanding_set.all():
+                    eu.pk = None
+                    eu.competency_area = ca
+                    eu.save()
+
+        # Copy this sa's cas.
+        for ca in original_sa.competencyarea_set.filter(subdiscipline_area=None):
+            original_ca = deepcopy(ca)
+            ca.pk = None
+            ca.subject_area = sa
+            ca.save()
+            
+            # Copy this ca's eus.
+            for eu in original_ca.essentialunderstanding_set.all():
+                eu.pk = None
+                eu.competency_area = ca
+                eu.save()

@@ -14,13 +14,14 @@ from copy import copy
 from collections import OrderedDict
 
 from competencies.models import *
+from competencies.forms import ForkForm
 from competencies import my_admin
 from . import utils
 
 def index(request):
     return render_to_response('competencies/index.html',
                               {},
-                              context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
 
 # Authentication views
 def logout_view(request):
@@ -33,7 +34,7 @@ def profile(request):
     editor_orgs = request.user.organization_set.all()
     return render_to_response('registration/profile.html',
                               {'editor_orgs': editor_orgs},
-                              context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
 
 def password_change_form(request):
     if request.method == 'POST':
@@ -41,12 +42,12 @@ def password_change_form(request):
     else:
         return render_to_response('registration/password_change_form.html',
                                   {},
-                                  context_instance = RequestContext(request))
+                                  context_instance=RequestContext(request))
 
 def password_change_successful(request):
     return render_to_response('registration/password_change_successful.html',
                               {},
-                              context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
 
 def register(request):
     """Register a new user."""
@@ -79,7 +80,7 @@ def no_edit_permission(request, school_id):
     school = Organization.objects.get(id=school_id)
     return render_to_response('competencies/no_edit_permission.html',
                               {'school': school},
-                              context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
 
 # --- Simple views, for exploring system without changing it: ---
 def organizations(request):
@@ -100,13 +101,20 @@ def organizations(request):
 def organization(request, organization_id):
     """Displays subject areas and subdiscipline areas for a given organization."""
     organization = Organization.objects.get(id=organization_id)
+    editors = organization.editors.all()
+    if organization.subjectarea_set.all():
+        can_fork = False
+    else:
+        can_fork = True
     kwargs = get_visibility_filter(request.user, organization)
     sas = organization.subjectarea_set.filter(**kwargs)
     sdas = [sda for sa in sas for sda in sa.subdisciplinearea_set.filter(**kwargs)]    
     return render_to_response('competencies/organization.html',
                               {'organization': organization, 'subject_areas': sas,
-                               'sdas': sdas,},
-                              context_instance = RequestContext(request))
+                               'sdas': sdas, 'can_fork': can_fork,
+                               'editors': editors,
+                               },
+                              context_instance=RequestContext(request))
 
 def sa_summary(request, sa_id):
     """Shows a simple summary for a subject area."""
@@ -119,7 +127,7 @@ def sa_summary(request, sa_id):
     return render_to_response('competencies/sa_summary.html',
                               {'subject_area': sa, 'organization': organization,
                                'sdas': sdas, 'cas': cas, 'eus': eus,},
-                              context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
 
 @login_required
 def organization_admin_summary(request, organization_id):
@@ -134,7 +142,7 @@ def organization_admin_summary(request, organization_id):
     return render_to_response('competencies/organization_admin_summary.html',
                               {'organization': organization, 'editors': editors,
                                },
-                              context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
 
 
 # --- Views for editing content. ---
@@ -170,8 +178,28 @@ def organization_admin_edit(request, organization_id):
     return render_to_response('competencies/organization_admin_edit.html',
                               {'organization': organization, 'organization_form': organization_form,
                                },
-                              context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
                                   
+@login_required
+def fork(request, organization_id):
+    """Fork an existing school."""
+    forking_organization = Organization.objects.get(id=organization_id)
+    if request.method != 'POST':
+        fork_form = ForkForm()
+    else:
+        fork_form = ForkForm(request.POST)
+        if fork_form.is_valid():
+            original_org = Organization.objects.get(pk=request.POST['organization'])
+            utils.fork_organization(forking_organization, original_org)
+            return redirect(reverse('competencies:organization', args=[organization_id,]))
+
+    return render_to_response('competencies/fork.html',
+                              {'forking_organization': forking_organization,
+                               'organizations': organizations,
+                               'fork_form': fork_form,
+                               },
+                              context_instance=RequestContext(request))
+
 @login_required
 def edit_sa_summary(request, sa_id):
     """Edit the elements in sa_summary."""
@@ -257,7 +285,7 @@ def edit_sa_summary(request, sa_id):
                                'zipped_ca_forms': zipped_ca_forms,
                                'zipped_eu_forms': zipped_eu_forms,
                                },
-                              context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
 
 def get_sda_ca_eu_elements(subject_area, kwargs):
     """Get all sdas, cas, and eus associated with a subject area."""
@@ -323,7 +351,7 @@ def new_sa(request, school_id):
 
     return render_to_response('competencies/new_sa.html',
                               {'school': school, 'sa_form': sa_form,},
-                              context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
 
 def new_sda(request, sa_id):
     """Create a new subdiscipline area for a given subject area."""
@@ -347,7 +375,7 @@ def new_sda(request, sa_id):
     return render_to_response('competencies/new_sda.html',
                               {'school': school, 'sa': sa,
                                'sda_form': sda_form,},
-                              context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
 
 def new_ca(request, sa_id):
     """Create a new competency area for a given general subject area."""
@@ -370,7 +398,7 @@ def new_ca(request, sa_id):
 
     return render_to_response('competencies/new_ca.html',
                               {'school': school, 'sa': sa, 'ca_form': ca_form,},
-                              context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
 
 def new_sda_ca(request, sda_id):
     """Create a new competency area for a given subdiscipline area."""
@@ -396,7 +424,7 @@ def new_sda_ca(request, sda_id):
     return render_to_response('competencies/new_sda_ca.html',
                               {'school': school, 'sa': sa, 'sda': sda,
                                'ca_form': ca_form,},
-                              context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
 
 def new_eu(request, ca_id):
     """Create a new essential understanding for given ca."""
@@ -421,7 +449,7 @@ def new_eu(request, ca_id):
     return render_to_response('competencies/new_eu.html',
                               {'school': school, 'sa': sa, 'ca': ca,
                                'eu_form': eu_form,},
-                              context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
     
 
 # helper methods to get elements of the system.
@@ -479,5 +507,5 @@ def new_organization(request):
 
     return render_to_response('competencies/new_organization.html',
                               {'new_organization_form': new_organization_form,},
-                              context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
 

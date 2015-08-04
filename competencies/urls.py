@@ -34,6 +34,9 @@ urlpatterns = patterns('',
     # organization_admin_edit/id: Administer an organization.
     url(r'^organization_admin_edit/(?P<organization_id>\d+)/$', views.organization_admin_edit, name='organization_admin_edit'),
 
+    # fork/id: Fork an existing school into the current school.
+    url(r'^fork/(?P<organization_id>\d+)/$', views.fork, name='fork'),
+
     # --- New element pages ---
 
     # new_organization: Create a new organization.

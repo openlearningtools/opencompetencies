@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title_extension %} - Fork an Organization{% endblock %}
+
+{% block content %}
+
+	 <h2>Fork an Existing Organization</h2>
+	 <p>If an organization you own is empty, you can start by <i>forking</i> an existing organization. This will copy all elements of the existing organization into your organization. There will be no connection between the two organizations, but you'll be able to build upon the work of the existing organization.</p>
+
+	 <p><a href="{% url 'competencies:organization' forking_organization.id %}">{{ forking_organization.name }}</a> is currently empty, so you can fork any of the following organizations:</p>
+
+	 <form action='' method='post'>
+		{% csrf_token %}
+		{{ fork_form.as_p }}
+		<input type='submit' value='Fork selected organization' />
+	</form>
+
+
+{% endblock %}
