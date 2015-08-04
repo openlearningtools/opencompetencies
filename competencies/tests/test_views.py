@@ -344,6 +344,18 @@ class CompetencyViewTests(TestCase):
                      }
         return post_data
 
+    def test_fork_view():
+        """Fork allows a new, empty org to copy all elements from an existing public org."""
+        # Test that a non-empty org remains unchanged.
+        # Test that only public organizations can be forked.
+        # Fork an org, and...
+        # Test all elements in new org match public elements of original org.
+        # Test there's nothing in new org that's not in original.
+        # Test there's no private elements in new org.
+        
+        pass
+
+
     def test_new_organization_view(self):
         """New organization allows uer to create a new organization."""
         test_url = reverse('competencies:new_organization')
@@ -706,3 +718,4 @@ class CompetencyViewTests(TestCase):
             element = element.get_parent()
         # Element is now org, verify it's still private.
         self.assertFalse(element.public)
+

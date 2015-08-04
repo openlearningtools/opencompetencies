@@ -61,12 +61,14 @@ def fork_organization(forking_org, original_org):
     # Copy all elements from original to forking org.
     #   There's definitely a more efficient way to do this, but quick and dirty for now.
     #   (Follow relations automatically.)
-    # DEV: Copy public elements only.
+    # Set each element's privacy setting to match forking_org's privacy.
+    #   This makes public elements public only if forking_org is public.
     from copy import deepcopy
     for sa in original_org.subjectarea_set.filter(public=True):
         original_sa = deepcopy(sa)
         sa.pk = None
         sa.organization = forking_org
+        sa.public = forking_org.public
         sa.save()
 
         # Copy this sa's sdas.
@@ -74,6 +76,7 @@ def fork_organization(forking_org, original_org):
             original_sda = deepcopy(sda)
             sda.pk = None
             sda.subject_area = sa
+            sda.public = forking_org.public
             sda.save()
 
             # Copy this sda's cas.
@@ -82,12 +85,14 @@ def fork_organization(forking_org, original_org):
                 ca.pk = None
                 ca.subject_area = sa
                 ca.subdiscipline_area = sda
+                ca.public = forking_org.public
                 ca.save()
 
                 # Copy this ca's eus.
                 for eu in original_ca.essentialunderstanding_set.filter(public=True):
                     eu.pk = None
                     eu.competency_area = ca
+                    eu.public = forking_org.public
                     eu.save()
 
         # Copy this sa's cas.
@@ -95,10 +100,12 @@ def fork_organization(forking_org, original_org):
             original_ca = deepcopy(ca)
             ca.pk = None
             ca.subject_area = sa
+            ca.public = forking_org.public
             ca.save()
             
             # Copy this ca's eus.
             for eu in original_ca.essentialunderstanding_set.filter(public=True):
                 eu.pk = None
                 eu.competency_area = ca
+                eu.public = forking_org.public
                 eu.save()
