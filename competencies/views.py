@@ -192,6 +192,9 @@ def fork(request, organization_id):
             original_org = Organization.objects.get(pk=request.POST['organization'])
             utils.fork_organization(forking_organization, original_org)
             return redirect(reverse('competencies:organization', args=[organization_id,]))
+        else:
+            print('\n\ninvalid:', fork_form)
+
 
     return render_to_response('competencies/fork.html',
                               {'forking_organization': forking_organization,

@@ -1,3 +1,5 @@
+from random import choice
+
 from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
@@ -54,6 +56,10 @@ class CompetencyViewTests(TestCase):
         self.test_sas, self.test_sdas = [], []
         self.test_cas, self.test_eus = [], []
 
+        # Increment for every element created.
+        #   Ensures a unique name for every element, which makes testing some behaviors easier.
+        self.element_number = 0
+
     def build_to_organizations(self):
         """Build out system to the organization level."""
         # Build a test organization that user 0 is associated with,
@@ -77,10 +83,11 @@ class CompetencyViewTests(TestCase):
         for organization_num, organization in enumerate(self.test_organizations):
 
             for sa_num in range(self.num_elements):
-                sa_name = "Test SA %d-%d" % (organization_num, sa_num)
+                sa_name = "Test SA %d-%d %d" % (organization_num, sa_num, self.element_number)
                 new_sa = SubjectArea.objects.create(subject_area=sa_name,
                                                     organization=organization)
                 self.test_sas.append(new_sa)
+                self.element_number += 1
 
     def build_to_sdas(self):
         """Build out system to the subdiscipline_area level."""
@@ -88,10 +95,11 @@ class CompetencyViewTests(TestCase):
         for sa in self.test_sas:
             # Create num_elements sdas for each sa.
             for sda_num in range(self.num_elements):
-                sda_name = "Test SDA %d" % sda_num
+                sda_name = "Test SDA %d %d" % (sda_num, self.element_number)
                 new_sda = SubdisciplineArea.objects.create(subject_area=sa,
                                                            subdiscipline_area=sda_name)
                 self.test_sdas.append(new_sda)
+                self.element_number += 1
 
     def build_to_cas(self):
         """Build out system to the competency_area level."""
@@ -101,19 +109,21 @@ class CompetencyViewTests(TestCase):
         for sa in self.test_sas:
             # Create num_elements competency areas for each subject area.
             for ca_num in range(self.num_elements):
-                ca_body = "Test CA %d" % ca_num
+                ca_body = "Test CA %d %d" % (ca_num, self.element_number)
                 new_ca = CompetencyArea.objects.create(subject_area=sa,
                                                            competency_area=ca_body)
                 self.test_cas.append(new_ca)
+                self.element_number += 1
 
         for sda in self.test_sdas:
             # Create num_elements competency areas for each sda.
             for ca_num in range(self.num_elements):
-                ca_body = "Test CA %d" % ca_num
+                ca_body = "Test CA %d %d" % (ca_num, self.element_number)
                 new_ca = CompetencyArea.objects.create(subject_area=sda.subject_area,
                                                            subdiscipline_area=sda,
                                                            competency_area=ca_body)
                 self.test_cas.append(new_ca)
+                self.element_number += 1
 
     def build_to_eus(self):
         """Build out a system to the essential understanding level."""
@@ -122,10 +132,11 @@ class CompetencyViewTests(TestCase):
         for ca in self.test_cas:
             # Create num_elements eus for each grad std.
             for eu_num in range(self.num_elements):
-                eu_body = "Test EU %d" % eu_num
+                eu_body = "Test EU %d %d" % (eu_num, self.element_number)
                 new_eu = EssentialUnderstanding.objects.create(essential_understanding=eu_body,
                                                              competency_area=ca)
                 self.test_eus.append(new_eu)
+                self.element_number += 1
 
 
     def test_index_view(self):
@@ -344,16 +355,139 @@ class CompetencyViewTests(TestCase):
                      }
         return post_data
 
-    def test_fork_view():
+    def test_fork_view(self):
         """Fork allows a new, empty org to copy all elements from an existing public org."""
-        # Test that a non-empty org remains unchanged.
-        # Test that only public organizations can be forked.
+        # This test takes longer than most, because it makes a larger dataset
+        #   with randomized privacy values.
+
+        # DEV: Test that a non-empty org remains unchanged.
+        # DEV: Test that only public organizations can be forked.
+        #   Can't even do this right now; it returns 200, because private orgs are not in form.
+        #   Submitting a private org's id results in a form error.
         # Fork an org, and...
         # Test all elements in new org match public elements of original org.
-        # Test there's nothing in new org that's not in original.
+        # DEV: Test there's nothing in new org that's not in original.
         # Test there's no private elements in new org.
-        
-        pass
+        # DEV: Test adding a new sa to original org only affects original org.
+        # DEV: Test adding a new sa to forking org only affects forking org.
+        # Test that forking user is only editor of new org.
+
+        # For a more rigorous test, set this to a higher number like 5 or 8.
+        self.num_elements = 3
+        self.build_to_eus()
+
+        # --- Testuser0 will fork testuser1's org.
+        # Testuser0 needs to create a new school.
+        self.client.login(username='testuser0', password='pw')
+        post_data = {'name': 'test fork school', 'org_type': 'school'}
+        new_org_url = reverse('competencies:new_organization')
+        response = self.client.post(new_org_url, post_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue('test fork school' in [org.name for org in Organization.objects.filter(owner=self.test_user_0)])
+        forking_org = Organization.objects.filter(name='test fork school')[0]
+
+        # Get original org, set it public, and randomly set some of its elements public.
+        #   (an element can only be public if its parent is public)
+        original_org = Organization.objects.filter(owner=self.test_user_1)[0]
+        original_org_pk = original_org.pk
+        original_org.public = True
+        original_org.save()
+
+        for sa in original_org.subjectarea_set.all():
+            sa.public = choice([True, False])
+            sa.save()
+            
+            for sda in sa.subdisciplinearea_set.all():
+                if sa.public:
+                    sda.public = choice([True, False])
+                    sda.save()
+
+                for ca in sda.competencyarea_set.all():
+                    if sda.public:
+                        ca.public = choice([True, False])
+                        ca.save()
+
+                    for eu in ca.essentialunderstanding_set.all():
+                        if ca.public:
+                            eu.public = choice([True, False])
+                            eu.save()
+
+            for ca in sa.competencyarea_set.filter(subdiscipline_area=None):
+                if sa.public:
+                    ca.public = choice([True, False])
+                    ca.save()
+
+                for eu in ca.essentialunderstanding_set.all():
+                    if ca.public:
+                        eu.public = choice([True, False])
+                        eu.save()
+
+        # Set post data for fork.
+        post_data = {'organization': original_org.pk}
+        test_url = reverse('competencies:fork', args=[forking_org.id])
+        response = self.client.post(test_url, post_data)
+        self.assertEqual(response.status_code, 302)
+
+        # Verify that elements match appropriately.
+        #   These tests depend on every element having a unique name.
+        forked_sas = forking_org.subjectarea_set.all()
+        forked_sdas, forked_cas, forked_eus = [], [], []
+        for sa in forked_sas:
+            for sda in sa.subdisciplinearea_set.all():
+                forked_sdas.append(sda)
+                for ca in sda.competencyarea_set.all():
+                    forked_cas.append(ca)
+                    for eu in ca.essentialunderstanding_set.all():
+                        forked_eus.append(eu)
+            for ca in sa.competencyarea_set.filter(subdiscipline_area=None):
+                forked_cas.append(ca)
+                for eu in ca.essentialunderstanding_set.all():
+                    forked_eus.append(eu)
+                    
+        forked_sas = [sa.subject_area for sa in forked_sas]
+        forked_sdas = [sda.subdiscipline_area for sda in forked_sdas]
+        forked_cas = [ca.competency_area for ca in forked_cas]
+        forked_eus = [eu.essential_understanding for eu in forked_eus]
+        for l in [forked_sas, forked_sdas, forked_cas, forked_eus]:
+            print(len(l))
+
+        for sa in original_org.subjectarea_set.all():
+            if sa.public:
+                self.assertTrue(sa.subject_area in forked_sas)
+            else:
+                self.assertFalse(sa.subject_area in forked_sas)
+
+            for sda in sa.subdisciplinearea_set.all():
+                if sda.public:
+                    self.assertTrue(sda.subdiscipline_area in forked_sdas)
+                else:
+                    self.assertFalse(sda.subdiscipline_area in forked_sdas)
+
+                for ca in sda.competencyarea_set.all():
+                    if ca.public:
+                        self.assertTrue(ca.competency_area in forked_cas)
+                    else:
+                        self.assertFalse(ca.competency_area in forked_cas)
+
+                    for eu in ca.essentialunderstanding_set.all():
+                        if eu.public:
+                            self.assertTrue(eu.essential_understanding in forked_eus)
+                        else:
+                            self.assertFalse(eu.essential_understanding in forked_eus)
+
+            for ca in sa.competencyarea_set.filter(subdiscipline_area=None):
+                if ca.public:
+                    self.assertTrue(ca.competency_area in forked_cas)
+                else:
+                    self.assertFalse(ca.competency_area in forked_cas)
+
+                for eu in ca.essentialunderstanding_set.all():
+                    if eu.public:
+                        self.assertTrue(eu.essential_understanding in forked_eus)
+                    else:
+                        self.assertFalse(eu.essential_understanding in forked_eus)
+
+        self.assertEqual(len(forking_org.editors.all()), 1)
 
 
     def test_new_organization_view(self):

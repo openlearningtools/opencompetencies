@@ -96,7 +96,7 @@ def fork_organization(forking_org, original_org):
                     eu.save()
 
         # Copy this sa's cas.
-        for ca in original_sa.competencyarea_set.filter(subdiscipline_area=None):
+        for ca in original_sa.competencyarea_set.filter(public=True, subdiscipline_area=None):
             original_ca = deepcopy(ca)
             ca.pk = None
             ca.subject_area = sa
