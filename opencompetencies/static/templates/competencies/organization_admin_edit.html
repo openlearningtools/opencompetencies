@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title_extension %} - {{ organization.name }} Admin Page{% endblock %}
+
+{% block content %}
+
+	 <h2>
+		<a href="{% url 'competencies:organization' organization.id %}">{{ organization.name }}</a>
+		<small><a href="{% url 'competencies:organization_admin_summary' organization.id %}">admin page</a></small>
+	 </h2>
+
+	 <form method='post' action=''>
+		{% csrf_token %}
+		{{ organization_form.as_p }}
+		<input type='submit' value='Save changes' />
+	 </form>
+
+
+{% endblock %}

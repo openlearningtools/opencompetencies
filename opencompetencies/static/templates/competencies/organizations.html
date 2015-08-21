@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title_extension %} - Schools/ Organizations{% endblock %}
+
+{% block content %}
+
+	 <h2>Click on any school or organization to begin exploring its competency system.</h2>
+
+	 {% if user.is_authenticated %}
+	   <h3>Organizations you own:</h3>
+		<ul>
+		  {% for org in my_organizations %}
+          <li><h4><a href="{% url 'competencies:organization' org.id %}">{{ org.name }}</a></h4></li>
+		  {% empty %}
+			 <h4>You don't own any organizations.</h4>
+		  {% endfor %}
+		</ul>
+
+		<h3>Organizations you can edit:</h3>
+		<ul>
+		  {% for org in editor_organizations %}
+          <li><h4><a href="{% url 'competencies:organization' org.id %}">{{ org.name }}</a></h4></li>
+		  {% empty %}
+			 {% if my_organizations %}
+		      <h4>You can't edit any other organizations.</h4>
+			 {% else %}
+				<h4>You can't edit any organizations.</h4>
+			 {% endif %}
+		  {% endfor %}
+		</ul>
+	{% endif %}
+
+	 <h3>Public organizations:</h3>
+	 <ul>
+		{% for org in public_organizations %}
+        <li><h4><a href="{% url 'competencies:organization' org.id %}">{{ org.name }}</a></h4></li>
+		{% empty %}
+		  <h4>There are no public organizations.</h4>
+		{% endfor %}
+	 </ul>
+
+
+	 <p>You may also create a <a href="{% url 'competencies:new_organization' %}">new organization</a>, and start developing your own set of competencies.</p>
+
+{% endblock %}

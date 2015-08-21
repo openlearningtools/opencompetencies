@@ -1,59 +1,63 @@
 {% extends 'base.html' %}
 
-{% block title_extension %} - {{ school }}{% endblock %}
+{% block title_extension %} - {{ organization }}{% endblock %}
 
 {% block content %}
 
-	 <h2><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a></h2>
+	 <h2><a href='{% url 'competencies:organization' organization.id %}'>{{ organization }}</a></h2>
 
 	 <h2>{{ subject_area }}</h2>
 
 	 <div class="row row-eq-height">
-		<div class="span4 lead summary_box grad_std_col"><strong>Graduation Standards</strong></div>
-		<div class="span7 lead summary_box pi_col"><strong>Performance Indicators</strong></div>
+		<div class="span4 lead summary_box grad_std_col"><strong>{{ organization.alias_ca|title }}s</strong></div>
+		<div class="span7 lead summary_box pi_col"><strong>{{ organization.alias_eu|title }}s</strong></div>
 	 </div>
 
-	 {% for ca, eus in ca_eus.items %}
+	 {% for ca in cas %}
+	 {% if not ca.subdiscipline_area %}
 	   <div class="row row-eq-height">
 		  <div class="span4 summary_box grad_std_col">
-			 <p class="lead">{{ ca.phrase }}</p>
 			 <p>{{ ca.competency_area }}</p>
 		  </div>
 		  <div class="span7 summary_box pi_col">
 			 <ul>
 				{% for eu in eus %}
+				{% if eu.competency_area == ca %}
 				  <li>{{ eu.essential_understanding }}</li>
+				{% endif %}
 				{% endfor %}
 			 </ul>
 		  </div>
 		</div>
+	 {% endif %}
 	 {% endfor %}
 
-	 {% for sda, cas in sda_cas.items %}
+	 {% for sda in sdas %}
 		<div class="row row-eq-height">
 		  <div class="span4 lead summary_box sda_col"><strong>{{ sda }}</strong></div>
 		  <div class="span7 lead summary_box sda_col">&nbsp</div>
 		</div>
 		{% for ca in cas %}
+		{% if ca.subdiscipline_area == sda %}
 	     <div class="row row-eq-height">
 			 <div class="span4 summary_box grad_std_col">
-				<p class="lead">{{ ca.phrase }}</p>
 				<p>{{ ca.competency_area }}</p>
 			 </div>
 			 <div class="span7 summary_box pi_col">
 				<ul>
-				  {% for cand_ca, eus in sda_ca_eus.items %}
-				    {% if cand_ca == ca %}
-				      {% for eu in eus %}
+				  {% for eu in eus %}
+				  {% if eu.competency_area == ca %}
 				        <li>{{ eu.essential_understanding }}</li>
-						{% endfor %}
-					 {% endif %}
+				  {% endif %}
 				  {% endfor %}
 				</ul>
 			 </div>
 		  </div>
+		{% endif %}
 		{% endfor %}
-	 {% endfor %}
+	 {% endfor %}	 
+
+
 
 
 

@@ -7,13 +7,13 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('competencies', '0002_auto_20150518_1721'),
+        ('competencies', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='competencyarea',
-            name='phrase',
-            field=models.CharField(blank=True, max_length=500),
+            model_name='organization',
+            name='public',
+            field=models.BooleanField(default=False),
         ),
     ]

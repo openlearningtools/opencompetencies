@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title_extension %} - {{ organization }}{% endblock %}
+
+{% block content %}
+
+	 <h2>
+		{{ organization.name }}
+		<small>
+		{% if user == organization.owner %}
+	     <a href="{% url 'competencies:organization_admin_summary' organization.id %}">admin page</a>
+		{% endif %}
+		</small>
+	 </h2>
+
+	 <p>Click on a subject area to see the {{ organization.alias_ca }}s and {{ organization.alias_eu }}s for that subject area.</p>
+
+	 {% if subject_areas %}
+
+		  {# ---  subject areas --- #}
+	     <ul>
+	     {% for sa in subject_areas %}
+		      <li><div><h3><a href='/sa_summary/{{ sa.id }}/'>{{ sa }}</a></h3></div>
+				    {% if sa.description %}
+				        <div class="description_element">Description: {{ sa.description }}</div>
+					 {% endif %}
+				</li>
+
+				{# ---  subdiscipline areas --- #}
+				<ul>
+				{% for sda in sdas %}
+				  {% if sda.subject_area == sa %}
+				    <li><div><h4>{{ sda }}</h4></div>
+						  {% if sda.description %}
+				            <div class="description_element">Description: {{ sda.description }}</div>
+						  {% endif %}
+					 </li>
+				  {% endif %}
+				{% endfor %}
+				</ul>
+
+		  {% endfor %}
+		  </ul>
+
+	 {% elif user.is_authenticated and user in editors %}
+		  <p>This {{ organization.org_type }} does not have any subject areas yet:</p>
+		  <ul>
+			 <li><a href="{% url 'competencies:new_sa' organization.id %}">Create a subject area</a>.</li>
+			 <li>You may also <a href="{% url 'competencies:fork' organization.id %}">fork</a> an existing organization's system.</li>
+		  </ul>
+    {% else %}
+		  <p>This {{ organization.org_type }} does not have any public subject areas yet.</p>
+    {% endif %}
+
+{% endblock %}

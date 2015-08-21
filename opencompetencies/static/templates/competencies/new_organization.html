@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title_extension %} - Create a new organization{% endblock %}
+
+{% block content %}
+
+	 <p>This page allows you to create a new organization.</p>
+
+	 <form method='post' action=''>
+		  {% csrf_token %}
+		  {{ new_organization_form.as_p }}
+		  <input type='submit' value='Create new organization' />
+	 </form>
+
+
+{% endblock %}

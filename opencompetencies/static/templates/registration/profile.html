@@ -13,15 +13,13 @@
 
 		<p><a href="{% url 'password_change_form' %}">Change password</a><p>
 
-      <p>You have permission to work with the following schools:</p>
+      <p>You have permission to work with the following organizations:</p>
 		    <ul>
-				  {% if user.userprofile.schools %}
-				      {% for school in user.userprofile.schools.all %}
-			             <li><a href='{% url 'competencies:school' school.id %}'>{{ school }}</a></li>
-						{% endfor %}
-				  {% else %}
-				      <li>You do not have permission to work with any schools.</li>
-				  {% endif %}
+				{% for organization in editor_orgs %}
+			     <li><a href='{% url 'competencies:organization' organization.id %}'>{{ organization.name }}</a></li>
+				{% empty %}
+				  <li>You do not have permission to work with any organizations.</li>
+				{% endfor %}
 			 </ul>
 
 {% endblock %}
