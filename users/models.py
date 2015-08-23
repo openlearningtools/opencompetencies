@@ -1,4 +1,6 @@
 from django.db import models
+from django.forms import ModelForm, TextInput, Textarea, SelectMultiple, CheckboxSelectMultiple
+from django.forms import EmailField
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 

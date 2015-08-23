@@ -140,6 +140,7 @@ INSTALLED_APPS = (
 
     # My apps
     'competencies',
+    'users',
 )
 
 # A sample logging configuration. The only tangible logging
