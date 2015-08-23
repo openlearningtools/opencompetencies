@@ -57,6 +57,12 @@ class UserViewTests(TestCase):
             self.test_organizations.append(new_organization)
 
 
+    def test_login_view(self):
+        """Lets user log in."""
+        test_url = reverse('users:login')
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 200)
+
     def test_register_view(self):
         """Lets new user register an account."""
         test_url = reverse('users:register')
