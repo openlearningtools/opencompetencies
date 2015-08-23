@@ -10,8 +10,8 @@ from django.contrib.auth.decorators import login_required
 
 from competencies.models import *
 from competencies import my_admin
-from . import utils
-
+from competencies import utils
+from users.models import *
 
 # Authentication views
 def logout_view(request):

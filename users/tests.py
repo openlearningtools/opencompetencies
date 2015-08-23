@@ -9,6 +9,7 @@ from users.models import *
 from competencies.models import Organization
 from competencies import my_admin, utils
 
+from competencies import my_admin
 
 class UserViewTests(TestCase):
     """Tests for all views in users."""
@@ -58,7 +59,7 @@ class UserViewTests(TestCase):
 
     def test_register_view(self):
         """Lets new user register an account."""
-        test_url = reverse('register')
+        test_url = reverse('users:register')
         self.generic_test_blank_form(test_url)
 
         # Test new user can be created, and userprofile connected properly.
@@ -72,7 +73,7 @@ class UserViewTests(TestCase):
     def test_profile_view(self):
         """Lets user view their profile details."""
         self.build_to_organizations()
-        test_url = reverse('profile')
+        test_url = reverse('users:profile')
         # Test that anonymous users are redirected.
         response = self.client.get(test_url)
         self.assertEqual(response.status_code, 302)
@@ -95,3 +96,31 @@ class UserViewTests(TestCase):
         self.client.login(username='testuser0', password='pw')
         response = self.client.get(test_url)
         self.assertEqual(response.status_code, 200)
+
+
+
+class ModelTests(TestCase):
+    """Test aspects of models."""
+
+    def test_userprofile(self):
+        """Test that a userprofile connects properly to a user."""
+        new_user = User()
+        new_user.username = 'new_user'
+        new_user.password = 'new_user_pw'
+        new_user.save()
+
+        new_up = UserProfile()
+        new_up.user = new_user
+        new_up.save()
+
+        self.assertEqual(new_user.userprofile, new_up)
+
+
+class MyAdminTests(TestCase):
+    """Test individual functions in my_admin.py."""
+
+    def test_add_userprofile(self):
+        """Make sure new user gets a userprofile."""
+        new_user = User.objects.create_user(username='randy', password='pw')
+        my_admin.add_userprofile(new_user)
+        self.assertTrue(hasattr(new_user, 'userprofile'))

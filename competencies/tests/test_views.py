@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from competencies.models import *
 from competencies.views import organization
 from competencies import my_admin, utils
+from users.models import UserProfile
 
 """DEV NOTES
   - Maybe instead of using indices to store organizations, use separate lists:
