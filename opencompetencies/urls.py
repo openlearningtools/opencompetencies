@@ -12,19 +12,14 @@ urlpatterns = patterns('',
     # My urls
     url(r'^', include('competencies.urls', namespace='competencies')),
                        
+    url(r'^users/', include('users.urls', namespace='users')),
+                           
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 
-    # Auth urls
-    url(r'^login/', 'django.contrib.auth.views.login', name='login'),
-    url(r'^logout/', 'competencies.views.logout_view', name='logout_view'),
-    url(r'^profile/', 'competencies.views.profile', name='profile'),
-    url(r'^password_change/', 'competencies.views.password_change_form', name='password_change_form'),
-    url(r'^password_change_successful/', 'competencies.views.password_change_successful', name='password_change_successful'),
-    url(r'^register/', 'competencies.views.register', name='register'),                       
 )
 
 
