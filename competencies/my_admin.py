@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 
 from competencies.models import *
+from users.models import UserProfile
 
 def add_userprofile(user):
     """Make a new userprofile, and connect it to a new user."""

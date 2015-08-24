@@ -51,7 +51,7 @@ USE_L10N = True
 USE_TZ = True
 
 # Authentication settings
-LOGIN_URL = '/login/'
+LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
@@ -141,6 +141,7 @@ INSTALLED_APPS = (
 
     # My apps
     'competencies',
+    'users',
 )
 
 LOGGING = {

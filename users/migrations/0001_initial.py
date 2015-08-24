@@ -9,13 +9,14 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('competencies', '0002_organization_public'),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='organization',
-            name='editors',
-            field=models.ManyToManyField(to=settings.AUTH_USER_MODEL, related_name='org_editors'),
+        migrations.CreateModel(
+            name='UserProfile',
+            fields=[
+                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
+            ],
         ),
     ]

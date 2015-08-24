@@ -1,6 +1,4 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
 
 from competencies.models import *
 
@@ -49,18 +47,9 @@ class EssentialUnderstandingAdmin(admin.ModelAdmin):
 class PathwayAdmin(admin.ModelAdmin):
     pass
 
-# --- User Admin ---
-class UserProfileInline(admin.StackedInline):
-    model = UserProfile
-
-class UserAdmin(UserAdmin):
-    inlines = (UserProfileInline, )
 
 admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(SubjectArea, SubjectAreaAdmin)
 admin.site.register(SubdisciplineArea, SubdisciplineAreaAdmin)
 admin.site.register(CompetencyArea, CompetencyAreaAdmin)
 admin.site.register(EssentialUnderstanding, EssentialUnderstandingAdmin)
-
-admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
