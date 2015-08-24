@@ -169,7 +169,12 @@ class OrganizationAdminForm(OrganizationForm):
                   'editors',
                   )
         OrganizationForm.Meta.labels['name'] = 'Name'
-                
+        OrganizationForm.Meta.labels['alias_sa'] = 'Alias - subject area'
+        OrganizationForm.Meta.labels['alias_sda'] = 'Alias - subdiscipline area'
+        OrganizationForm.Meta.labels['alias_ca'] = 'Alias - competency area'
+        OrganizationForm.Meta.labels['alias_eu'] = 'Alias - essential understanding'
+        OrganizationForm.Meta.labels['alias_lt'] = 'Alias - learning target'
+
 
 
 class SubjectAreaForm(ModelForm):
