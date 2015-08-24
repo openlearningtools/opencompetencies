@@ -1,6 +1,7 @@
+import os.path
 from random import randint, choice
 
-with open('/srv/projects/opencompetencies/development_resources/lorem_ipsum.txt') as f:
+with open(os.path.dirname(__file__) + '/lorem_ipsum.txt') as f:
     lines = f.readlines()
 
 all_lines = ''
