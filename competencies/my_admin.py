@@ -7,6 +7,7 @@ from django.db import IntegrityError
 
 from competencies.models import *
 from users.models import UserProfile
+from development_resources import lorem_ipsum as li
 
 def add_userprofile(user):
     """Make a new userprofile, and connect it to a new user."""
@@ -60,13 +61,15 @@ def build_test_schools(num_elements=2):
     #  num_elements the user 1 is associated with.
     test_organizations, test_sas = [], []
     for organization_num in range(6):
-        name = "Test Organization %d" % organization_num
+        name = li.get_words(2)
         if organization_num < num_elements/2:
             new_organization = Organization.objects.create(name=name, owner=user)
-            user.userprofile.organizations.add(new_organization)
+            new_organization.editors.add(user)
+            #user.userprofile.organizations.add(new_organization)
         else:
             new_organization = Organization.objects.create(name=name, owner=su_user)
-            su_user.userprofile.organizations.add(new_organization)
+            new_organization.editors.add(su_user)
+            #su_user.userprofile.organizations.add(new_organization)
         test_organizations.append(new_organization)
 
         # Create num_elements subject areas for each organization.
