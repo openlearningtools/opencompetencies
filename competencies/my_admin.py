@@ -1,5 +1,6 @@
 """Functions that help administer the site."""
 import os
+from random import randint
 
 #from django.contrib.auth import createsuperuser
 from django.contrib.auth.models import User
@@ -65,47 +66,45 @@ def build_test_schools(num_elements=2):
         if organization_num < num_elements/2:
             new_organization = Organization.objects.create(name=name, owner=user)
             new_organization.editors.add(user)
-            #user.userprofile.organizations.add(new_organization)
         else:
             new_organization = Organization.objects.create(name=name, owner=su_user)
             new_organization.editors.add(su_user)
-            #su_user.userprofile.organizations.add(new_organization)
         test_organizations.append(new_organization)
 
         # Create num_elements subject areas for each organization.
         for sa_num in range(num_elements):
-            sa_name = "Test SA %d-%d" % (organization_num, sa_num)
+            sa_name = li.get_words(2)
             new_sa = SubjectArea.objects.create(subject_area=sa_name,
                                                 organization=new_organization)
             test_sas.append(new_sa)
 
             # Create num_elements grad standards for each subject area.
             for gs_num in range(num_elements):
-                gs_body = "Test CA %d-%d-%d" % (organization_num, sa_num, gs_num)
+                gs_body = li.get_words(randint(3,7))
                 new_gs = CompetencyArea.objects.create(subject_area=new_sa,
                                                            competency_area=gs_body)
 
                 # Create num_elements perf indicators for each grad std.
                 for pi_num in range(num_elements):
-                    pi_body = "Test EU %d-%d-%d-%d" % (organization_num, sa_num, gs_num, pi_num)
+                    pi_body = li.get_paragraph(randint(2,5))
                     new_pi = EssentialUnderstanding.objects.create(essential_understanding=pi_body,
                                                                  competency_area=new_gs)
 
             # Create num_elements sdas for each sa.
             for sda_num in range(num_elements):
-                sda_name = "Test SDA %d-%d-%d" % (organization_num, sa_num, sda_num)
+                sda_name = li.get_words(randint(2,3))
                 new_sda = SubdisciplineArea.objects.create(subject_area=new_sa,
                                                            subdiscipline_area=sda_name)
 
                 # Create num_elements grad standards for each sda.
                 for gs_num in range(num_elements):
-                    gs_body = "Test CA %d-%d-%d-%d" % (organization_num, sa_num, sda_num, gs_num)
+                    gs_body = li.get_words(randint(3,7))
                     new_gs = CompetencyArea.objects.create(subject_area=new_sa,
                                                                subdiscipline_area=new_sda,
                                                                competency_area=gs_body)
 
                     # Create num_elements perf indicators for each grad std.
                     for pi_num in range(num_elements):
-                        pi_body = "Test EU %d-%d-%d-%d-%d" % (organization_num, sa_num, sda_num, gs_num, pi_num)
+                        pi_body = li.get_paragraph(randint(2,5))
                         new_pi = EssentialUnderstanding.objects.create(essential_understanding=pi_body,
                                                                      competency_area=new_gs)
