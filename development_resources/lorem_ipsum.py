@@ -1,6 +1,6 @@
 from random import randint, choice
 
-with open('/srv/projects/oc_prod/development_resources/lorem_ipsum.txt') as f:
+with open('/srv/projects/opencompetencies/development_resources/lorem_ipsum.txt') as f:
     lines = f.readlines()
 
 all_lines = ''
