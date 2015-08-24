@@ -3,6 +3,7 @@ venv
 docs
 notes
 
+opencompetencies/logging
 competencies/fixtures
 **/__pycache__
 **/tests
