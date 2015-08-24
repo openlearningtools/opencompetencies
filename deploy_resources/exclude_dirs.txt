@@ -1,0 +1,11 @@
+venv
+.git
+docs
+notes
+
+competencies/fixtures
+**/__pycache__
+**/tests
+
+.gitignore
+.env
