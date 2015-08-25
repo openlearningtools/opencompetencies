@@ -162,3 +162,5 @@ LOGGING = {
         },
     },
 }
+
+print(LOGGING['handlers']['file']['filename'])
