@@ -3,6 +3,9 @@
 venv/
 notes.txt
 notes/
+opencompetencies/logging/error.log
+
+
 # emacs backups:
 \#*#
 .\#*
