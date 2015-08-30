@@ -45,6 +45,7 @@ class PDFTest():
         sa = SubjectArea.objects.get(id=sa_id)
         org = sa.organization
         sdas = sa.subdisciplinearea_set.all()
+        cas = sa.competencyarea_set.all()
 
         # Prep document.
         self.Title = org.name
@@ -56,14 +57,33 @@ class PDFTest():
 
         self.first_col_x = inch
         self.second_col_x = self.PAGE_WIDTH / 3
-        
-        # Add competency areas and essential understandings.
-        for sda in sa.subdisciplinearea_set.all():
-            p = Paragraph(sda.subdiscipline_area, style)
-            Story.append(p)
-            Story.append(Spacer(1, 0.2*inch))
 
-        doc.build(Story, onFirstPage=self.myFirstPage, onLaterPages=self.myLaterPages)
+        from reportlab.platypus.tables import Table
+        data = [(org.alias_ca, org.alias_eu)]
+        # Add subject area competency areas.
+        for ca in cas:
+            if not ca.subdiscipline_area:
+                data.append((ca.competency_area, ''))
+        for sda in sdas:
+            data.append((sda.subdiscipline_area, ''))
+            for ca in cas:
+                if (ca.subdiscipline_area
+                    and ca.subdiscipline_area.subdiscipline_area == sda.subdiscipline_area):
+                    data.append((ca.competency_area, ''))
+
+            
+        table = Table(data)
+        elements = []
+        elements.append(table)
+        doc.build(elements)
+
+        # # Add competency areas and essential understandings.
+        # for sda in sa.subdisciplinearea_set.all():
+        #     p = Paragraph(sda.subdiscipline_area, style)
+        #     Story.append(p)
+        #     Story.append(Spacer(1, 0.2*inch))
+
+        #doc.build(Story, onFirstPage=self.myFirstPage, onLaterPages=self.myLaterPages)
 
 
 pdftest = PDFTest()
