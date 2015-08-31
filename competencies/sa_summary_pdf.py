@@ -70,6 +70,15 @@ class PDFTest():
                 data.append((p, '',  ''))
                 for eu in eus:
                     if eu.competency_area == ca:
+                        # # Line up first eu with ca.
+                        # # DEV: Starting to work, but breaks ca into separate tables
+                        # #      for every eu.
+                        # if data[-1][0]:
+                        #     if ca.competency_area.strip() == data[-1][0].text:
+                        #         #data[-1][2] = p
+                        #         p_e = Paragraph(eu.essential_understanding, style)
+                        #         data[-1] = (p, '', p_e)
+                        # else:
                         p = Paragraph(eu.essential_understanding, style)
                         data.append(('', '', p))
             if data:
