@@ -44,19 +44,9 @@ class PDFTest():
         canvas.setFont('Times-Roman', 9)
         canvas.restoreState()
 
-    def makeSummary(self, sa_id):
+    def makeSummary(self, org, sa, sdas, cas, eus):
         """Generates a pdf of the sa_summary page."""
         print('building doc...')
-
-        # Get data for this sa.
-        sa = SubjectArea.objects.get(id=sa_id)
-        org = sa.organization
-        sdas = sa.subdisciplinearea_set.all()
-        cas = sa.competencyarea_set.all()
-        eus = []
-        for ca in cas:
-            for eu in ca.essentialunderstanding_set.all():
-                eus.append(eu)
 
         # Prep document.
         self.Title = org.name

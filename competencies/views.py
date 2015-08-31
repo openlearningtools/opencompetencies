@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.forms.models import modelform_factory, modelformset_factory, inlineformset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.loading import get_model
@@ -81,18 +81,21 @@ def sa_summary_pdf(request, sa_id):
     """Return a pdf of the sa_summary page."""
     print('Generating pdf of sa_summary...')
 
-    from django.http import HttpResponse
+    sa = SubjectArea.objects.get(id=sa_id)
+    org = sa.organization
+    kwargs = get_visibility_filter(request.user, org)
+
+    sdas, cas, eus = get_sda_ca_eu_elements(sa, kwargs)
+
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="sa_summary.pdf"'
+    filename = 'sa_summary_%s.pdf' % sa.subject_area
+    response['Content-Disposition'] = 'attachment; filename=%s' % filename
 
     from competencies.sa_summary_pdf import PDFTest
     pdf_test = PDFTest(response)
-    pdf = pdf_test.makeSummary(sa_id)
+    pdf = pdf_test.makeSummary(org, sa, sdas, cas, eus)
 
     return pdf
-    #return redirect(reverse('competencies:sa_summary', args=[sa_id,]))
-
-
 
 @login_required
 def organization_admin_summary(request, organization_id):
