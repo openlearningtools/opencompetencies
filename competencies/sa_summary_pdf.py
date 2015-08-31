@@ -21,7 +21,8 @@ class PDFTest():
         print('building doc...')
 
         # Prep document.
-        doc = SimpleDocTemplate(self.response, pagesize=landscape(letter))
+        doc = SimpleDocTemplate(self.response, pagesize=landscape(letter), topMargin=36,
+                                bottomMargin=36)
         Story = [Spacer(1,0.5*inch)]
         style = self.styles["Normal"]
         light_gray = (0.9, 0.9, 0.9)
