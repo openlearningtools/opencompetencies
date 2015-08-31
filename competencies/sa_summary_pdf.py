@@ -1,8 +1,9 @@
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.rl_config import defaultPageSize
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import landscape, letter
+from reportlab.lib import colors
 
 from competencies.models import SubjectArea
 
@@ -27,7 +28,6 @@ class PDFTest():
         Story = [Spacer(1,0.5*inch)]
         style = self.styles["Normal"]
 
-        from reportlab.platypus.tables import Table
         data = [(org.alias_ca.title(), org.alias_eu.title())]
 
         # Add subject area competency areas.
@@ -55,8 +55,9 @@ class PDFTest():
                             data.append(('', p))
 
 
-            
+        light_gray = (0.9, 0.9, 0.9)
         table = Table(data)
+        table.setStyle(TableStyle([('BACKGROUND', (0,0), (-1,0), light_gray),]))
         elements = []
         elements.append(table)
         doc.build(elements)
