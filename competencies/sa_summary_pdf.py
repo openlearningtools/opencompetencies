@@ -3,24 +3,11 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.rl_config import defaultPageSize
 from reportlab.lib.units import inch
 
-# # May only need these when being run manually, which I'm doing for development.
-# import os
-# os.environ['DJANGO_SETTINGS_MODULE'] = 'opencompetencies.settings'
-
-# import django
-# django.setup()
-
 from competencies.models import SubjectArea
-
-# DEV:
-#   Need to filter for public setting.
-#   Set to landscape.
-#   Need to wrap within table cells.
-
 
 class PDFTest():
     def __init__(self, response):
-        # response argument is the file object.
+        # response argument is used as the file object.
         self.response = response
         self.PAGE_HEIGHT = defaultPageSize[1]
         self.PAGE_WIDTH = defaultPageSize[0]
@@ -61,15 +48,17 @@ class PDFTest():
         self.second_col_x = self.PAGE_WIDTH / 3
 
         from reportlab.platypus.tables import Table
-        data = [(org.alias_ca, org.alias_eu)]
+        data = [(org.alias_ca.title(), org.alias_eu.title())]
 
         # Add subject area competency areas.
         for ca in cas:
             if not ca.subdiscipline_area:
-                data.append((ca.competency_area, ''))
+                p = Paragraph(ca.competency_area, style)
+                data.append((p, ''))
                 for eu in eus:
                     if eu.competency_area == ca:
-                        data.append(('', eu.essential_understanding))
+                        p = Paragraph(eu.essential_understanding, style)
+                        data.append(('', p))
 
         # Add sda competency areas.
         for sda in sdas:
@@ -93,7 +82,3 @@ class PDFTest():
         #     Story.append(Spacer(1, 0.2*inch))
 
         #doc.build(Story, onFirstPage=self.myFirstPage, onLaterPages=self.myLaterPages)
-
-
-# pdftest = PDFTest()
-# pdftest.makeSummary(24)
