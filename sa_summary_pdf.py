@@ -12,6 +12,11 @@ django.setup()
 
 from competencies.models import SubjectArea
 
+# DEV:
+#   Need to filter for public setting.
+#   Set to landscape.
+#   Need to wrap within table cells.
+
 
 class PDFTest():
     def __init__(self):
@@ -46,6 +51,10 @@ class PDFTest():
         org = sa.organization
         sdas = sa.subdisciplinearea_set.all()
         cas = sa.competencyarea_set.all()
+        eus = []
+        for ca in cas:
+            for eu in ca.essentialunderstanding_set.all():
+                eus.append(eu)
 
         # Prep document.
         self.Title = org.name
@@ -60,10 +69,16 @@ class PDFTest():
 
         from reportlab.platypus.tables import Table
         data = [(org.alias_ca, org.alias_eu)]
+
         # Add subject area competency areas.
         for ca in cas:
             if not ca.subdiscipline_area:
                 data.append((ca.competency_area, ''))
+                for eu in eus:
+                    if eu.competency_area == ca:
+                        data.append(('', eu.essential_understanding))
+
+        # Add sda competency areas.
         for sda in sdas:
             data.append((sda.subdiscipline_area, ''))
             for ca in cas:
