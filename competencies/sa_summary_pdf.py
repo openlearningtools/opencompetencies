@@ -19,7 +19,9 @@ from competencies.models import SubjectArea
 
 
 class PDFTest():
-    def __init__(self):
+    def __init__(self, response):
+        # response argument is the file object.
+        self.response = response
         self.PAGE_HEIGHT = defaultPageSize[1]
         self.PAGE_WIDTH = defaultPageSize[0]
         self.styles = getSampleStyleSheet()
@@ -61,6 +63,7 @@ class PDFTest():
         self.subtitle = sa.subject_area
 
         doc = SimpleDocTemplate("competencies/sa_summary.pdf")
+        doc = SimpleDocTemplate(self.response)
         Story = [Spacer(1,0.5*inch)]
         style = self.styles["Normal"]
 
@@ -92,6 +95,7 @@ class PDFTest():
         elements.append(table)
         doc.build(elements)
 
+        return self.response
         # # Add competency areas and essential understandings.
         # for sda in sa.subdisciplinearea_set.all():
         #     p = Paragraph(sda.subdiscipline_area, style)

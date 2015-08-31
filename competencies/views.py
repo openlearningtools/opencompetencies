@@ -80,11 +80,17 @@ def sa_summary(request, sa_id):
 def sa_summary_pdf(request, sa_id):
     """Return a pdf of the sa_summary page."""
     print('Generating pdf of sa_summary...')
-    from competencies.sa_summary_pdf import PDFTest
-    pdf_test = PDFTest()
-    pdf_test.makeSummary(sa_id)
 
-    return redirect(reverse('competencies:sa_summary', args=[sa_id,]))
+    from django.http import HttpResponse
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="sa_summary.pdf"'
+
+    from competencies.sa_summary_pdf import PDFTest
+    pdf_test = PDFTest(response)
+    pdf = pdf_test.makeSummary(sa_id)
+
+    return pdf
+    #return redirect(reverse('competencies:sa_summary', args=[sa_id,]))
 
 
 
