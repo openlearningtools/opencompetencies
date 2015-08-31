@@ -4,7 +4,6 @@ import os.path
 # Django settings for opencompetencies project.
 
 PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
-print('pp:', PROJECT_PATH)
 
 # env var is returned as a string
 if os.environ.get('DJANGO_DEBUG', 'False') == 'True':
