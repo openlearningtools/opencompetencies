@@ -31,24 +31,28 @@ class PDFTest():
         dark_gray = (0.75, 0.75, 0.75)
         elements = []
 
-        ca_col_width, eu_col_width = 3*inch, 6*inch
-        col_widths = (ca_col_width, eu_col_width)
+        spacer_width = 0.05*inch
+        ca_col_width = 3*inch - spacer_width/2
+        eu_col_width = 6*inch - spacer_width/2
+        col_widths = (ca_col_width, spacer_width, eu_col_width)
         
         # Build a series of separate tables.
         #  Easy to manage styling this way.
 
-        # Header row.
-        data = [(org.alias_ca.title(), org.alias_eu.title())]
+        # --- Header row. ---
+        data = [(org.alias_ca.title(), '', org.alias_eu.title())]
         table = Table(data, colWidths=col_widths)
         elements.append(table)
         table.setStyle(TableStyle([('BACKGROUND', (0,0), (0,0), dark_gray),
-                                   ('BACKGROUND', (1,0), (1,0), light_gray),
-                                   ('BOTTOMPADDING', (0,0), (-1,-1), 5),
+                                   ('BACKGROUND', (2,0), (2,0), light_gray),
+                                   ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+                                   ('FONTSIZE', (0,0), (-1,-1), 14),
+                                   ('FONTNAME', (0,0), (-1,-1), 'Helvetica-Bold'),
                                    ]))
-
+        # Clear data.
         data = []
 
-        # Subject area competency areas.
+        # --- Subject area competency areas. ---
         for ca in cas:
             if not ca.subdiscipline_area:
                 p = Paragraph(ca.competency_area, style)
@@ -74,7 +78,7 @@ class PDFTest():
 
         table = Table(data, colWidths=(3*inch, 6*inch))
         elements.append(table)
-        table.setStyle(TableStyle([('BACKGROUND', (0,0), (-1,0), light_gray),]))
+        #table.setStyle(TableStyle([('BACKGROUND', (0,0), (-1,0), light_gray),]))
 
         doc.build(elements)
 
