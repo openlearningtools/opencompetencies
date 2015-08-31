@@ -22,6 +22,9 @@ urlpatterns = patterns('',
     # sa_summary/id: Show a GSP-style summary for a given subject area.
     url(r'^sa_summary/(?P<sa_id>\d+)/$', views.sa_summary, name='sa_summary'),
 
+    # --- PDF generating pages ---
+    url(r'^sa_summary_pdf/(?P<sa_id>\d+)/$', views.sa_summary_pdf, name='sa_summary_pdf'),
+
 
     # --- Edit system pages ---
 

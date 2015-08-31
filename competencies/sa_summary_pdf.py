@@ -3,12 +3,12 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.rl_config import defaultPageSize
 from reportlab.lib.units import inch
 
-# May only need these when being run manually, which I'm doing for development.
-import os
-os.environ['DJANGO_SETTINGS_MODULE'] = 'opencompetencies.settings'
+# # May only need these when being run manually, which I'm doing for development.
+# import os
+# os.environ['DJANGO_SETTINGS_MODULE'] = 'opencompetencies.settings'
 
-import django
-django.setup()
+# import django
+# django.setup()
 
 from competencies.models import SubjectArea
 
@@ -60,7 +60,7 @@ class PDFTest():
         self.Title = org.name
         self.subtitle = sa.subject_area
 
-        doc = SimpleDocTemplate("sa_summary.pdf")
+        doc = SimpleDocTemplate("competencies/sa_summary.pdf")
         Story = [Spacer(1,0.5*inch)]
         style = self.styles["Normal"]
 
@@ -101,5 +101,5 @@ class PDFTest():
         #doc.build(Story, onFirstPage=self.myFirstPage, onLaterPages=self.myLaterPages)
 
 
-pdftest = PDFTest()
-pdftest.makeSummary(24)
+# pdftest = PDFTest()
+# pdftest.makeSummary(24)

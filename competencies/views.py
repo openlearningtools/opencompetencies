@@ -77,6 +77,17 @@ def sa_summary(request, sa_id):
                                'sdas': sdas, 'cas': cas, 'eus': eus,},
                               context_instance=RequestContext(request))
 
+def sa_summary_pdf(request, sa_id):
+    """Return a pdf of the sa_summary page."""
+    print('Generating pdf of sa_summary...')
+    from competencies.sa_summary_pdf import PDFTest
+    pdf_test = PDFTest()
+    pdf_test.makeSummary(sa_id)
+
+    return redirect(reverse('competencies:sa_summary', args=[sa_id,]))
+
+
+
 @login_required
 def organization_admin_summary(request, organization_id):
     """See an administrative summmary of an organization. Restricted to owners of the org."""
