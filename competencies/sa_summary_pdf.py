@@ -27,8 +27,12 @@ class PDFTest():
         doc = SimpleDocTemplate(self.response, pagesize=landscape(letter))
         Story = [Spacer(1,0.5*inch)]
         style = self.styles["Normal"]
+        light_gray = (0.9, 0.9, 0.9)
+        elements = []
 
+        # Header row.
         data = [(org.alias_ca.title(), org.alias_eu.title())]
+
 
         # Add subject area competency areas.
         for ca in cas:
@@ -54,12 +58,10 @@ class PDFTest():
                             p = Paragraph(eu.essential_understanding, style)
                             data.append(('', p))
 
-
-        light_gray = (0.9, 0.9, 0.9)
-        table = Table(data)
-        table.setStyle(TableStyle([('BACKGROUND', (0,0), (-1,0), light_gray),]))
-        elements = []
+        table = Table(data, colWidths=(3*inch, 6*inch))
         elements.append(table)
+        table.setStyle(TableStyle([('BACKGROUND', (0,0), (-1,0), light_gray),]))
+
         doc.build(elements)
 
         return self.response
