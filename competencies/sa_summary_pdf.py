@@ -1,5 +1,5 @@
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.rl_config import defaultPageSize
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import landscape, letter
@@ -21,15 +21,21 @@ class PDFTest():
         print('building doc...')
 
         # Prep document.
-        self.Title = org.name
-        self.subtitle = sa.subject_area
-
         doc = SimpleDocTemplate(self.response, pagesize=landscape(letter))
         Story = [Spacer(1,0.5*inch)]
         style = self.styles["Normal"]
         light_gray = (0.9, 0.9, 0.9)
         dark_gray = (0.75, 0.75, 0.75)
         elements = []
+
+        # Add title and subtitle.
+        p_style = ParagraphStyle('title', fontName='Helvetica-Bold', fontSize=20,
+                                 spaceAfter=0)
+        elements.append(Paragraph(org.name, p_style))
+        p_style.fontName = 'Helvetica'
+        p_style.fontSize = 16
+        p_style.spaceAfter = 20
+        elements.append(Paragraph(sa.subject_area, p_style))
 
         spacer_width = 0.05*inch
         ca_col_width = 3*inch - spacer_width/2
