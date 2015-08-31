@@ -79,8 +79,6 @@ class PDFTest():
                 table.setStyle(TableStyle([('BACKGROUND', (0,0), (0,-1), dark_gray),
                                            ('BACKGROUND', (2,0), (2,-1), light_gray),
                                            ('BOTTOMPADDING', (0,0), (-1,-1), 10),
-                                           ('FONTSIZE', (0,0), (-1,-1), 10),
-                                           ('FONTNAME', (0,0), (-1,-1), 'Helvetica'),
                                            ]))
                 data = []
                 self.add_spacer_row(elements, col_widths, spacer_width)
@@ -88,24 +86,35 @@ class PDFTest():
 
         # Add sda competency areas.
         for sda in sdas:
-            p = Paragraph(sda.subdiscipline_area, style)
-            data.append((p, ''))
+            # Add a single-row table for the sda.
+            p_style = ParagraphStyle('title', fontName='Helvetica-Bold', fontSize=14,
+                                 spaceBefore=5, spaceAfter=10)
+            elements.append(Paragraph(sda.subdiscipline_area, p_style))
+
+            # Each competency area and its eus are a separate table.
             for ca in cas:
                 if (ca.subdiscipline_area
                     and ca.subdiscipline_area.subdiscipline_area == sda.subdiscipline_area):
                     p = Paragraph(ca.competency_area, style)
-                    data.append((p, ''))
+                    data.append((p, '', ''))
                     for eu in eus:
                         if eu.competency_area == ca:
                             p = Paragraph(eu.essential_understanding, style)
-                            data.append(('', p))
+                            data.append(('', '', p))
 
-        table = Table(data, colWidths=(3*inch, 6*inch))
-        elements.append(table)
-        #table.setStyle(TableStyle([('BACKGROUND', (0,0), (-1,0), light_gray),]))
+                if data:
+                    # Build table.
+                    table = Table(data, colWidths=col_widths)
+                    elements.append(table)
+                    table.setStyle(TableStyle([('BACKGROUND', (0,0), (0,-1), dark_gray),
+                                               ('BACKGROUND', (2,0), (2,-1), light_gray),
+                                               ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+                                               ]))
+                    data = []
+                    self.add_spacer_row(elements, col_widths, spacer_width)
 
+        # Build the document, and return the response.
         doc.build(elements)
-
         return self.response
 
     def add_spacer_row(self, elements, col_widths, spacer_width):
