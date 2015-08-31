@@ -63,14 +63,22 @@ class PDFTest():
         self.add_spacer_row(elements, col_widths, spacer_width)
 
         # --- Subject area competency areas. ---
+        # Each competency area and its eus are a separate table.
         for ca in cas:
             if not ca.subdiscipline_area:
                 p = Paragraph(ca.competency_area, style)
-                data.append((p, ''))
+                data.append((p, '',  ''))
                 for eu in eus:
                     if eu.competency_area == ca:
                         p = Paragraph(eu.essential_understanding, style)
-                        data.append(('', p))
+                        data.append(('', '', p))
+            if data:
+                # Build table.
+                table = Table(data, colWidths=col_widths)
+                elements.append(table)
+                data = []
+
+
 
         # Add sda competency areas.
         for sda in sdas:
