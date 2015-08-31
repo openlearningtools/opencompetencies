@@ -28,13 +28,27 @@ class PDFTest():
         Story = [Spacer(1,0.5*inch)]
         style = self.styles["Normal"]
         light_gray = (0.9, 0.9, 0.9)
+        dark_gray = (0.75, 0.75, 0.75)
         elements = []
+
+        ca_col_width, eu_col_width = 3*inch, 6*inch
+        col_widths = (ca_col_width, eu_col_width)
+        
+        # Build a series of separate tables.
+        #  Easy to manage styling this way.
 
         # Header row.
         data = [(org.alias_ca.title(), org.alias_eu.title())]
+        table = Table(data, colWidths=col_widths)
+        elements.append(table)
+        table.setStyle(TableStyle([('BACKGROUND', (0,0), (0,0), dark_gray),
+                                   ('BACKGROUND', (1,0), (1,0), light_gray),
+                                   ('BOTTOMPADDING', (0,0), (-1,-1), 5),
+                                   ]))
 
+        data = []
 
-        # Add subject area competency areas.
+        # Subject area competency areas.
         for ca in cas:
             if not ca.subdiscipline_area:
                 p = Paragraph(ca.competency_area, style)
