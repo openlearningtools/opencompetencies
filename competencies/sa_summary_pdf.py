@@ -47,7 +47,7 @@ class PDFTest():
         #  Easy to manage styling this way.
 
         # --- Header row. ---
-        data = [(org.alias_ca.title(), '', org.alias_eu.title())]
+        data = [(org.alias_ca.title()+'s', '', org.alias_eu.title()+'s')]
         table = Table(data, colWidths=col_widths)
         elements.append(table)
         table.setStyle(TableStyle([('BACKGROUND', (0,0), (0,0), dark_gray),
@@ -58,6 +58,9 @@ class PDFTest():
                                    ]))
         # Clear data.
         data = []
+
+        # Spacer row.
+        self.add_spacer_row(elements, col_widths, spacer_width)
 
         # --- Subject area competency areas. ---
         for ca in cas:
@@ -90,10 +93,9 @@ class PDFTest():
         doc.build(elements)
 
         return self.response
-        # # Add competency areas and essential understandings.
-        # for sda in sa.subdisciplinearea_set.all():
-        #     p = Paragraph(sda.subdiscipline_area, style)
-        #     Story.append(p)
-        #     Story.append(Spacer(1, 0.2*inch))
 
-        #doc.build(Story, onFirstPage=self.myFirstPage, onLaterPages=self.myLaterPages)
+    def add_spacer_row(self, elements, col_widths, spacer_width):
+        """Add a spacer row between competency areas."""
+        data = [('', '', '')]
+        table = Table(data, colWidths=col_widths, rowHeights=(spacer_width))
+        elements.append(table)
