@@ -76,8 +76,14 @@ class PDFTest():
                 # Build table.
                 table = Table(data, colWidths=col_widths)
                 elements.append(table)
+                table.setStyle(TableStyle([('BACKGROUND', (0,0), (0,-1), dark_gray),
+                                           ('BACKGROUND', (2,0), (2,-1), light_gray),
+                                           ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+                                           ('FONTSIZE', (0,0), (-1,-1), 10),
+                                           ('FONTNAME', (0,0), (-1,-1), 'Helvetica'),
+                                           ]))
                 data = []
-
+                self.add_spacer_row(elements, col_widths, spacer_width)
 
 
         # Add sda competency areas.
