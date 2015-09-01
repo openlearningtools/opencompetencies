@@ -79,7 +79,7 @@ def sa_summary(request, sa_id):
 
 def sa_summary_pdf(request, sa_id):
     """Return a pdf of the sa_summary page."""
-    print('Generating pdf of sa_summary...')
+    #print('Generating pdf of sa_summary...')
 
     sa = SubjectArea.objects.get(id=sa_id)
     org = sa.organization

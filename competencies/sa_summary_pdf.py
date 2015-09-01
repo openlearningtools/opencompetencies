@@ -18,7 +18,7 @@ class PDFTest():
 
     def makeSummary(self, org, sa, sdas, cas, eus):
         """Generates a pdf of the sa_summary page."""
-        print('building doc...')
+        #print('building doc...')
 
         # Prep document.
         doc = SimpleDocTemplate(self.response, pagesize=landscape(letter), topMargin=36,
