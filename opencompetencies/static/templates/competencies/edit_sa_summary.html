@@ -12,7 +12,7 @@
 
 		{% csrf_token %}
 		{{ sa_form.subject_area }}
-		<a href="{% url 'competencies:new_sa' organization.id %}">new subject area</a>
+		<a href="{% url 'competencies:new_sa' organization.id %}">new {{ organization.alias_sa }}</a>
 		<p>public: {{ sa_form.public }}</p>
 
 	 <div class="row row-eq-height">

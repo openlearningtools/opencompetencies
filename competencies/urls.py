@@ -45,8 +45,8 @@ urlpatterns = patterns('',
     # new_organization: Create a new organization.
     url(r'^new_organization/$', views.new_organization, name='new_organization'),
 
-    # new_sa: Create a new sa, for a specific school.
-    url(r'^new_sa/(?P<school_id>\d+)/$', views.new_sa, name='new_sa'),
+    # new_sa: Create a new sa, for a specific org.
+    url(r'^new_sa/(?P<org_id>\d+)/$', views.new_sa, name='new_sa'),
 
     # new_sda: Create a new sda, for a specific subject area.
     url(r'^new_sda/(?P<sa_id>\d+)/$', views.new_sda, name='new_sda'),

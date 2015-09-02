@@ -303,26 +303,26 @@ def generate_form(instance, element_type):
     elif element_type == 'eu':
         return EssentialUnderstandingForm(prefix=prefix, instance=instance)
 
-def new_sa(request, school_id):
-    """Create a new subject area for a given school."""
-    school = Organization.objects.get(id=school_id)
-    # Test if user allowed to edit this school.
-    if not has_edit_permission(request.user, school):
-        redirect_url = '/no_edit_permission/' + str(school.id)
+def new_sa(request, org_id):
+    """Create a new subject area for a given organization."""
+    organization = Organization.objects.get(id=org_id)
+    # Test if user allowed to edit this organization.
+    if not has_edit_permission(request.user, organization):
+        redirect_url = '/no_edit_permission/' + str(organization.id)
         return redirect(redirect_url)
 
     if request.method == 'POST':
         sa_form = SubjectAreaForm(request.POST)
         if sa_form.is_valid():
             new_sa = sa_form.save(commit=False)
-            new_sa.organization = school
+            new_sa.organization = organization
             new_sa.save()
             return redirect('/edit_sa_summary/%d' % new_sa.id)
 
     sa_form = SubjectAreaForm()
 
     return render_to_response('competencies/new_sa.html',
-                              {'school': school, 'sa_form': sa_form,},
+                              {'organization': organization, 'sa_form': sa_form,},
                               context_instance=RequestContext(request))
 
 def new_sda(request, sa_id):
