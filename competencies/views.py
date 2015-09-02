@@ -328,10 +328,10 @@ def new_sa(request, org_id):
 def new_sda(request, sa_id):
     """Create a new subdiscipline area for a given subject area."""
     sa = SubjectArea.objects.get(id=sa_id)
-    school = sa.organization
-    # Test if user allowed to edit this school.
-    if not has_edit_permission(request.user, school):
-        redirect_url = '/no_edit_permission/' + str(school.id)
+    organization = sa.organization
+    # Test if user allowed to edit this organization.
+    if not has_edit_permission(request.user, organization):
+        redirect_url = '/no_edit_permission/' + str(organization.id)
         return redirect(redirect_url)
 
     if request.method == 'POST':
@@ -345,7 +345,7 @@ def new_sda(request, sa_id):
     sda_form = SubdisciplineAreaForm()
 
     return render_to_response('competencies/new_sda.html',
-                              {'school': school, 'sa': sa,
+                              {'organization': organization, 'sa': sa,
                                'sda_form': sda_form,},
                               context_instance=RequestContext(request))
 
