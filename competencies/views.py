@@ -161,8 +161,9 @@ def fork(request, organization_id):
             utils.fork_organization(forking_organization, original_org)
             return redirect(reverse('competencies:organization', args=[organization_id,]))
         else:
-            print('\n\ninvalid:', fork_form)
-
+            #print('\n\ninvalid:', fork_form)
+            # Report error appropriately.
+            pass
 
     return render_to_response('competencies/fork.html',
                               {'forking_organization': forking_organization,
