@@ -79,7 +79,7 @@ def sa_summary(request, sa_id):
 
 def sa_summary_pdf(request, sa_id):
     """Return a pdf of the sa_summary page."""
-    print('Generating pdf of sa_summary...')
+    #print('Generating pdf of sa_summary...')
 
     sa = SubjectArea.objects.get(id=sa_id)
     org = sa.organization
@@ -161,8 +161,9 @@ def fork(request, organization_id):
             utils.fork_organization(forking_organization, original_org)
             return redirect(reverse('competencies:organization', args=[organization_id,]))
         else:
-            print('\n\ninvalid:', fork_form)
-
+            #print('\n\ninvalid:', fork_form)
+            # Report error appropriately.
+            pass
 
     return render_to_response('competencies/fork.html',
                               {'forking_organization': forking_organization,

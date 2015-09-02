@@ -22,8 +22,9 @@ def cascade_visibility_down(element, visibility_mode):
                         object.save()
             except Exception as e:
                 # Must not be a public/ private object
-                print("Can't set object private:", object, e)
-
+                #print("Can't set object private:", object, e)
+                pass
+            
             # Check if this object has related objects, if so continue cascading.
             if object._meta.get_all_related_objects():
                 cascade_visibility_down(object, visibility_mode)
@@ -47,15 +48,15 @@ def fork_organization(forking_org, original_org):
     """Copy all elements of original_org to forking_org."""
     # Make sure forking_org is empty, and original_org is public.
     # Make sure original_org is public, and forking_org is empty.
-    print("Forking", original_org.name, "to", forking_org.name, "...")
+    #print("Forking", original_org.name, "to", forking_org.name, "...")
     if not original_org.public:
-        print("Can't fork - original org is private.")
+        #print("Can't fork - original org is private.")
         return None
     if forking_org.subjectarea_set.all():
-        print("Can't fork - forking org is not empty.")
+        #print("Can't fork - forking org is not empty.")
         return None
     if original_org == forking_org:
-        print("Can't fork - original org is forking org.")
+        #print("Can't fork - original org is forking org.")
         return None
 
     # Copy all elements from original to forking org.
