@@ -68,22 +68,21 @@ class PDFTest():
         # Each competency area and its eus are a separate table.
         for ca in cas:
             if not ca.subdiscipline_area:
-                p = Paragraph(ca.competency_area, style)
-                data.append((p, '',  ''))
+                p_ca = Paragraph(ca.competency_area, style)
+                #data.append((p, '',  ''))
 
+                first_eu = True
                 for eu in eus:
                     if eu.competency_area == ca:
-                        # # Line up first eu with ca.
-                        # # DEV: Starting to work, but breaks ca into separate tables
-                        # #      for every eu.
-                        # if data[-1][0]:
-                        #     if ca.competency_area.strip() == data[-1][0].text:
-                        #         #data[-1][2] = p
-                        #         p_e = Paragraph(eu.essential_understanding, style)
-                        #         data[-1] = (p, '', p_e)
-                        # else:
-                        p = Paragraph(eu.essential_understanding, eu_style)
-                        data.append(('', '', p))
+                        p_eu = Paragraph(eu.essential_understanding, eu_style)
+                        if first_eu:
+                            data.append((p_ca, '', p_eu))
+                            first_eu = False
+                        else:
+                            data.append(('', '', p_eu))
+                # Make sure to include ca if there were no eu's.
+                if first_eu:
+                    data.append((p_ca, '', ''))
             if data:
                 # Build table.
                 table = Table(data, colWidths=col_widths)
@@ -94,7 +93,8 @@ class PDFTest():
                 table.setStyle(TableStyle([('BACKGROUND', (0,0), (0,-1), dark_gray),
                                            ('BACKGROUND', (2,0), (2,-1), light_gray),
                                            ('BOTTOMPADDING', (0,-1), (-1,-1), 10),
-                                           ('TOPPADDING', (0,1), (2,1), -10),
+                                           ('VALIGN', (0,0), (0,0), 'TOP'),
+                                           #('TOPPADDING', (0,1), (2,1), -10),
                                            ]))
                 data = []
                 self.add_spacer_row(elements, col_widths, spacer_width)
