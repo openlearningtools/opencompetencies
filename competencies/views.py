@@ -224,6 +224,9 @@ def edit_sa_summary(request, sa_id):
         organization = subject_area.organization
         sdas, cas, eus = get_sda_ca_eu_elements(subject_area, kwargs)
 
+        # Redirect back to view page.
+        return redirect('/sa_summary/%s' % sa_id)
+
     # Build forms. Not in an else clause, because even POST requests need
     #  forms re-generated.
     sa_form = generate_form(subject_area, 'sa')
