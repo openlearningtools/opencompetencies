@@ -69,8 +69,6 @@ class PDFTest():
         for ca in cas:
             if not ca.subdiscipline_area:
                 p_ca = Paragraph(ca.competency_area, style)
-                #data.append((p, '',  ''))
-
                 first_eu = True
                 for eu in eus:
                     if eu.competency_area == ca:
@@ -87,14 +85,10 @@ class PDFTest():
                 # Build table.
                 table = Table(data, colWidths=col_widths)
                 elements.append(table)
-                # TOPPADDING setting is a hack until first eu is added to ca data tuple.
-                #  When that's implemented, remove TOPPADDING setting.
-                #  Same for sda ca eus.
                 table.setStyle(TableStyle([('BACKGROUND', (0,0), (0,-1), dark_gray),
                                            ('BACKGROUND', (2,0), (2,-1), light_gray),
                                            ('BOTTOMPADDING', (0,-1), (-1,-1), 10),
                                            ('VALIGN', (0,0), (0,0), 'TOP'),
-                                           #('TOPPADDING', (0,1), (2,1), -10),
                                            ]))
                 data = []
                 self.add_spacer_row(elements, col_widths, spacer_width)
@@ -111,13 +105,20 @@ class PDFTest():
             for ca in cas:
                 if (ca.subdiscipline_area
                     and ca.subdiscipline_area.subdiscipline_area == sda.subdiscipline_area):
-                    p = Paragraph(ca.competency_area, style)
-                    data.append((p, '', ''))
+                    p_ca = Paragraph(ca.competency_area, style)
+                    #data.append((p, '', ''))
+                    first_eu = True
                     for eu in eus:
                         if eu.competency_area == ca:
-                            p = Paragraph(eu.essential_understanding, eu_style)
-                            data.append(('', '', p))
-
+                            p_eu = Paragraph(eu.essential_understanding, eu_style)
+                            if first_eu:
+                                data.append((p_ca, '', p_eu))
+                                first_eu = False
+                            else:
+                                data.append(('', '', p_eu))
+                    # Make sure to include ca if there were no eu's.
+                    if first_eu:
+                        data.append((p_ca, '', ''))
                 if data:
                     # Build table.
                     table = Table(data, colWidths=col_widths)
@@ -125,7 +126,7 @@ class PDFTest():
                     table.setStyle(TableStyle([('BACKGROUND', (0,0), (0,-1), dark_gray),
                                                ('BACKGROUND', (2,0), (2,-1), light_gray),
                                                ('BOTTOMPADDING', (0,-1), (-1,-1), 10),
-                                               ('TOPPADDING', (0,1), (2,1), -12),
+                                               ('VALIGN', (0,0), (0,0), 'TOP'),
                                                ]))
                     data = []
                     self.add_spacer_row(elements, col_widths, spacer_width)
