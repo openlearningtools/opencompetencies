@@ -18,8 +18,6 @@ class PDFTest():
 
     def makeSummary(self, org, sa, sdas, cas, eus):
         """Generates a pdf of the sa_summary page."""
-        #print('building doc...')
-
         # Prep document.
         doc = SimpleDocTemplate(self.response, pagesize=landscape(letter), topMargin=36,
                                 bottomMargin=36)
@@ -31,7 +29,7 @@ class PDFTest():
 
         # Define styles.
         eu_style = ParagraphStyle('eu_style', fontName='Helvetica', bulletText=u'\u2022',
-                                  leftIndent=10)
+                                  leftIndent=10, borderWidth=0, borderColor='black')
 
         # Add title and subtitle.
         p_style = ParagraphStyle('title', fontName='Helvetica-Bold', fontSize=20,
@@ -90,9 +88,13 @@ class PDFTest():
                 # Build table.
                 table = Table(data, colWidths=col_widths)
                 elements.append(table)
+                # TOPPADDING setting is a hack until first eu is added to ca data tuple.
+                #  When that's implemented, remove TOPPADDING setting.
+                #  Same for sda ca eus.
                 table.setStyle(TableStyle([('BACKGROUND', (0,0), (0,-1), dark_gray),
                                            ('BACKGROUND', (2,0), (2,-1), light_gray),
-                                           ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+                                           ('BOTTOMPADDING', (0,-1), (-1,-1), 10),
+                                           ('TOPPADDING', (0,1), (2,1), -10),
                                            ]))
                 data = []
                 self.add_spacer_row(elements, col_widths, spacer_width)
@@ -122,7 +124,8 @@ class PDFTest():
                     elements.append(table)
                     table.setStyle(TableStyle([('BACKGROUND', (0,0), (0,-1), dark_gray),
                                                ('BACKGROUND', (2,0), (2,-1), light_gray),
-                                               ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+                                               ('BOTTOMPADDING', (0,-1), (-1,-1), 10),
+                                               ('TOPPADDING', (0,1), (2,1), -12),
                                                ]))
                     data = []
                     self.add_spacer_row(elements, col_widths, spacer_width)
