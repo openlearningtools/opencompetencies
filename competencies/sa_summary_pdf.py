@@ -29,6 +29,10 @@ class PDFTest():
         dark_gray = (0.75, 0.75, 0.75)
         elements = []
 
+        # Define styles.
+        eu_style = ParagraphStyle('eu_style', fontName='Helvetica', bulletText=u'\u2022',
+                                  leftIndent=10)
+
         # Add title and subtitle.
         p_style = ParagraphStyle('title', fontName='Helvetica-Bold', fontSize=20,
                                  spaceAfter=0)
@@ -68,6 +72,7 @@ class PDFTest():
             if not ca.subdiscipline_area:
                 p = Paragraph(ca.competency_area, style)
                 data.append((p, '',  ''))
+
                 for eu in eus:
                     if eu.competency_area == ca:
                         # # Line up first eu with ca.
@@ -79,7 +84,7 @@ class PDFTest():
                         #         p_e = Paragraph(eu.essential_understanding, style)
                         #         data[-1] = (p, '', p_e)
                         # else:
-                        p = Paragraph(eu.essential_understanding, style)
+                        p = Paragraph(eu.essential_understanding, eu_style)
                         data.append(('', '', p))
             if data:
                 # Build table.
@@ -108,7 +113,7 @@ class PDFTest():
                     data.append((p, '', ''))
                     for eu in eus:
                         if eu.competency_area == ca:
-                            p = Paragraph(eu.essential_understanding, style)
+                            p = Paragraph(eu.essential_understanding, eu_style)
                             data.append(('', '', p))
 
                 if data:
