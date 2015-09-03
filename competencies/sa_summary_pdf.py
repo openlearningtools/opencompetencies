@@ -18,8 +18,6 @@ class PDFTest():
 
     def makeSummary(self, org, sa, sdas, cas, eus):
         """Generates a pdf of the sa_summary page."""
-        #print('building doc...')
-
         # Prep document.
         doc = SimpleDocTemplate(self.response, pagesize=landscape(letter), topMargin=36,
                                 bottomMargin=36)
@@ -28,6 +26,10 @@ class PDFTest():
         light_gray = (0.9, 0.9, 0.9)
         dark_gray = (0.75, 0.75, 0.75)
         elements = []
+
+        # Define styles.
+        eu_style = ParagraphStyle('eu_style', fontName='Helvetica', bulletText=u'\u2022',
+                                  leftIndent=10, borderWidth=0, borderColor='black')
 
         # Add title and subtitle.
         p_style = ParagraphStyle('title', fontName='Helvetica-Bold', fontSize=20,
@@ -66,28 +68,27 @@ class PDFTest():
         # Each competency area and its eus are a separate table.
         for ca in cas:
             if not ca.subdiscipline_area:
-                p = Paragraph(ca.competency_area, style)
-                data.append((p, '',  ''))
+                p_ca = Paragraph(ca.competency_area, style)
+                first_eu = True
                 for eu in eus:
                     if eu.competency_area == ca:
-                        # # Line up first eu with ca.
-                        # # DEV: Starting to work, but breaks ca into separate tables
-                        # #      for every eu.
-                        # if data[-1][0]:
-                        #     if ca.competency_area.strip() == data[-1][0].text:
-                        #         #data[-1][2] = p
-                        #         p_e = Paragraph(eu.essential_understanding, style)
-                        #         data[-1] = (p, '', p_e)
-                        # else:
-                        p = Paragraph(eu.essential_understanding, style)
-                        data.append(('', '', p))
+                        p_eu = Paragraph(eu.essential_understanding, eu_style)
+                        if first_eu:
+                            data.append((p_ca, '', p_eu))
+                            first_eu = False
+                        else:
+                            data.append(('', '', p_eu))
+                # Make sure to include ca if there were no eu's.
+                if first_eu:
+                    data.append((p_ca, '', ''))
             if data:
                 # Build table.
                 table = Table(data, colWidths=col_widths)
                 elements.append(table)
                 table.setStyle(TableStyle([('BACKGROUND', (0,0), (0,-1), dark_gray),
                                            ('BACKGROUND', (2,0), (2,-1), light_gray),
-                                           ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+                                           ('BOTTOMPADDING', (0,-1), (-1,-1), 10),
+                                           ('VALIGN', (0,0), (0,0), 'TOP'),
                                            ]))
                 data = []
                 self.add_spacer_row(elements, col_widths, spacer_width)
@@ -104,20 +105,28 @@ class PDFTest():
             for ca in cas:
                 if (ca.subdiscipline_area
                     and ca.subdiscipline_area.subdiscipline_area == sda.subdiscipline_area):
-                    p = Paragraph(ca.competency_area, style)
-                    data.append((p, '', ''))
+                    p_ca = Paragraph(ca.competency_area, style)
+                    #data.append((p, '', ''))
+                    first_eu = True
                     for eu in eus:
                         if eu.competency_area == ca:
-                            p = Paragraph(eu.essential_understanding, style)
-                            data.append(('', '', p))
-
+                            p_eu = Paragraph(eu.essential_understanding, eu_style)
+                            if first_eu:
+                                data.append((p_ca, '', p_eu))
+                                first_eu = False
+                            else:
+                                data.append(('', '', p_eu))
+                    # Make sure to include ca if there were no eu's.
+                    if first_eu:
+                        data.append((p_ca, '', ''))
                 if data:
                     # Build table.
                     table = Table(data, colWidths=col_widths)
                     elements.append(table)
                     table.setStyle(TableStyle([('BACKGROUND', (0,0), (0,-1), dark_gray),
                                                ('BACKGROUND', (2,0), (2,-1), light_gray),
-                                               ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+                                               ('BOTTOMPADDING', (0,-1), (-1,-1), 10),
+                                               ('VALIGN', (0,0), (0,0), 'TOP'),
                                                ]))
                     data = []
                     self.add_spacer_row(elements, col_widths, spacer_width)
