@@ -285,13 +285,35 @@ def edit_sa_summary_order(request, sa_id):
 
 def move_element(request, element_type, element_id, direction, sa_id):
     """Modify the position of an element within its set of elements."""
-    # Get the element whose position is being changed.
-    print('in move_element')
-    print(element_type)
-    print(element_id)
-    print(direction)
-    print(sa_id)
+    # Get the element whose position is being changed, get its parent, and modify order.
     sa = SubjectArea.objects.get(id=sa_id)
+    object_to_move = get_model('competencies', element_type).objects.get(id=element_id)
+    # parent = object_to_move.get_parent()
+    # print('move:', object_to_move)
+    # print('parent:', parent)
+    # get_order_method = 'get_%s_order' % element_type.lower()
+    # current_order = getattr(parent, get_order_method)()
+    # print(current_order)
+
+    current_order = get_parent_order(object_to_move)
+    print('co:', current_order)
+    # Get index of element_id, pop element_id, insert at appropriate index.
+    current_index = current_order.index(int(element_id))
+    print('ci:', current_index)
+    if direction == 'up':
+        if current_index != 0:
+            current_order.pop(current_index)
+            print('co:', current_order)
+            new_order = current_order[:]
+            print('no:', new_order)
+            new_order.insert(current_index-1, int(element_id))
+            print('no:', new_order)
+            set_parent_order(object_to_move, new_order)
+    else:
+        if current_index != len(current_order-1):
+            current_order.pop(current_index)
+            new_order = current_order.insert(element_id, current_index+1)
+            print(new_order)
 
 
     redirect_url = reverse('competencies:edit_sa_summary_order', args=[sa.id])
