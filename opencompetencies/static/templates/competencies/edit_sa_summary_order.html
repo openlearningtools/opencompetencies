@@ -27,7 +27,7 @@
 				{% for eu in eus %}
 				{% if eu.competency_area == ca %}
 				  <div class='ordering_box'>
-					 <div class='up_arrow'>&#9650</div>
+					 <div class='up_arrow'><a href="{% url 'competencies:move_element' 'EssentialUnderstanding' eu.id 'up' subject_area.id %}">&#9650</a></div>
 					 <div class='down_arrow'>&#9660</div>
 					 <div class='ordering_element'>{{ eu.essential_understanding }}</div>
 				  </div>

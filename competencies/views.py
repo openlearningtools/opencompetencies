@@ -283,7 +283,19 @@ def edit_sa_summary_order(request, sa_id):
                                },
                               context_instance=RequestContext(request))
 
+def move_element(request, element_type, element_id, direction, sa_id):
+    """Modify the position of an element within its set of elements."""
+    # Get the element whose position is being changed.
+    print('in move_element')
+    print(element_type)
+    print(element_id)
+    print(direction)
+    print(sa_id)
+    sa = SubjectArea.objects.get(id=sa_id)
 
+
+    redirect_url = reverse('competencies:edit_sa_summary_order', args=[sa.id])
+    return redirect(redirect_url)
 
 def get_sda_ca_eu_elements(subject_area, kwargs):
     """Get all sdas, cas, and eus associated with a subject area."""
