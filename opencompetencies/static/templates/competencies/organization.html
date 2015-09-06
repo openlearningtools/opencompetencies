@@ -43,6 +43,10 @@
 		  {% endfor %}
 		  </ul>
 
+		  {% if user in editors %}
+		  <p><a href="{% url 'competencies:new_sa' organization.id %}">new {{ organization.alias_sa }}</a></p>
+		  {% endif %}
+
 	 {% elif user.is_authenticated and user in editors %}
 		  <p>This {{ organization.org_type }} does not have any subject areas yet:</p>
 		  <ul>
