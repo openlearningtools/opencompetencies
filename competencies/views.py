@@ -262,6 +262,29 @@ def edit_sa_summary(request, sa_id):
                                },
                               context_instance=RequestContext(request))
 
+def edit_sa_summary_order(request, sa_id):
+    """Modify the order of sdas, cas, and eus within a subject area."""
+
+    subject_area = SubjectArea.objects.get(id=sa_id)
+    organization = subject_area.organization
+    kwargs = get_visibility_filter(request.user, organization)
+
+    # Test if user allowed to edit this organization.
+    if not has_edit_permission(request.user, organization):
+        redirect_url = '/no_edit_permission/' + str(organization.id)
+        return redirect(redirect_url)
+
+    sdas, cas, eus = get_sda_ca_eu_elements(subject_area, kwargs)
+
+
+    return render_to_response('competencies/edit_sa_summary_order.html',
+                              {'subject_area': subject_area, 'organization': organization,
+                               'sdas': sdas, 'cas': cas, 'eus': eus,
+                               },
+                              context_instance=RequestContext(request))
+
+
+
 def get_sda_ca_eu_elements(subject_area, kwargs):
     """Get all sdas, cas, and eus associated with a subject area."""
     sdas = subject_area.subdisciplinearea_set.filter(**kwargs)

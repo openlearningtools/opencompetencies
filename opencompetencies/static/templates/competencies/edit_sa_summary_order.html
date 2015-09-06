@@ -5,7 +5,6 @@
 {% block content %}
 
     <a href='{% url 'competencies:edit_sa_summary' subject_area.id %}'>edit</a> |
-    <a href='{% url 'competencies:edit_sa_summary_order' subject_area.id %}'>modify order</a> |
 	 <a href='{% url 'competencies:sa_summary_pdf' subject_area.id %}'>pdf</a>
 
 	 <h2><a href='{% url 'competencies:organization' organization.id %}'>{{ organization }}</a></h2>
@@ -27,7 +26,11 @@
 			 <ul>
 				{% for eu in eus %}
 				{% if eu.competency_area == ca %}
-				  <li>{{ eu.essential_understanding }}</li>
+				  <div class='ordering_box'>
+					 <div class='up_arrow'>&#9650</div>
+					 <div class='down_arrow'>&#9660</div>
+					 <div class='ordering_element'>{{ eu.essential_understanding }}</div>
+				  </div>
 				{% endif %}
 				{% endfor %}
 			 </ul>
@@ -64,7 +67,6 @@
 
 	 <p class="edit_view_link">
 		<a href='{% url 'competencies:edit_sa_summary' subject_area.id %}'>edit</a> |
-		<a href='{% url 'competencies:edit_sa_summary_order' subject_area.id %}'>modify order</a> |
 		<a href='{% url 'competencies:sa_summary_pdf' subject_area.id %}'>pdf</a>
 	 </p>
 

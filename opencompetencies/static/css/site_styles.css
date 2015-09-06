@@ -115,3 +115,27 @@ div.feature_box {
 .submit_sa_summary {
 	 margin-top: 20px;
 }
+
+
+/* edit_sa_summary_order */
+.ordering_box {
+	 margin-left: -20px;
+	 /* margin-bottom makes sure each new element clears arrows of element above */
+	 margin-bottom: 20px;
+	 border: 0px solid black;
+}
+
+.up_arrow {
+	 float: left;
+}
+
+.down_arrow {
+	 float: left;
+	 margin-top: 15px;
+	 margin-left: -14px;
+}
+
+.ordering_element {
+	 padding-left: 20px;
+	 /*text-indent: -40px;*/
+}
