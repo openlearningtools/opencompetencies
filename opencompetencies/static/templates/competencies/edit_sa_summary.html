@@ -5,8 +5,8 @@
 {% block content %}
 
 	 <h2><a href='{% url 'competencies:organization' organization.id %}'>{{ organization }}</a></h2>
-	 <p>Setting an element public sets all elements above it public as well.</p>
-	 <p>Setting an element private sets all elements below it private also.</p>
+	 <p>Setting an element public sets all elements above it public as well; setting an element private sets all elements below it private also.</p>
+	 <p><a href="{% url 'competencies:sa_summary' subject_area.id %}">view summary</a></p>
 
 	 <form action="" method="post">
 
