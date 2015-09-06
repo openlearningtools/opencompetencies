@@ -674,16 +674,12 @@ class CompetencyViewTests(TestCase):
         #   post request?
 
         # --- Test modifying subject area. ---
-        # DEV: This test passes even when sa_form is not in the context. How???
-        #   Because this is testing the view function, not the rendered page.
-        #   For now, test that sa_form is in context.
 
         sa_pk = sa.pk
         post_data = {'subject_area': 'modified subject area',}
         response = self.client.post(test_url, post_data)
-        self.assertTrue('sa_form' in response.context)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         sa = SubjectArea.objects.get(pk=sa_pk)
         self.assertEqual(sa.subject_area, 'modified subject area')
 
@@ -694,7 +690,7 @@ class CompetencyViewTests(TestCase):
         post_data = {sda_form_element_name: 'modified sda',}
         response = self.client.post(test_url, post_data)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         sda = SubdisciplineArea.objects.get(pk=sda_pk)
         self.assertEqual(sda.subdiscipline_area, 'modified sda')
 
@@ -705,7 +701,7 @@ class CompetencyViewTests(TestCase):
         post_data = {ca_form_element_name: 'modified ca',}
         response = self.client.post(test_url, post_data)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         ca = CompetencyArea.objects.get(pk=ca_pk)
         self.assertEqual(ca.competency_area, 'modified ca')
 
@@ -716,7 +712,7 @@ class CompetencyViewTests(TestCase):
         post_data = {eu_form_element_name: 'modified eu',}
         response = self.client.post(test_url, post_data)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         eu = EssentialUnderstanding.objects.get(pk=eu_pk)
         self.assertEqual(eu.essential_understanding, 'modified eu')
 
@@ -734,7 +730,7 @@ class CompetencyViewTests(TestCase):
         # Set sa private through view, and verify all elements are private.
         post_data = {'subject_area': sa.subject_area, 'public': False}
         response = self.client.post(test_url, post_data)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         sa = SubjectArea.objects.get(id=sa_id)
         self.assertFalse(sa.public)
         for sda in sa.subdisciplinearea_set.all():
