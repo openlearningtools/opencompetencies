@@ -288,6 +288,7 @@ def move_element(request, element_type, element_id, direction, sa_id):
     # Get the element whose position is being changed, get its order,
     #   and modify the order if appropriate.
     sa = SubjectArea.objects.get(id=sa_id)
+    edit_order_url = reverse('competencies:edit_sa_summary_order', args=[sa.id])
     object_to_move = get_model('competencies', element_type).objects.get(id=element_id)
     order = get_parent_order(object_to_move)
 
@@ -306,28 +307,38 @@ def move_element(request, element_type, element_id, direction, sa_id):
         else:
             ca_group = sa.competencyarea_set.filter(subdiscipline_area=ca.subdiscipline_area)
         print('ca_group:', ca_group)
-        ca_index = ca_group.index(ca)
+        # ca_list = [ca for ca in ca_group]
+        # ca_index = ca_list.index(ca)
+        for index, cand_ca in enumerate(ca_group):
+            if cand_ca == ca:
+                ca_index = index
+        print('group, index:', ca_group, ca_index)
         if direction == 'up' and ca_index > 0:
             ca_target = ca_group[ca_index-1]
+            print('types:', type(ca), type(ca_target))
+            # Get indices in order, and swap positions.
+            original_index = order.index(ca.id)
+            print('target id, order', ca_target.id, order)
+            target_index = order.index(ca_target.id)
+            order[original_index], order[target_index] = order[target_index], order[original_index]
+            set_parent_order(object_to_move, order)
+            
         elif direction == 'down' and ca_index < len(ca_group)-1:
             ca_target = ca_group[ca_index+1]
-    
+
+        return(redirect(edit_order_url))
     
 
     # Get index of element_id, switch places with previous or next element.
     index = order.index(int(element_id))
-    # DEV: This can be one if and elif statement.
-    if direction == 'up':
-        if index != 0:
-            order[index], order[index-1] = order[index-1], order[index]
-            set_parent_order(object_to_move, order)
-    else:
-        if index != len(order)-1:
-            order[index], order[index+1] = order[index+1], order[index]
-            set_parent_order(object_to_move, order)
+    if direction == 'up' and index > 0:
+        order[index], order[index-1] = order[index-1], order[index]
+        set_parent_order(object_to_move, order)
+    elif direction == 'down' and index < len(order) - 1:
+        order[index], order[index+1] = order[index+1], order[index]
+        set_parent_order(object_to_move, order)
 
-    redirect_url = reverse('competencies:edit_sa_summary_order', args=[sa.id])
-    return redirect(redirect_url)
+    return redirect(edit_order_url)
 
 def get_sda_ca_eu_elements(subject_area, kwargs):
     """Get all sdas, cas, and eus associated with a subject area."""
