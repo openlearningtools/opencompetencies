@@ -125,6 +125,10 @@ div.feature_box {
 	 border: 0px solid black;
 }
 
+.ordering_box_cas {
+	 margin-left: 0px;
+}
+
 .up_arrow {
 	 float: left;
 }

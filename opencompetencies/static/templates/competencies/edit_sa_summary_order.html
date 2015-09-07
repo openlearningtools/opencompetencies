@@ -20,7 +20,11 @@
 	 {% if not ca.subdiscipline_area %}
 	   <div class="row row-eq-height">
 		  <div class="span4 summary_box grad_std_col">
-			 <p>{{ ca.competency_area }}</p>
+			 <div class='ordering_box ordering_box_cas'>
+				<div class='up_arrow'><a href="{% url 'competencies:move_element' 'CompetencyArea' ca.id 'up' subject_area.id %}">&#9650</a></div>
+				<div class='down_arrow'><a href="{% url 'competencies:move_element' 'CompetencyArea' ca.id 'down' subject_area.id %}">&#9660</a></div>
+				<div class='ordering_element'>{{ ca.competency_area }}</div>
+			 </div>
 		  </div>
 		  <div class="span7 summary_box pi_col">
 			 <ul>

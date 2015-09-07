@@ -296,20 +296,28 @@ def move_element(request, element_type, element_id, direction, sa_id):
         redirect_url = reverse('competencies:index')
         return redirect(redirect_url)
     
+    # DEV: If element_type is ca, need to move within appropriate group of cas.
+    # HERE
+
+    
     # Get index of element_id, pop element_id, insert at appropriate index.
     current_index = current_order.index(int(element_id))
     if direction == 'up':
         if current_index != 0:
-            current_order.pop(current_index)
-            new_order = current_order[:]
-            new_order.insert(current_index-1, int(element_id))
-            set_parent_order(object_to_move, new_order)
+            current_order[current_index], current_order[current_index-1] = current_order[current_index-1], current_order[current_index]
+            # current_order.pop(current_index)
+            # new_order = current_order[:]
+            # new_order.insert(current_index-1, int(element_id))
+            # set_parent_order(object_to_move, new_order)
+            set_parent_order(object_to_move, current_order)
     else:
         if current_index != len(current_order)-1:
-            current_order.pop(current_index)
-            new_order = current_order[:]
-            new_order.insert(current_index+1, int(element_id))
-            set_parent_order(object_to_move, new_order)
+            current_order[current_index], current_order[current_index+1] = current_order[current_index+1], current_order[current_index]
+            # current_order.pop(current_index)
+            # new_order = current_order[:]
+            # new_order.insert(current_index+1, int(element_id))
+            # set_parent_order(object_to_move, new_order)
+            set_parent_order(object_to_move, current_order)
 
     redirect_url = reverse('competencies:edit_sa_summary_order', args=[sa.id])
     return redirect(redirect_url)
