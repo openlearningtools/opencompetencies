@@ -289,7 +289,7 @@ def move_element(request, element_type, element_id, direction, sa_id):
     #   and modify the order if appropriate.
     sa = SubjectArea.objects.get(id=sa_id)
     object_to_move = get_model('competencies', element_type).objects.get(id=element_id)
-    current_order = get_parent_order(object_to_move)
+    order = get_parent_order(object_to_move)
 
     # Make sure user can edit this organization.
     if request.user not in sa.organization.editors.all():
@@ -299,25 +299,16 @@ def move_element(request, element_type, element_id, direction, sa_id):
     # DEV: If element_type is ca, need to move within appropriate group of cas.
     # HERE
 
-    
-    # Get index of element_id, pop element_id, insert at appropriate index.
-    current_index = current_order.index(int(element_id))
+    # Get index of element_id, switch places with previous or next element.
+    index = order.index(int(element_id))
     if direction == 'up':
-        if current_index != 0:
-            current_order[current_index], current_order[current_index-1] = current_order[current_index-1], current_order[current_index]
-            # current_order.pop(current_index)
-            # new_order = current_order[:]
-            # new_order.insert(current_index-1, int(element_id))
-            # set_parent_order(object_to_move, new_order)
-            set_parent_order(object_to_move, current_order)
+        if index != 0:
+            order[index], order[index-1] = order[index-1], order[index]
+            set_parent_order(object_to_move, order)
     else:
-        if current_index != len(current_order)-1:
-            current_order[current_index], current_order[current_index+1] = current_order[current_index+1], current_order[current_index]
-            # current_order.pop(current_index)
-            # new_order = current_order[:]
-            # new_order.insert(current_index+1, int(element_id))
-            # set_parent_order(object_to_move, new_order)
-            set_parent_order(object_to_move, current_order)
+        if index != len(order)-1:
+            order[index], order[index+1] = order[index+1], order[index]
+            set_parent_order(object_to_move, order)
 
     redirect_url = reverse('competencies:edit_sa_summary_order', args=[sa.id])
     return redirect(redirect_url)
