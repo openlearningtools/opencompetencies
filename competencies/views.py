@@ -297,10 +297,26 @@ def move_element(request, element_type, element_id, direction, sa_id):
         return redirect(redirect_url)
     
     # DEV: If element_type is ca, need to move within appropriate group of cas.
-    # HERE
+    # If element_type is ca, get group of cas with no sda or same sda,
+    #   then get ca to switch with.
+    if element_type == 'CompetencyArea':
+        ca = object_to_move
+        if not ca.subdiscipline_area:
+            ca_group = sa.competencyarea_set.filter(subdiscipline_area=None)
+        else:
+            ca_group = sa.competencyarea_set.filter(subdiscipline_area=ca.subdiscipline_area)
+        print('ca_group:', ca_group)
+        ca_index = ca_group.index(ca)
+        if direction == 'up' and ca_index > 0:
+            ca_target = ca_group[ca_index-1]
+        elif direction == 'down' and ca_index < len(ca_group)-1:
+            ca_target = ca_group[ca_index+1]
+    
+    
 
     # Get index of element_id, switch places with previous or next element.
     index = order.index(int(element_id))
+    # DEV: This can be one if and elif statement.
     if direction == 'up':
         if index != 0:
             order[index], order[index-1] = order[index-1], order[index]
