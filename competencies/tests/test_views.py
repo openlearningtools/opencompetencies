@@ -819,3 +819,70 @@ class CompetencyViewTests(TestCase):
         # Element is now org, verify it's still private.
         self.assertFalse(element.public)
 
+    def test_move_element(self):
+        """Test that move_element() results in the proper new order when appropriate."""
+        # Tests: sa eu, sda eu; sa first eu up, sa last eu down
+        self.num_elements = 4
+        self.build_to_eus()
+        org = Organization.objects.get(id=1)
+
+        # --- General sa ca eus. ---
+        # Get an sa, ca, and eu.
+        sa = org.subjectarea_set.all()[0]
+        ca = sa.competencyarea_set.all()[0]
+        eus = ca.essentialunderstanding_set.all()
+        original_order = ca.get_essentialunderstanding_order()
+        first_eu = eus[0]
+
+        # Call move_element without logging in, make sure order doesn't change.
+        test_url = reverse('competencies:move_element', args=['EssentialUnderstanding', first_eu.id,
+                                                                 'down', sa.id])
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 302)
+        current_order = ca.get_essentialunderstanding_order()
+        self.assertEqual(current_order, original_order)
+
+        # Log in, move first element down, and make sure order has changed correctly.
+        self.client.login(username='testuser0', password='pw')
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 302)
+        correct_order = [original_order[1], original_order[0]]
+        for item in original_order[2:]:
+            correct_order.append(item)
+        current_order = ca.get_essentialunderstanding_order()
+        self.assertEqual(current_order, correct_order)
+
+        # Move first element up, make sure order doesn't change.
+        eus = ca.essentialunderstanding_set.all()
+        original_order = ca.get_essentialunderstanding_order()
+        first_eu = eus[0]
+        test_url = reverse('competencies:move_element', args=['EssentialUnderstanding', first_eu.id,
+                                                                 'up', sa.id])
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 302)
+        current_order = ca.get_essentialunderstanding_order()
+        self.assertEqual(current_order, original_order)
+
+        # Move last element up, and make sure order has changed correctly.
+        eus = ca.essentialunderstanding_set.all()
+        original_order = ca.get_essentialunderstanding_order()
+        last_eu = eus.reverse()[0]
+        test_url = reverse('competencies:move_element', args=['EssentialUnderstanding', last_eu.id,
+                                                                 'up', sa.id])
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 302)
+        correct_order = original_order[:]
+        correct_order[-1], correct_order[-2] = correct_order[-2], correct_order[-1]
+        current_order = ca.get_essentialunderstanding_order()
+        self.assertEqual(current_order, correct_order)
+
+        # Move last element down, make sure order doesn't change.
+        eus = ca.essentialunderstanding_set.all()
+        original_order = ca.get_essentialunderstanding_order()
+        last_eu = eus.reverse()[0]
+        test_url = reverse('competencies:move_element', args=['EssentialUnderstanding', last_eu.id,
+                                                                 'down', sa.id])
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 302)
+        current_order = ca.get_essentialunderstanding_order()
+        self.assertEqual(current_order, original_order)

@@ -291,6 +291,11 @@ def move_element(request, element_type, element_id, direction, sa_id):
     object_to_move = get_model('competencies', element_type).objects.get(id=element_id)
     current_order = get_parent_order(object_to_move)
 
+    # Make sure user can edit this organization.
+    if request.user not in sa.organization.editors.all():
+        redirect_url = reverse('competencies:index')
+        return redirect(redirect_url)
+    
     # Get index of element_id, pop element_id, insert at appropriate index.
     current_index = current_order.index(int(element_id))
     if direction == 'up':
