@@ -46,7 +46,13 @@
 
 	 {% for sda in sdas %}
 		<div class="row row-eq-height">
-		  <div class="span4 lead summary_box sda_col"><strong>{{ sda }}</strong></div>
+		  <div class="span4 lead summary_box sda_col">
+			 <div class='ordering_box ordering_box_sdas'>
+				<div class='up_arrow up_arrow_sdas'><a href="{% url 'competencies:move_element' 'SubdisciplineArea' sda.id 'up' subject_area.id %}">&#9650</a></div>
+				<div class='down_arrow down_arrow_sdas'><a href="{% url 'competencies:move_element' 'SubdisciplineArea' sda.id 'down' subject_area.id %}">&#9660</a></div>
+				<div class='ordering_element ordering_element_sdas'><strong>{{ sda.subdiscipline_area }}</strong></div>
+			 </div>
+		  </div>
 		  <div class="span7 lead summary_box sda_col">&nbsp</div>
 		</div>
 		{% for ca in cas %}

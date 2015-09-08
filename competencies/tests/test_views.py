@@ -923,7 +923,8 @@ class CompetencyViewTests(TestCase):
         current_order = sa.get_competencyarea_order()
         self.assertEqual(current_order, original_order)
 
-
         # Test moving last general sa ca up, changes; then down with no change.
 
         # Test sda cas.
+
+        # Test moving sdas.

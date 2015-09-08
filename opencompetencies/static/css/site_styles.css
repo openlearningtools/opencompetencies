@@ -129,6 +129,12 @@ div.feature_box {
 	 margin-left: 0px;
 }
 
+.ordering_box_sdas {
+	 margin-left: 0px;
+	 margin-top: 10px;
+	 margin-bottom: -30px;
+}
+
 .up_arrow {
 	 float: left;
 }
@@ -139,7 +145,21 @@ div.feature_box {
 	 margin-left: -14px;
 }
 
+.up_arrow_sdas {
+	 margin-top: -8px;
+}
+
+.down_arrow_sdas {
+	 margin-top: 10px;
+	 margin-left: -20px;
+}
+
 .ordering_element {
 	 padding-left: 20px;
+	 /*text-indent: -40px;*/
+}
+
+.ordering_element_sdas {
+	 padding-left: 25px;
 	 /*text-indent: -40px;*/
 }
