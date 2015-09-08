@@ -297,7 +297,6 @@ def move_element(request, element_type, element_id, direction, sa_id):
         redirect_url = reverse('competencies:index')
         return redirect(redirect_url)
     
-    # DEV: If element_type is ca, need to move within appropriate group of cas.
     # If element_type is ca, get group of cas with no sda or same sda,
     #   then get ca to switch with.
     if element_type == 'CompetencyArea':
@@ -306,38 +305,23 @@ def move_element(request, element_type, element_id, direction, sa_id):
             ca_group = sa.competencyarea_set.filter(subdiscipline_area=None)
         else:
             ca_group = sa.competencyarea_set.filter(subdiscipline_area=ca.subdiscipline_area)
-        print('ca_group:', ca_group)
-        # ca_list = [ca for ca in ca_group]
-        # ca_index = ca_list.index(ca)
         for index, cand_ca in enumerate(ca_group):
             if cand_ca == ca:
                 ca_index = index
-        print('group, index:', ca_group, ca_index)
         if direction == 'up' and ca_index > 0:
             ca_target = ca_group[ca_index-1]
-            print('types:', type(ca), type(ca_target))
-            # Get indices in order, and swap positions.
-            original_index = order.index(ca.id)
-            print('target id, order', ca_target.id, order)
-            target_index = order.index(ca_target.id)
-            order[original_index], order[target_index] = order[target_index], order[original_index]
-            set_parent_order(object_to_move, order)
-            
         elif direction == 'down' and ca_index < len(ca_group)-1:
             ca_target = ca_group[ca_index+1]
-            # DEV: Remove print and commented lines, and write tests.
-            # Get indices in order, and swap positions.
-            original_index = order.index(ca.id)
-            print('target id, order', ca_target.id, order)
-            target_index = order.index(ca_target.id)
-            order[original_index], order[target_index] = order[target_index], order[original_index]
-            set_parent_order(object_to_move, order)
-            
+        else:
+            return(redirect(edit_order_url))
 
-
+        # Get indices in order, and swap positions.
+        original_index = order.index(ca.id)
+        target_index = order.index(ca_target.id)
+        order[original_index], order[target_index] = order[target_index], order[original_index]
+        set_parent_order(object_to_move, order)
         return(redirect(edit_order_url))
     
-
     # Get index of element_id, switch places with previous or next element.
     index = order.index(int(element_id))
     if direction == 'up' and index > 0:
