@@ -527,12 +527,18 @@ def check_parent_order(child_object, correct_order):
 
 def get_parent_order(child_object):
     parent_object = child_object.get_parent()
+    # DEV: May make ca.get_parent() always return sa?
+    if parent_object.__class__.__name__ == 'SubdisciplineArea':
+        parent_object = parent_object.subject_area
     order_method = 'get_' + child_object.__class__.__name__.lower() + '_order'
     parent_order = getattr(parent_object, order_method)()
     return parent_order
 
 def set_parent_order(child_object, order):
     parent_object = child_object.get_parent()
+    # DEV: May make ca.get_parent() always return sa?
+    if parent_object.__class__.__name__ == 'SubdisciplineArea':
+        parent_object = parent_object.subject_area
     order_method = 'set_' + child_object.__class__.__name__.lower() + '_order'
     getattr(parent_object, order_method)(order)
 

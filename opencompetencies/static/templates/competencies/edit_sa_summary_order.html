@@ -5,6 +5,7 @@
 {% block content %}
 
     <a href='{% url 'competencies:edit_sa_summary' subject_area.id %}'>edit</a> |
+    <a href='{% url 'competencies:sa_summary' subject_area.id %}'>view summary</a> |
 	 <a href='{% url 'competencies:sa_summary_pdf' subject_area.id %}'>pdf</a>
 
 	 <h2><a href='{% url 'competencies:organization' organization.id %}'>{{ organization }}</a></h2>
@@ -52,7 +53,11 @@
 		{% if ca.subdiscipline_area == sda %}
 	     <div class="row row-eq-height">
 			 <div class="span4 summary_box grad_std_col">
-				<p>{{ ca.competency_area }}</p>
+				<div class='ordering_box ordering_box_cas'>
+				  <div class='up_arrow'><a href="{% url 'competencies:move_element' 'CompetencyArea' ca.id 'up' subject_area.id %}">&#9650</a></div>
+				  <div class='down_arrow'><a href="{% url 'competencies:move_element' 'CompetencyArea' ca.id 'down' subject_area.id %}">&#9660</a></div>
+				  <div class='ordering_element'>{{ ca.competency_area }}</div>
+				</div>
 			 </div>
 			 <div class="span7 summary_box pi_col">
 				<ul>
@@ -75,6 +80,7 @@
 
 	 <p class="edit_view_link">
 		<a href='{% url 'competencies:edit_sa_summary' subject_area.id %}'>edit</a> |
+		<a href='{% url 'competencies:sa_summary' subject_area.id %}'>view summary</a> |
 		<a href='{% url 'competencies:sa_summary_pdf' subject_area.id %}'>pdf</a>
 	 </p>
 
