@@ -449,8 +449,8 @@ class CompetencyViewTests(TestCase):
         forked_sdas = [sda.subdiscipline_area for sda in forked_sdas]
         forked_cas = [ca.competency_area for ca in forked_cas]
         forked_eus = [eu.essential_understanding for eu in forked_eus]
-        for l in [forked_sas, forked_sdas, forked_cas, forked_eus]:
-            print(len(l))
+        # for l in [forked_sas, forked_sdas, forked_cas, forked_eus]:
+        #     print(len(l))
 
         for sa in original_org.subjectarea_set.all():
             if sa.public:
@@ -824,7 +824,7 @@ class CompetencyViewTests(TestCase):
         # Tests: sa eu, sda eu; sa first eu up, sa last eu down
         self.num_elements = 4
         self.build_to_eus()
-        org = Organization.objects.get(id=1)
+        org = Organization.objects.all()[0]
 
         # --- General sa ca eus. ---
         # Get an sa, ca, and eu.
@@ -887,6 +887,43 @@ class CompetencyViewTests(TestCase):
         current_order = ca.get_essentialunderstanding_order()
         self.assertEqual(current_order, original_order)
 
+        # Test sda ca eus.
+
         # Test moving first general sa ca down, changes; then first up with no change.
+        cas = sa.competencyarea_set.all()
+        for ca in cas:
+            if ca.subdiscipline_area:
+                first_sda_ca = ca
+                sda = ca.subdiscipline_area
+                break
+        original_order = sa.get_competencyarea_order()
+        test_url = reverse('competencies:move_element', args=['CompetencyArea', first_sda_ca.id,
+                                                              'down', sa.id])
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 302)
+        # Correct order has this sda competency moved switched with next sda ca.
+        sda_cas = [ca for ca in sa.competencyarea_set.filter(subdiscipline_area=sda)]
+        # first_sda_ca should now be second in the list.
+        self.assertEqual(sda_cas.index(first_sda_ca), 1)
+
+        # Now try to move first sda ca up, and make sure it hasn't changed position.
+        cas = sa.competencyarea_set.all()
+        for ca in cas:
+            if ca.subdiscipline_area:
+                first_sda_ca = ca
+                sda = ca.subdiscipline_area
+                break
+        original_order = sa.get_competencyarea_order()
+        test_url = reverse('competencies:move_element', args=['CompetencyArea', first_sda_ca.id,
+                                                              'up', sa.id])
+        response = self.client.get(test_url)
+        # Correct order has this sda competency first, and matches original order.
+        sda_cas = [ca for ca in sa.competencyarea_set.filter(subdiscipline_area=sda)]
+        self.assertEqual(sda_cas.index(first_sda_ca), 0)
+        current_order = sa.get_competencyarea_order()
+        self.assertEqual(current_order, original_order)
+
 
         # Test moving last general sa ca up, changes; then down with no change.
+
+        # Test sda cas.
