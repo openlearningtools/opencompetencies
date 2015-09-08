@@ -5,6 +5,7 @@
 {% block content %}
 
     <a href='{% url 'competencies:edit_sa_summary' subject_area.id %}'>edit</a> |
+    <a href='{% url 'competencies:edit_sa_summary_order' subject_area.id %}'>modify order</a> |
 	 <a href='{% url 'competencies:sa_summary_pdf' subject_area.id %}'>pdf</a>
 
 	 <h2><a href='{% url 'competencies:organization' organization.id %}'>{{ organization }}</a></h2>
@@ -63,6 +64,7 @@
 
 	 <p class="edit_view_link">
 		<a href='{% url 'competencies:edit_sa_summary' subject_area.id %}'>edit</a> |
+		<a href='{% url 'competencies:edit_sa_summary_order' subject_area.id %}'>modify order</a> |
 		<a href='{% url 'competencies:sa_summary_pdf' subject_area.id %}'>pdf</a>
 	 </p>
 

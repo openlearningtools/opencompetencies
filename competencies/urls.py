@@ -31,6 +31,16 @@ urlpatterns = patterns('',
     # edit_sa_summary/id: Edit a summary for a given subject area.
     url(r'^edit_sa_summary/(?P<sa_id>\d+)/$', views.edit_sa_summary, name='edit_sa_summary'),                       
 
+    # edit_sa_summary_order/id: Modify the order of elements within a subject area.
+    url(r'^edit_sa_summary_order/(?P<sa_id>\d+)/$', views.edit_sa_summary_order,
+        name='edit_sa_summary_order'),                       
+
+    # move_element/element_type/element_id/direction: Change the order of an element.
+    # url(r'^move_element/(?P<element_type>\w+)/(?P<element_id>\d+)/(<?P<direction>\w+)/$',
+    #     views.move_element, name='move_element'),
+    url(r'^move_element/(?P<element_type>\w+)/(?P<element_id>\d+)/(?P<direction>\w+)/(?P<sa_id>\d+)/$',
+        views.move_element, name='move_element'),
+
     # organization_admin_summary/id: Summarize an organization.
     url(r'^organization_admin_summary/(?P<organization_id>\d+)/$', views.organization_admin_summary, name='organization_admin_summary'),
 

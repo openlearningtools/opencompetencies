@@ -102,6 +102,8 @@ class CompetencyArea(CoreElement):
             return False
 
     def get_parent(self):
+        # Maybe this should just return subject area?
+        #   Would make managing ordering easier.
         if self.subdiscipline_area:
             return self.subdiscipline_area
         else:

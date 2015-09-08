@@ -449,8 +449,8 @@ class CompetencyViewTests(TestCase):
         forked_sdas = [sda.subdiscipline_area for sda in forked_sdas]
         forked_cas = [ca.competency_area for ca in forked_cas]
         forked_eus = [eu.essential_understanding for eu in forked_eus]
-        for l in [forked_sas, forked_sdas, forked_cas, forked_eus]:
-            print(len(l))
+        # for l in [forked_sas, forked_sdas, forked_cas, forked_eus]:
+        #     print(len(l))
 
         for sa in original_org.subjectarea_set.all():
             if sa.public:
@@ -819,3 +819,112 @@ class CompetencyViewTests(TestCase):
         # Element is now org, verify it's still private.
         self.assertFalse(element.public)
 
+    def test_move_element(self):
+        """Test that move_element() results in the proper new order when appropriate."""
+        # Tests: sa eu, sda eu; sa first eu up, sa last eu down
+        self.num_elements = 4
+        self.build_to_eus()
+        org = Organization.objects.all()[0]
+
+        # --- General sa ca eus. ---
+        # Get an sa, ca, and eu.
+        sa = org.subjectarea_set.all()[0]
+        ca = sa.competencyarea_set.all()[0]
+        eus = ca.essentialunderstanding_set.all()
+        original_order = ca.get_essentialunderstanding_order()
+        first_eu = eus[0]
+
+        # Call move_element without logging in, make sure order doesn't change.
+        test_url = reverse('competencies:move_element', args=['EssentialUnderstanding', first_eu.id,
+                                                                 'down', sa.id])
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 302)
+        current_order = ca.get_essentialunderstanding_order()
+        self.assertEqual(current_order, original_order)
+
+        # Log in, move first element down, and make sure order has changed correctly.
+        self.client.login(username='testuser0', password='pw')
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 302)
+        correct_order = [original_order[1], original_order[0]]
+        for item in original_order[2:]:
+            correct_order.append(item)
+        current_order = ca.get_essentialunderstanding_order()
+        self.assertEqual(current_order, correct_order)
+
+        # Move first element up, make sure order doesn't change.
+        eus = ca.essentialunderstanding_set.all()
+        original_order = ca.get_essentialunderstanding_order()
+        first_eu = eus[0]
+        test_url = reverse('competencies:move_element', args=['EssentialUnderstanding', first_eu.id,
+                                                                 'up', sa.id])
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 302)
+        current_order = ca.get_essentialunderstanding_order()
+        self.assertEqual(current_order, original_order)
+
+        # Move last element up, and make sure order has changed correctly.
+        eus = ca.essentialunderstanding_set.all()
+        original_order = ca.get_essentialunderstanding_order()
+        last_eu = eus.reverse()[0]
+        test_url = reverse('competencies:move_element', args=['EssentialUnderstanding', last_eu.id,
+                                                                 'up', sa.id])
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 302)
+        correct_order = original_order[:]
+        correct_order[-1], correct_order[-2] = correct_order[-2], correct_order[-1]
+        current_order = ca.get_essentialunderstanding_order()
+        self.assertEqual(current_order, correct_order)
+
+        # Move last element down, make sure order doesn't change.
+        eus = ca.essentialunderstanding_set.all()
+        original_order = ca.get_essentialunderstanding_order()
+        last_eu = eus.reverse()[0]
+        test_url = reverse('competencies:move_element', args=['EssentialUnderstanding', last_eu.id,
+                                                                 'down', sa.id])
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 302)
+        current_order = ca.get_essentialunderstanding_order()
+        self.assertEqual(current_order, original_order)
+
+        # Test sda ca eus.
+
+        # Test moving first general sa ca down, changes; then first up with no change.
+        cas = sa.competencyarea_set.all()
+        for ca in cas:
+            if ca.subdiscipline_area:
+                first_sda_ca = ca
+                sda = ca.subdiscipline_area
+                break
+        original_order = sa.get_competencyarea_order()
+        test_url = reverse('competencies:move_element', args=['CompetencyArea', first_sda_ca.id,
+                                                              'down', sa.id])
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 302)
+        # Correct order has this sda competency moved switched with next sda ca.
+        sda_cas = [ca for ca in sa.competencyarea_set.filter(subdiscipline_area=sda)]
+        # first_sda_ca should now be second in the list.
+        self.assertEqual(sda_cas.index(first_sda_ca), 1)
+
+        # Now try to move first sda ca up, and make sure it hasn't changed position.
+        cas = sa.competencyarea_set.all()
+        for ca in cas:
+            if ca.subdiscipline_area:
+                first_sda_ca = ca
+                sda = ca.subdiscipline_area
+                break
+        original_order = sa.get_competencyarea_order()
+        test_url = reverse('competencies:move_element', args=['CompetencyArea', first_sda_ca.id,
+                                                              'up', sa.id])
+        response = self.client.get(test_url)
+        # Correct order has this sda competency first, and matches original order.
+        sda_cas = [ca for ca in sa.competencyarea_set.filter(subdiscipline_area=sda)]
+        self.assertEqual(sda_cas.index(first_sda_ca), 0)
+        current_order = sa.get_competencyarea_order()
+        self.assertEqual(current_order, original_order)
+
+        # Test moving last general sa ca up, changes; then down with no change.
+
+        # Test sda cas.
+
+        # Test moving sdas.

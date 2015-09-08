@@ -115,3 +115,51 @@ div.feature_box {
 .submit_sa_summary {
 	 margin-top: 20px;
 }
+
+
+/* edit_sa_summary_order */
+.ordering_box {
+	 margin-left: -20px;
+	 /* margin-bottom makes sure each new element clears arrows of element above */
+	 margin-bottom: 20px;
+	 border: 0px solid black;
+}
+
+.ordering_box_cas {
+	 margin-left: 0px;
+}
+
+.ordering_box_sdas {
+	 margin-left: 0px;
+	 margin-top: 10px;
+	 margin-bottom: -30px;
+}
+
+.up_arrow {
+	 float: left;
+}
+
+.down_arrow {
+	 float: left;
+	 margin-top: 15px;
+	 margin-left: -14px;
+}
+
+.up_arrow_sdas {
+	 margin-top: -8px;
+}
+
+.down_arrow_sdas {
+	 margin-top: 10px;
+	 margin-left: -20px;
+}
+
+.ordering_element {
+	 padding-left: 20px;
+	 /*text-indent: -40px;*/
+}
+
+.ordering_element_sdas {
+	 padding-left: 25px;
+	 /*text-indent: -40px;*/
+}

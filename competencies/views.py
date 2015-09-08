@@ -262,6 +262,77 @@ def edit_sa_summary(request, sa_id):
                                },
                               context_instance=RequestContext(request))
 
+def edit_sa_summary_order(request, sa_id):
+    """Modify the order of sdas, cas, and eus within a subject area."""
+
+    subject_area = SubjectArea.objects.get(id=sa_id)
+    organization = subject_area.organization
+    kwargs = get_visibility_filter(request.user, organization)
+
+    # Test if user allowed to edit this organization.
+    if not has_edit_permission(request.user, organization):
+        redirect_url = '/no_edit_permission/' + str(organization.id)
+        return redirect(redirect_url)
+
+    sdas, cas, eus = get_sda_ca_eu_elements(subject_area, kwargs)
+
+
+    return render_to_response('competencies/edit_sa_summary_order.html',
+                              {'subject_area': subject_area, 'organization': organization,
+                               'sdas': sdas, 'cas': cas, 'eus': eus,
+                               },
+                              context_instance=RequestContext(request))
+
+def move_element(request, element_type, element_id, direction, sa_id):
+    """Modify the position of an element within its set of elements."""
+    # Get the element whose position is being changed, get its order,
+    #   and modify the order if appropriate.
+    sa = SubjectArea.objects.get(id=sa_id)
+    edit_order_url = reverse('competencies:edit_sa_summary_order', args=[sa.id])
+    object_to_move = get_model('competencies', element_type).objects.get(id=element_id)
+    order = get_parent_order(object_to_move)
+
+    # Make sure user can edit this organization.
+    if request.user not in sa.organization.editors.all():
+        redirect_url = reverse('competencies:index')
+        return redirect(redirect_url)
+    
+    # If element_type is ca, get group of cas with no sda or same sda,
+    #   then get ca to switch with.
+    if element_type == 'CompetencyArea':
+        ca = object_to_move
+        if not ca.subdiscipline_area:
+            ca_group = sa.competencyarea_set.filter(subdiscipline_area=None)
+        else:
+            ca_group = sa.competencyarea_set.filter(subdiscipline_area=ca.subdiscipline_area)
+        for index, cand_ca in enumerate(ca_group):
+            if cand_ca == ca:
+                ca_index = index
+        if direction == 'up' and ca_index > 0:
+            ca_target = ca_group[ca_index-1]
+        elif direction == 'down' and ca_index < len(ca_group)-1:
+            ca_target = ca_group[ca_index+1]
+        else:
+            return(redirect(edit_order_url))
+
+        # Get indices in order, and swap positions.
+        original_index = order.index(ca.id)
+        target_index = order.index(ca_target.id)
+        order[original_index], order[target_index] = order[target_index], order[original_index]
+        set_parent_order(object_to_move, order)
+        return(redirect(edit_order_url))
+    
+    # Get index of element_id, switch places with previous or next element.
+    index = order.index(int(element_id))
+    if direction == 'up' and index > 0:
+        order[index], order[index-1] = order[index-1], order[index]
+        set_parent_order(object_to_move, order)
+    elif direction == 'down' and index < len(order) - 1:
+        order[index], order[index+1] = order[index+1], order[index]
+        set_parent_order(object_to_move, order)
+
+    return redirect(edit_order_url)
+
 def get_sda_ca_eu_elements(subject_area, kwargs):
     """Get all sdas, cas, and eus associated with a subject area."""
     sdas = subject_area.subdisciplinearea_set.filter(**kwargs)
@@ -456,12 +527,18 @@ def check_parent_order(child_object, correct_order):
 
 def get_parent_order(child_object):
     parent_object = child_object.get_parent()
+    # DEV: May make ca.get_parent() always return sa?
+    if parent_object.__class__.__name__ == 'SubdisciplineArea':
+        parent_object = parent_object.subject_area
     order_method = 'get_' + child_object.__class__.__name__.lower() + '_order'
     parent_order = getattr(parent_object, order_method)()
     return parent_order
 
 def set_parent_order(child_object, order):
     parent_object = child_object.get_parent()
+    # DEV: May make ca.get_parent() always return sa?
+    if parent_object.__class__.__name__ == 'SubdisciplineArea':
+        parent_object = parent_object.subject_area
     order_method = 'set_' + child_object.__class__.__name__.lower() + '_order'
     getattr(parent_object, order_method)(order)
 
