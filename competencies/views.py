@@ -325,6 +325,15 @@ def move_element(request, element_type, element_id, direction, sa_id):
             
         elif direction == 'down' and ca_index < len(ca_group)-1:
             ca_target = ca_group[ca_index+1]
+            # DEV: Remove print and commented lines, and write tests.
+            # Get indices in order, and swap positions.
+            original_index = order.index(ca.id)
+            print('target id, order', ca_target.id, order)
+            target_index = order.index(ca_target.id)
+            order[original_index], order[target_index] = order[target_index], order[original_index]
+            set_parent_order(object_to_move, order)
+            
+
 
         return(redirect(edit_order_url))
     

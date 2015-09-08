@@ -886,3 +886,6 @@ class CompetencyViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
         current_order = ca.get_essentialunderstanding_order()
         self.assertEqual(current_order, original_order)
+
+        # Test moving first general sa ca down, changes; then first up with no change.
+        # Test moving last general sa ca up, changes; then down with no change.
