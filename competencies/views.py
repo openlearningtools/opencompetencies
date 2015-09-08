@@ -333,6 +333,14 @@ def move_element(request, element_type, element_id, direction, sa_id):
 
     return redirect(edit_order_url)
 
+def delete_element(request, element_type, element_id):
+    """Delete an element."""
+    # Needs to redirect to confirm_delete_element, which needs a url defn,
+    #   a view, and a template.
+    # Maybe this should be request_delete_element, next confirm_delete_element,
+    #   finally delete_element.
+    pass
+
 def get_sda_ca_eu_elements(subject_area, kwargs):
     """Get all sdas, cas, and eus associated with a subject area."""
     sdas = subject_area.subdisciplinearea_set.filter(**kwargs)
