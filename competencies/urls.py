@@ -40,8 +40,8 @@ urlpatterns = patterns('',
         views.move_element, name='move_element'),
 
     # delete_element/element_type/element_id/
-    url(r'^delete_element/(?P<element_type>\w+)/(?P<element_id>\d+)/', views.delete_element,
-        name='delete_element'),
+    url(r'^delete_element/(?P<element_type>\w+)/(?P<element_id>\d+)/',
+        views.delete_element, name='delete_element'),
 
     # organization_admin_summary/id: Summarize an organization.
     url(r'^organization_admin_summary/(?P<organization_id>\d+)/$', views.organization_admin_summary, name='organization_admin_summary'),

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title_extension %} - {{ organization }}{% endblock %}
+
+{% block content %}
+
+	 <h2>Delete element</h2>
+
+	 <form method='post' action=''>
+		  {% csrf_token %}
+		  <p>confirm deletion</p>
+		  <input type='hidden' name='confirm_delete' value='True' />
+		  <input type='submit' value='Delete element' />
+	 </form>
+
+{% endblock %}
