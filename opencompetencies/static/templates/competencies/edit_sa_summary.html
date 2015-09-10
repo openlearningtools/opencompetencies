@@ -18,6 +18,7 @@
 		{{ sa_form.subject_area }}
 		<a href="{% url 'competencies:new_sa' organization.id %}">new {{ organization.alias_sa }}</a>
 		<p>public: {{ sa_form.public }}</p>
+		<p><input type="submit" value="Save Changes" class="submit_sa_summary btn btn-small btn-info" /></p>
 
 	 <div class="row row-eq-height">
 		<div class="span4 lead summary_box grad_std_col"><strong>{{ organization.alias_ca|title }}s</strong></div>
@@ -53,6 +54,10 @@
 		<div class="span7 lead summary_box pi_col">&nbsp</div>
 	 </div>
 
+	 <div class='post_sda_save_button'>
+		<input type="submit" value="Save Changes" class="submit_sa_summary btn btn-small btn-info" />
+	 </div>
+
 	 {% for sda, sda_form in zipped_sda_forms %}
 		<div class="row row-eq-height">
 		  <div class="span4 lead summary_box sda_col">
@@ -79,11 +84,16 @@
 			 </div>
 		  </div>
 		{% endif %}
+
 		{% endfor %}
 
 		<div class="row row-eq-height">
 		  <div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_sda_ca' sda_form.my_id %}">new {{ organization.alias_ca }}</a></div>
 		  <div class="span7 lead summary_box pi_col">&nbsp</div>
+		</div>
+
+		<div class='post_sda_save_button'>
+		  <input type="submit" value="Save Changes" class="submit_sa_summary btn btn-small btn-info" />
 		</div>
 
 	 {% endfor %}	 
@@ -93,7 +103,6 @@
 		  <div class="span7 lead summary_box sda_col">&nbsp</div>
 		</div>
 
-		<p><input type="submit" value="Save Changes" class="submit_sa_summary btn btn-small btn-info" /></p>
 	 </form>
 
     <a href='{% url 'competencies:sa_summary' subject_area.id %}'>view summary</a> |
