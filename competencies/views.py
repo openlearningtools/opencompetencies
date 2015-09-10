@@ -346,6 +346,7 @@ def delete_element(request, element_type, element_id):
     eu = EssentialUnderstanding.objects.get(id=element_id)
     ca = eu.competency_area
     sa = ca.subject_area
+    org = sa.organization
     
     if request.method != 'POST':
         # Show form.
@@ -356,7 +357,9 @@ def delete_element(request, element_type, element_id):
             return redirect(reverse('competencies:sa_summary', args=[sa.id,]))
 
     return render_to_response('competencies/delete_element.html',
-                              {},
+                              {'organization': org, 'subject_area': sa,
+                               'eu': eu,
+                               },
                               context_instance=RequestContext(request))
 
 

@@ -125,6 +125,11 @@ div.feature_box {
 	margin-left: 20px;
 }
 
+.confirm_delete_button {
+	 margin-top: 20px;
+	 margin-bottom: 20px;
+}
+
 /* edit_sa_summary_order */
 .ordering_box {
 	 margin-left: -20px;
