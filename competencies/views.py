@@ -348,13 +348,9 @@ def delete_element(request, element_type, element_id):
     sa = ca.subject_area
     org = sa.organization
     
-    if request.method != 'POST':
-        # Show form.
-        pass
-    else:
-        if request.POST['confirm_delete']:
-            print("Deleting element.")
-            return redirect(reverse('competencies:sa_summary', args=[sa.id,]))
+    if request.method == 'POST' and request.POST['confirm_delete']:
+        eu.delete()
+        return redirect(reverse('competencies:sa_summary', args=[sa.id,]))
 
     return render_to_response('competencies/delete_element.html',
                               {'organization': org, 'subject_area': sa,
