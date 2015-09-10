@@ -4,9 +4,13 @@
 
 {% block content %}
 
+    <a href='{% url 'competencies:sa_summary' subject_area.id %}'>view summary</a> |
+	 edit |
+    <a href='{% url 'competencies:edit_sa_summary_order' subject_area.id %}'>modify order</a> |
+	 <a href='{% url 'competencies:sa_summary_pdf' subject_area.id %}'>pdf</a>
+
 	 <h2><a href='{% url 'competencies:organization' organization.id %}'>{{ organization }}</a></h2>
 	 <p>Setting an element public sets all elements above it public as well; setting an element private sets all elements below it private also.</p>
-	 <p><a href="{% url 'competencies:sa_summary' subject_area.id %}">view summary</a></p>
 
 	 <form action="" method="post">
 
@@ -92,8 +96,9 @@
 		<p><input type="submit" value="Save Changes" class="submit_sa_summary btn btn-small btn-info" /></p>
 	 </form>
 
-	 <p class="edit_view_link">
-		<a href='{% url 'competencies:sa_summary' subject_area.id %}'>view</a>
-	 </p>
+    <a href='{% url 'competencies:sa_summary' subject_area.id %}'>view summary</a> |
+	 edit |
+    <a href='{% url 'competencies:edit_sa_summary_order' subject_area.id %}'>modify order</a> |
+	 <a href='{% url 'competencies:sa_summary_pdf' subject_area.id %}'>pdf</a>
 
 {% endblock %}
