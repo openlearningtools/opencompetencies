@@ -965,3 +965,8 @@ class CompetencyViewTests(TestCase):
         current_eus = ca.essentialunderstanding_set.all()
         self.assertFalse(first_eu in current_eus)
         
+        # Make sure all eus except first_eu in current_eus.
+        current_eu_strings = [eu.essential_understanding for eu in current_eus]
+        for eu in eus:
+            if eu.essential_understanding != first_eu.essential_understanding:
+                self.assertTrue(eu in current_eus)
