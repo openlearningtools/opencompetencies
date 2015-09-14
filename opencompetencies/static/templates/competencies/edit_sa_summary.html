@@ -4,9 +4,13 @@
 
 {% block content %}
 
+    <a href='{% url 'competencies:sa_summary' subject_area.id %}'>view summary</a> |
+	 edit |
+    <a href='{% url 'competencies:edit_sa_summary_order' subject_area.id %}'>modify order</a> |
+	 <a href='{% url 'competencies:sa_summary_pdf' subject_area.id %}'>pdf</a>
+
 	 <h2><a href='{% url 'competencies:organization' organization.id %}'>{{ organization }}</a></h2>
 	 <p>Setting an element public sets all elements above it public as well; setting an element private sets all elements below it private also.</p>
-	 <p><a href="{% url 'competencies:sa_summary' subject_area.id %}">view summary</a></p>
 
 	 <form action="" method="post">
 
@@ -14,6 +18,7 @@
 		{{ sa_form.subject_area }}
 		<a href="{% url 'competencies:new_sa' organization.id %}">new {{ organization.alias_sa }}</a>
 		<p>public: {{ sa_form.public }}</p>
+		<p><input type="submit" value="Save Changes" class="submit_sa_summary btn btn-small btn-info" /></p>
 
 	 <div class="row row-eq-height">
 		<div class="span4 lead summary_box grad_std_col"><strong>{{ organization.alias_ca|title }}s</strong></div>
@@ -31,7 +36,11 @@
 				{% for eu, eu_form in zipped_eu_forms %}
 				{% if eu.competency_area == ca %}
 				  {{ eu_form.essential_understanding }}
-				  <p>public: {{ eu_form.public }}</p>
+				  <p>
+					 public: {{ eu_form.public }}
+					 <span class='delete_link'><a href="{% url 'competencies:delete_element' 'EssentialUnderstanding' eu.id %}">delete</a></span>
+				  </p>
+				  
 				{% endif %}
 				{% endfor %}
 				<a href="{% url 'competencies:new_eu' ca_form.my_id %}">new {{ organization.alias_eu }}</a>
@@ -43,6 +52,10 @@
 	 <div class="row row-eq-height">
 		<div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_ca' subject_area.id %}">new {{ organization.alias_ca }}</a></div>
 		<div class="span7 lead summary_box pi_col">&nbsp</div>
+	 </div>
+
+	 <div class='post_sda_save_button'>
+		<input type="submit" value="Save Changes" class="submit_sa_summary btn btn-small btn-info" />
 	 </div>
 
 	 {% for sda, sda_form in zipped_sda_forms %}
@@ -71,11 +84,16 @@
 			 </div>
 		  </div>
 		{% endif %}
+
 		{% endfor %}
 
 		<div class="row row-eq-height">
 		  <div class="span4 summary_box grad_std_col"><a href="{% url 'competencies:new_sda_ca' sda_form.my_id %}">new {{ organization.alias_ca }}</a></div>
 		  <div class="span7 lead summary_box pi_col">&nbsp</div>
+		</div>
+
+		<div class='post_sda_save_button'>
+		  <input type="submit" value="Save Changes" class="submit_sa_summary btn btn-small btn-info" />
 		</div>
 
 	 {% endfor %}	 
@@ -85,11 +103,11 @@
 		  <div class="span7 lead summary_box sda_col">&nbsp</div>
 		</div>
 
-		<p><input type="submit" value="Save Changes" class="submit_sa_summary btn btn-small btn-info" /></p>
 	 </form>
 
-	 <p class="edit_view_link">
-		<a href='{% url 'competencies:sa_summary' subject_area.id %}'>view</a>
-	 </p>
+    <a href='{% url 'competencies:sa_summary' subject_area.id %}'>view summary</a> |
+	 edit |
+    <a href='{% url 'competencies:edit_sa_summary_order' subject_area.id %}'>modify order</a> |
+	 <a href='{% url 'competencies:sa_summary_pdf' subject_area.id %}'>pdf</a>
 
 {% endblock %}

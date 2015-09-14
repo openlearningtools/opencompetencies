@@ -333,6 +333,32 @@ def move_element(request, element_type, element_id, direction, sa_id):
 
     return redirect(edit_order_url)
 
+def delete_element(request, element_type, element_id):
+    """Confirm that user wants to delete an element, and all its descendants.
+    Option to cancel, which will go back to edit_sa_summary,
+    or delete element which will then redirect to sa_summary."""
+    # DEV: Can use a single delete_element page.
+    #  GET request shows confirmation form; POST request follows through on delete.
+
+    # DEV: Should pass element type alias, which should be used on submit button.
+
+    # DEV: This needs to be generalized.
+    eu = EssentialUnderstanding.objects.get(id=element_id)
+    ca = eu.competency_area
+    sa = ca.subject_area
+    org = sa.organization
+    
+    if request.method == 'POST' and request.POST['confirm_delete']:
+        eu.delete()
+        return redirect(reverse('competencies:sa_summary', args=[sa.id,]))
+
+    return render_to_response('competencies/delete_element.html',
+                              {'organization': org, 'subject_area': sa,
+                               'eu': eu,
+                               },
+                              context_instance=RequestContext(request))
+
+
 def get_sda_ca_eu_elements(subject_area, kwargs):
     """Get all sdas, cas, and eus associated with a subject area."""
     sdas = subject_area.subdisciplinearea_set.filter(**kwargs)

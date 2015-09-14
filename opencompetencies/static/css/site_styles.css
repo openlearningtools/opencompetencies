@@ -116,6 +116,19 @@ div.feature_box {
 	 margin-top: 20px;
 }
 
+.post_sda_save_button {
+	 margin-left: 985px;
+	 margin-right: 84px;
+}
+
+.delete_link {
+	margin-left: 20px;
+}
+
+.confirm_delete_button {
+	 margin-top: 20px;
+	 margin-bottom: 20px;
+}
 
 /* edit_sa_summary_order */
 .ordering_box {
@@ -163,3 +176,4 @@ div.feature_box {
 	 padding-left: 25px;
 	 /*text-indent: -40px;*/
 }
+

@@ -928,3 +928,45 @@ class CompetencyViewTests(TestCase):
         # Test sda cas.
 
         # Test moving sdas.
+
+    def test_delete_element(self):
+        """Test that deleting an element works."""
+        # Tests:
+        # Get request doesn't change elements.
+        # Deleted element disappears.
+        # Only deleted element disappears.
+
+        self.num_elements = 2
+        self.build_to_eus()
+        org = Organization.objects.all()[0]
+
+        # --- General sa ca eus. ---
+        # Get an sa, ca, and eu.
+        sa = org.subjectarea_set.all()[0]
+        ca = sa.competencyarea_set.all()[0]
+        eus = ca.essentialunderstanding_set.all()
+        first_eu = eus[0]
+
+        # Log in, make GET request, make sure first_eu in current_eus.
+        self.client.login(username='testuser0', password='pw')
+        test_url = reverse('competencies:delete_element',
+                           args=['EssentialUnderstanding', first_eu.id])
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 200)
+        current_eus = ca.essentialunderstanding_set.all()
+        self.assertTrue(first_eu in current_eus)
+
+        # Make POST request, make sure first_eu not in current_eus.
+        test_url = reverse('competencies:delete_element',
+                           args=['EssentialUnderstanding', first_eu.id])
+        post_data ={'confirm_delete': True}
+        response = self.client.post(test_url, post_data)
+        self.assertEqual(response.status_code, 302)
+        current_eus = ca.essentialunderstanding_set.all()
+        self.assertFalse(first_eu in current_eus)
+        
+        # Make sure all eus except first_eu in current_eus.
+        current_eu_strings = [eu.essential_understanding for eu in current_eus]
+        for eu in eus:
+            if eu.essential_understanding != first_eu.essential_understanding:
+                self.assertTrue(eu in current_eus)
