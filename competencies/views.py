@@ -343,18 +343,26 @@ def delete_element(request, element_type, element_id):
     # DEV: Should pass element type alias, which should be used on submit button.
 
     # DEV: This needs to be generalized.
-    eu = EssentialUnderstanding.objects.get(id=element_id)
-    ca = eu.competency_area
-    sa = ca.subject_area
-    org = sa.organization
-    
+
+    from django.apps import apps
+    model = apps.get_model(app_label='competencies', model_name=element_type)
+    object_to_delete = model.objects.get(id=element_id)
+    # DEV: Do I need a get_alias() method for each element?
+    org = object_to_delete.get_organization()
+
+    # Get sa, regardless of which element is being deleted.
+    cand_sa = object_to_delete
+    while cand_sa.__class__.__name__ != 'SubjectArea':
+        cand_sa = cand_sa.get_parent()
+    sa = cand_sa
+
     if request.method == 'POST' and request.POST['confirm_delete']:
-        eu.delete()
+        object_to_delete.delete()
         return redirect(reverse('competencies:sa_summary', args=[sa.id,]))
 
     return render_to_response('competencies/delete_element.html',
                               {'organization': org, 'subject_area': sa,
-                               'eu': eu,
+                               'object_to_delete': object_to_delete,
                                },
                               context_instance=RequestContext(request))
 

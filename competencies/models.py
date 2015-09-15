@@ -78,6 +78,9 @@ class SubdisciplineArea(CoreElement):
     def get_organization(self):
         return self.subject_area.get_organization()
 
+    def get_alias(self):
+        return self.get_organization().alias_sda
+
 class CompetencyArea(CoreElement):
     competency_area = models.CharField(max_length=500)
     subject_area = models.ForeignKey(SubjectArea)
@@ -112,6 +115,9 @@ class CompetencyArea(CoreElement):
     def get_organization(self):
         return self.subject_area.get_organization()
 
+    def get_alias(self):
+        return self.get_organization().alias_ca
+
 class EssentialUnderstanding(CoreElement):
     essential_understanding = models.CharField(max_length=2000)
     competency_area = models.ForeignKey(CompetencyArea)
@@ -130,6 +136,9 @@ class EssentialUnderstanding(CoreElement):
 
     def get_organization(self):
         return self.competency_area.get_organization()
+
+    def get_alias(self):
+        return self.get_organization().alias_eu
 
 class LearningTarget(CoreElement):
     learning_target = models.CharField(max_length=2000)
