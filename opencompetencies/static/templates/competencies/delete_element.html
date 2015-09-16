@@ -16,6 +16,13 @@
 	 <h4>Are you sure you want to delete this {{ object_to_delete.get_alias }}? <small>(deleted elements can not be recovered)</small></h4>
 	 <p>{{ object_to_delete }}</p>
 
+    <h4>The following related elements will also be deleted:</h4>
+	 <ul>
+	 {% for element in cascade_elements %}
+	   <li><b>{{ element.get_alias|title }}:</b> {{ element }}</li>
+	 {% endfor %}
+	 </ul>
+
 	 <form method='post' action=''>
 		  {% csrf_token %}
 		  <input type='hidden' name='confirm_delete' value='True' />

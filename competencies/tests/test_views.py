@@ -947,6 +947,10 @@ class CompetencyViewTests(TestCase):
         eus = ca.essentialunderstanding_set.all()
         first_eu = eus[0]
 
+        # DEV: Test that unauthenticated user is redirected without deleting element.
+        # DEV: Test that user without edit permission is redirected
+        #    without deleting element.
+
         # Log in, make GET request, make sure first_eu in current_eus.
         self.client.login(username='testuser0', password='pw')
         test_url = reverse('competencies:delete_element',

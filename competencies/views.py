@@ -339,10 +339,7 @@ def delete_element(request, element_type, element_id):
     """Confirm that user wants to delete an element, and all its descendants.
     Option to cancel, which will go back to edit_sa_summary,
     or delete element which will then redirect to sa_summary."""
-    # DEV: Can use a single delete_element page.
     #  GET request shows confirmation form; POST request follows through on delete.
-
-    # DEV: Should pass element type alias, which should be used on submit button.
 
     # DEV: This needs to be generalized.
     model = apps.get_model(app_label='competencies', model_name=element_type)
@@ -360,6 +357,13 @@ def delete_element(request, element_type, element_id):
         cand_sa = cand_sa.get_parent()
     sa = cand_sa
 
+    # Get related elements that will be deleted.
+    from django.contrib.admin.util import NestedObjects
+    from django.db import DEFAULT_DB_ALIAS
+    collector = NestedObjects(using=DEFAULT_DB_ALIAS)
+    collector.collect([object_to_delete])
+    cascade_elements = collector.nested()[1]
+
     if request.method == 'POST' and request.POST['confirm_delete']:
         object_to_delete.delete()
         return redirect(reverse('competencies:sa_summary', args=[sa.id,]))
@@ -367,6 +371,7 @@ def delete_element(request, element_type, element_id):
     return render_to_response('competencies/delete_element.html',
                               {'organization': org, 'subject_area': sa,
                                'object_to_delete': object_to_delete,
+                               'cascade_elements': cascade_elements,
                                },
                               context_instance=RequestContext(request))
 
