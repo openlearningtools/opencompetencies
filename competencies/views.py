@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.loading import get_model
+from django.apps import apps
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.decorators import login_required
 
@@ -333,6 +334,7 @@ def move_element(request, element_type, element_id, direction, sa_id):
 
     return redirect(edit_order_url)
 
+@login_required
 def delete_element(request, element_type, element_id):
     """Confirm that user wants to delete an element, and all its descendants.
     Option to cancel, which will go back to edit_sa_summary,
@@ -343,12 +345,14 @@ def delete_element(request, element_type, element_id):
     # DEV: Should pass element type alias, which should be used on submit button.
 
     # DEV: This needs to be generalized.
-
-    from django.apps import apps
     model = apps.get_model(app_label='competencies', model_name=element_type)
     object_to_delete = model.objects.get(id=element_id)
-    # DEV: Do I need a get_alias() method for each element?
     org = object_to_delete.get_organization()
+
+    # Test if user allowed to edit this organization.
+    if not has_edit_permission(request.user, org):
+        redirect_url = '/no_edit_permission/' + str(org.id)
+        return redirect(redirect_url)
 
     # Get sa, regardless of which element is being deleted.
     cand_sa = object_to_delete

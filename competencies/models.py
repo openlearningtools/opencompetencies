@@ -59,6 +59,9 @@ class SubjectArea(CoreElement):
     def get_organization(self):
         return self.organization
 
+    def get_alias(self):
+        return self.get_organization().alias_sa
+
 class SubdisciplineArea(CoreElement):
     subdiscipline_area = models.CharField(max_length=500)
     subject_area = models.ForeignKey(SubjectArea)
