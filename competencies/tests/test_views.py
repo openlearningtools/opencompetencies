@@ -974,3 +974,20 @@ class CompetencyViewTests(TestCase):
         for eu in eus:
             if eu.essential_understanding != first_eu.essential_understanding:
                 self.assertTrue(eu in current_eus)
+
+        # --- Deleting competency areas ---
+        # Test that removing a ca removes only that ca, and all related eus.
+        original_cas = sa.competencyarea_set.all()
+        first_ca = original_cas[0]
+        related_eus = first_ca.essentialunderstanding_set.all()
+
+        test_url = reverse('competencies:delete_element',
+                           args=['CompetencyArea', first_ca.id])
+        post_data ={'confirm_delete': True}
+        response = self.client.post(test_url, post_data)
+
+        current_cas = sa.competencyarea_set.all()
+        current_eus = EssentialUnderstanding.objects.all()
+        self.assertFalse(first_ca in current_cas)
+        for eu in related_eus:
+            self.assertFalse(eu in current_eus)
