@@ -74,7 +74,10 @@
 	     <div class="row row-eq-height">
 			 <div class="span4 summary_box grad_std_col">
 				<p>{{ ca_form.competency_area }}</p>
-				<p>public: {{ ca_form.public }}</p>
+				<p>
+				  public: {{ ca_form.public }}
+				  <span class='delete_link'><a href="{% url 'competencies:delete_element' 'CompetencyArea' ca.id %}">delete</a></span>
+				</p>
 			 </div>
 			 <div class="span7 summary_box pi_col">
 				  {% for eu, eu_form in zipped_eu_forms %}

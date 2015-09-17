@@ -948,6 +948,9 @@ class CompetencyViewTests(TestCase):
         first_eu = eus[0]
 
         # DEV: Test that unauthenticated user is redirected without deleting element.
+        # For now, just test that a post request for an eu is redirected without deletion.
+
+
         # DEV: Test that user without edit permission is redirected
         #    without deleting element.
 
