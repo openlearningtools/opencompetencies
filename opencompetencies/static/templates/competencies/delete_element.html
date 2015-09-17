@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load competency_tags %}
 
 {% block title_extension %} - {{ organization }}{% endblock %}
 
@@ -19,7 +20,13 @@
     <h4>The following related elements will also be deleted:</h4>
 	 <ul>
 	 {% for element in cascade_elements %}
-	   <li><b>{{ element.get_alias|title }}:</b> {{ element }}</li>
+	   {% if element|is_list %}
+	     {% for sub_element in element %}
+	       <li class='nested_item'><b>{{ sub_element.get_alias|title }}:</b> {{ sub_element }}</li>
+		  {% endfor %}
+		{% else %}
+	     <li><b>{{ element.get_alias|title }}:</b> {{ element }}</li>
+		{% endif %}
 	 {% empty %}
 		<li>No other elements will be deleted.</li>
 	 {% endfor %}

@@ -130,6 +130,10 @@ div.feature_box {
 	 margin-bottom: 20px;
 }
 
+li.nested_item {
+	 margin-left: 30px;
+}
+
 /* edit_sa_summary_order */
 .ordering_box {
 	 margin-left: -20px;

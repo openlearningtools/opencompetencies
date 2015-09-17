@@ -66,6 +66,7 @@
 		  <div class="span4 lead summary_box sda_col">
 			 <strong>{{ sda_form.subdiscipline_area }}</strong>
 			 <small>public: {{ sda_form.public }}</small>
+			 <span class='delete_link'><a href="{% url 'competencies:delete_element' 'SubdisciplineArea' sda.id %}">delete</a></span>
 		  </div>
 		  <div class="span7 lead summary_box sda_col">&nbsp</div>
 		</div>
