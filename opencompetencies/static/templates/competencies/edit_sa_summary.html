@@ -83,7 +83,10 @@
 				  {% for eu, eu_form in zipped_eu_forms %}
 				  {% if eu.competency_area == ca %}
 				        {{ eu_form.essential_understanding }}
-				        <p>public: {{ eu_form.public }}</p>
+				        <p>
+							 public: {{ eu_form.public }}
+							 <span class='delete_link'><a href="{% url 'competencies:delete_element' 'EssentialUnderstanding' eu.id %}">delete</a></span>
+						  </p>
 				  {% endif %}
 				  {% endfor %}
 				  <a href="{% url 'competencies:new_eu' ca_form.my_id %}">new {{ organization.alias_eu }}</a>
