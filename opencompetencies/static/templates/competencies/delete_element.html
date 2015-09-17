@@ -20,6 +20,8 @@
 	 <ul>
 	 {% for element in cascade_elements %}
 	   <li><b>{{ element.get_alias|title }}:</b> {{ element }}</li>
+	 {% empty %}
+		<li>No other elements will be deleted.</li>
 	 {% endfor %}
 	 </ul>
 

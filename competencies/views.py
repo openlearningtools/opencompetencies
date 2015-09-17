@@ -362,8 +362,11 @@ def delete_element(request, element_type, element_id):
     from django.db import DEFAULT_DB_ALIAS
     collector = NestedObjects(using=DEFAULT_DB_ALIAS)
     collector.collect([object_to_delete])
-    cascade_elements = collector.nested()[1]
-
+    try:
+        cascade_elements = collector.nested()[1]
+    except IndexError:
+        cascade_elements = []
+        
     if request.method == 'POST' and request.POST['confirm_delete']:
         object_to_delete.delete()
         return redirect(reverse('competencies:sa_summary', args=[sa.id,]))
