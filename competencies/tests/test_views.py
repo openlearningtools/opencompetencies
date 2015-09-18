@@ -994,3 +994,27 @@ class CompetencyViewTests(TestCase):
         self.assertFalse(first_ca in current_cas)
         for eu in related_eus:
             self.assertFalse(eu in current_eus)
+
+        # --- Deleting sdas ___
+        # Test that deleting an sda removes only that sda, and all related cas and eus.
+        original_sdas = sa.subdisciplinearea_set.all()
+        first_sda = original_sdas[0]
+        related_cas = first_sda.competencyarea_set.all()
+        related_eus = []
+        for ca in related_cas:
+            for eu in ca.essentialunderstanding_set.all():
+                related_eus.append(eu)
+
+        test_url = reverse('competencies:delete_element',
+                           args=['SubdisciplineArea', first_sda.id])
+        post_data ={'confirm_delete': True}
+        response = self.client.post(test_url, post_data)
+
+        current_sdas = sa.subdisciplinearea_set.all()
+        current_cas = CompetencyArea.objects.all()
+        current_eus = EssentialUnderstanding.objects.all()
+        self.assertFalse(first_sda in current_sdas)
+        for ca in related_cas:
+            self.assertFalse(ca in current_cas)
+        for eu in related_eus:
+            self.assertFalse(eu in current_eus)
